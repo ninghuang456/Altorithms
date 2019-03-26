@@ -1,17 +1,17 @@
 # Table of contents
 
 * [Initial page](README.md)
-* [Untitled](untitled.md)
+* [Index](untitled.md)
 
 ## Tree
 
-* [Tree](tree/tree.md)
-
-## Graph
-
-* [Graph](graph/untitled.md)
+* [Data-Structure](tree/tree.md)
 
 ## Basic Operation
 
 * [Basic Operation](basic-operation/basic-operation.md)
+
+## High-Frequency
+
+* [High Frequency](high-frequency/untitled.md)
 
