@@ -13,5 +13,5 @@
 
 ## High-Frequency
 
-* [High Frequency](high-frequency/untitled.md)
+* [High Frequency](high-frequency/array.md)
 
