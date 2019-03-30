@@ -3,7 +3,7 @@
 * [Initial page](README.md)
 * [Index](untitled.md)
 
-## Tree
+## Data Structure
 
 * [Data-Structure](tree/tree.md)
 
