@@ -54,3 +54,37 @@ public double getkth(int[] A, int aStart, int[] B, int bStart, int k) {
 }
 ```
 
+3,Trapping Rain Water
+
+Given _n_ non-negative integers representing an elevation map where the width of each bar is 1, compute how much water it is able to trap after raining.
+
+![](https://assets.leetcode.com/uploads/2018/10/22/rainwatertrap.png)
+
+```text
+class Solution {
+    public int trap(int[] A) {
+        int a=0;
+    int b=A.length-1;
+    int max=0;
+    int leftmax=0;
+    int rightmax=0;
+    while(a<=b){
+        leftmax=Math.max(leftmax,A[a]);
+        rightmax=Math.max(rightmax,A[b]);
+        if(leftmax<rightmax){
+            max+=(leftmax-A[a]);       // leftmax is smaller than rightmax, so the (leftmax-A[a]) water can be stored Keep track of the                                               //maximum height from both forward directions backward directions, call them leftmax and rightmax.
+            a++;
+        }
+        else{
+            max+=(rightmax-A[b]);
+            b--;
+        }
+    }
+    return max;
+        
+    }
+}
+```
+
+### 
+
