@@ -304,7 +304,7 @@ class Solution {
 }
 ```
 
-Search in Rotated Sorted Array
+10 Search in Rotated Sorted Array
 
 Suppose an array sorted in ascending order is rotated at some pivot unknown to you beforehand.
 
@@ -340,6 +340,53 @@ class Solution {
             }
         }
         return -1;
+    }
+}
+```
+
+Next Permutation
+
+Implement **next permutation**, which rearranges numbers into the lexicographically next greater permutation of numbers.
+
+If such arrangement is not possible, it must rearrange it as the lowest possible order \(ie, sorted in ascending order\).
+
+The replacement must be [**in-place**](http://en.wikipedia.org/wiki/In-place_algorithm) and use only constant extra memory.
+
+Here are some examples. Inputs are in the left-hand column and its corresponding outputs are in the right-hand column.
+
+`1,2,3` → `1,3,2`  
+`3,2,1` → `1,2,3`  
+`1,1,5` → `1,5,1`
+
+```text
+class Solution {
+    public void nextPermutation(int[] nums) {
+         if (nums == null || nums.length == 0) return;
+
+      int n = nums.length, i = n - 2, j = n - 1;
+      while (i >= 0 && nums[i] >= nums[i + 1]) {//从后向前找到一个非增长的元素，位置为i
+         i--;
+      }
+      if (i >= 0) {//全逆序的数组不会进入这个循环，i的位置为-1
+         while (nums[j] <= nums[i]) {//从后向前找到第一个比i位置元素大的元素，肯定有这个数字
+            j--;
+         }
+         swap(nums, i, j);
+      }
+      reverse(nums, i + 1, n - 1);//i位置后面的数组元素进行翻转
+   }
+   private void swap(int[] nums, int i, int j) {
+      int temp = nums[i];
+      nums[i] = nums[j];
+      nums[j] = temp;
+   }
+   private void reverse(int[] nums, int i, int j) {
+      while (i < j) {
+         swap (nums, i, j);
+         i++;
+         j--;
+      }
+        
     }
 }
 ```
