@@ -86,5 +86,43 @@ class Solution {
 }
 ```
 
+3 Sum
+
+```text
+class Solution {
+    public List<List<Integer>> threeSum(int[] nums) {
+        List<List<Integer>> result = new ArrayList();
+        if (nums == null || nums.length < 3) return result;
+        Arrays.sort(nums);
+        HashSet<List<Integer>> uniqueSet = new HashSet<>();
+        
+        for (int i = 0 ; i < nums.length; i++) {
+           int j = i +1;
+            int right = nums.length - 1;
+            while (j < right){
+                int sum = nums[i] + nums[j] + nums[right];
+                if (sum == 0){
+                    List<Integer> list = new ArrayList();
+                    list.add(nums[i]);
+                    list.add(nums[j]);
+                    list.add(nums[right]);
+                    if(uniqueSet.add(list)){
+                    result.add(list);
+                    }
+                    right --;
+                    j++;
+                } else if (sum > 0) {
+                    right --;
+                } else {
+                    j++;
+                }
+                 
+            }
+        }
+        return result;
+    }
+}
+```
+
 ### 
 
