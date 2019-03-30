@@ -124,5 +124,225 @@ class Solution {
 }
 ```
 
+5 Merge Intervals
+
+Given a collection of intervals, merge all overlapping intervals.
+
+**Example 1:**
+
+```text
+Input: [[1,3],[2,6],[8,10],[15,18]]
+Output: [[1,6],[8,10],[15,18]]
+Explanation: Since intervals [1,3] and [2,6] overlaps, merge them into [1,6].
+
+Input: [[1,4],[4,5]]
+Output: [[1,5]]
+Explanation: Intervals [1,4] and [4,5] are considered overlapping.
+```
+
+```text
+/**
+ * Definition for an interval.
+ * public class Interval {
+ *     int start;
+ *     int end;
+ *     Interval() { start = 0; end = 0; }
+ *     Interval(int s, int e) { start = s; end = e; }
+ * }
+ */
+class Solution {
+    public List<Interval> merge(List<Interval> intervals) {
+        
+          if (intervals.size() <= 1) {
+            return intervals;
+        }
+
+        //Java8的lambda的comparator，把类匿名类作为参数
+        intervals.sort((i1, i2) -> i1.start - i2.start);
+        // intervals.sort((i1, i2) -> Integer.compare(i1.start, i2.start));
+
+        List<Interval> result = new ArrayList<>();//OR Linkedlist
+
+        //初始化
+        int start = intervals.get(0).start;
+        int end = intervals.get(0).end;
+
+        for (Interval interval : intervals) {
+            if (interval.start <= end) {//遍历到的interval的start小于之前的end，有重叠,先延伸
+                end = Math.max(end, interval.end);
+            } else {//没有重叠，将当前的interval加入到结果集
+                result.add(new Interval(start, end));
+                //加入之前的区间后，把start和end更新为当前遍历到的interval的start和end
+                start = interval.start;
+                end = interval.end;
+            }
+        }
+        //最后的一个区间没有遍历到的interval比较，需要加入
+        result.add(new Interval(start, end));
+
+        return result;
+        
+    }
+}
+```
+
+6 Maximum Subarray
+
+Given an integer array `nums`, find the contiguous subarray \(containing at least one number\) which has the largest sum and return its sum.
+
+**Example:**
+
+```text
+Input: [-2,1,-3,4,-1,2,1,-5,4],
+Output: 6
+```
+
+```text
+class Solution {
+    public int maxSubArray(int[] a) {
+         int maxSum = 0, thisSum = 0, max=a[0];
+    for(int i=0; i<a.length; i++) {
+        if(a[i]>max) max =a[i];
+        thisSum += a[i];
+        if(thisSum > maxSum)
+            maxSum = thisSum;
+        else if(thisSum < 0)
+            thisSum = 0;
+    }
+    if (maxSum==0) return max;
+    return maxSum;
+        
+    }
+}
+```
+
+7 Best Time to Buy and Sell Stock
+
+If you were only permitted to complete at most one transaction \(i.e., buy one and sell one share of the stock\), design an algorithm to find the maximum profit.
+
+```text
+class Solution {
+    public int maxProfit(int[] prices) {
+         if (prices.length == 0) {
+			 return 0 ;
+		 }		
+		 int max = 0 ;
+		 int sofarMin = prices[0] ;
+	     for (int i = 0 ; i < prices.length ; ++i) {
+	    	 if (prices[i] > sofarMin) {
+	    		 max = Math.max(max, prices[i] - sofarMin) ;
+	    	 } else{
+	    		sofarMin = prices[i];  
+	    	 }
+	     }	     
+	    return  max ;   
+    }
+}
+```
+
+8 Product of Array Except Self
+
+ Given an array `nums` of _n_ integers where _n_ &gt; 1,  return an array `output` such that `output[i]` is equal to the product of all the elements of `nums` except `nums[i]`.
+
+```text
+Input:  [1,2,3,4]
+Output: [24,12,8,6]
+```
+
+```text
+class Solution {
+    public int[] productExceptSelf(int[] nums) {
+        int len = nums.length;
+        int[] front = new int[len], back = new int[len], result = new int[len];
+        //初始化乘积为1
+        front[0] = 1;
+        back[len - 1] = 1;
+        //计算i元素前面所有元素的乘积
+        for (int i = 1; i < len; i++) {
+            front[i] = front[i - 1] * nums[i - 1];
+        }
+        //计算i元素后面所有元素的乘积
+        for (int i = len - 2; i >= 0; i--) {
+            back[i] = back[i + 1] * nums[i + 1];
+        }
+
+        //二者相乘
+        for (int i = 0; i < len; i++) {
+            result[i] = front[i] * back[i];
+        }
+        return result;
+        
+    }
+}
+```
+
+9 Container With Most Water
+
+Given n non-negative integers a1, a2, ..., an , where each represents a point at coordinate \(i, ai\). nvertical lines are drawn such that the two endpoints of line i is at \(i, ai\) and \(i, 0\). Find two lines, which together with x-axis forms a container, such that the container contains the most water.
+
+**Note:** You may not slant the container and n is at least 2.
+
+![](https://s3-lc-upload.s3.amazonaws.com/uploads/2018/07/17/question_11.jpg)
+
+```text
+class Solution {
+    public int maxArea(int[] height) {
+        int result = 0, left = 0, right = height.length - 1;
+        while (left < right){
+            int high = Math.min(height[left], height[right]);
+            int width = right - left; // don't mess up right and left.
+            int temp = high * width;
+            result = Math.max(result, temp);
+            if (height[left] < height[right]){
+                left ++;
+            }else {
+                right --;
+            } 
+        }
+        return result;
+    }
+}
+```
+
+Search in Rotated Sorted Array
+
+Suppose an array sorted in ascending order is rotated at some pivot unknown to you beforehand.
+
+\(i.e., `[0,1,2,4,5,6,7]` might become `[4,5,6,7,0,1,2]`\).
+
+You are given a target value to search. If found in the array return its index, otherwise return `-1`.
+
+You may assume no duplicate exists in the array.
+
+```text
+class Solution {
+    public int search(int[] nums, int target) {
+ if (nums == null || nums.length == 0) {
+            return -1;
+        }
+        int left = 0, right = nums.length - 1;
+        while (left <= right) {
+            int mid = left + (right - left) / 2;
+            if (nums[mid] == target) {
+                return mid;
+            } else if (nums[mid] < nums[right]) {//left到mid顺序乱了，mid到right的部分没有受到rotate影响，这时候先检查mid到right的有序的这部分
+                if (target > nums[mid] && target <= nums[right]) {//target在mid到right有序的这部分，需要两个条件加起来才确定是在这个部分
+                    left = mid + 1;
+                } else {//target在left到mid乱序的这部分
+                    right = mid - 1;
+                }
+            } else {//nums[mid] > nums[right]，mid到right的顺序乱了，而从left到mid是有顺序的，这时候先检查left到mid有序的这部分
+                if (target >= nums[left] && target < nums[mid]) {//target在left到mid之间有序的这部分，需要两个条件加起来才确定是在这个部分
+                    right = mid - 1;
+                } else {//target在mid到right之间乱序的部分
+                    left = mid + 1;
+                }
+            }
+        }
+        return -1;
+    }
+}
+```
+
 ### 
 
