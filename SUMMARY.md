@@ -13,6 +13,6 @@
 
 ## High-Frequency
 
-* [High Frequency](high-frequency/array.md)
+* [Array](high-frequency/array.md)
 * [LinkedList](high-frequency/linkedlist.md)
 

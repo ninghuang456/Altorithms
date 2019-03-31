@@ -2,7 +2,7 @@
 description: Array
 ---
 
-# High Frequency
+# Array
 
 ## Array
 
