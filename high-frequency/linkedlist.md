@@ -108,3 +108,116 @@ class Solution {
 }
 ```
 
+3 Merge Two Sorted Lists
+
+Merge two sorted linked lists and return it as a new list. The new list should be made by splicing together the nodes of the first two lists.
+
+```text
+/**
+ * Definition for singly-linked list.
+ * public class ListNode {
+ *     int val;
+ *     ListNode next;
+ *     ListNode(int x) { val = x; }
+ * }
+ */
+class Solution {
+    public ListNode mergeTwoLists(ListNode l1, ListNode l2) {
+        if (l1 == null|| l2 == null){
+            return (l1 == null) ? l2 : l1;
+        }
+        ListNode dumy = new ListNode(-1);
+        ListNode cur = dumy;
+        while (l1 != null && l2!= null){
+            if (l1.val >= l2.val){
+                cur.next = l2;
+                l2 = l2.next;
+            } else {
+                cur.next = l1;
+                l1 = l1.next;
+            }
+            cur = cur.next;
+        }
+        cur.next = (l1 == null) ? l2 : l1;
+      
+        return dumy.next;
+    }
+}
+```
+
+4 Reverse Linked List
+
+```text
+/**
+ * Definition for singly-linked list.
+ * public class ListNode {
+ *     int val;
+ *     ListNode next;
+ *     ListNode(int x) { val = x; }
+ * }
+ */
+class Solution {
+    public ListNode reverseList(ListNode head) {
+        if (head == null || head.next == null){
+            return head;
+        }
+        ListNode newHead = reverseList(head.next);
+        head.next.next = head; 
+        head.next = null;// don't forget this one
+        return newHead;
+    }
+}
+```
+
+5 Merge k Sorted Lists
+
+```text
+/**
+ * Definition for singly-linked list.
+ * public class ListNode {
+ *     int val;
+ *     ListNode next;
+ *     ListNode(int x) { val = x; }
+ * }
+ */
+class Solution {
+      public ListNode mergeKLists(ListNode[] lists) {
+        if (lists == null || lists.length == 0) {
+            return null;
+        }
+        return dac(lists, 0, lists.length - 1);
+    }
+    private ListNode dac (ListNode[] lists, int left, int right) {
+        if (left == right) {
+            return lists[left];
+        } 
+        if (left < right) {
+            int mid = left + (right - left) / 2;
+            ListNode list1 = dac(lists, left, mid);
+            ListNode list2 = dac(lists, mid + 1, right); 
+            ListNode merge = mergeTwoLists(list1, list2);
+            return merge;
+        } else {
+            return null;
+        }
+    }
+    
+    private ListNode mergeTwoLists (ListNode List1, ListNode List2) {
+        if (List1 == null) {
+            return List2;
+        }
+        if (List2 == null) {
+            return List1;
+        }
+        if (List1.val < List2.val) {
+            // not ListNode list1 = mergeTwoLists(List1.next , List2);
+            List1.next = mergeTwoLists(List1.next , List2);
+            return List1;
+        } else {
+            List2.next = mergeTwoLists(List1 , List2.next);
+            return List2;
+        }
+    }
+}
+```
+
