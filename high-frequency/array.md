@@ -1199,3 +1199,465 @@ class Solution {
 }
 ```
 
+22 Combination Sum
+
+Given _a_ **set** of candidate numbers \(`candidates`\) **\(without duplicates\)** and a target number \(`target`\), find all unique combinations in `candidates` where the candidate numbers sums to `target`.
+
+The **same** repeated number may be chosen from `candidates` unlimited number of times.
+
+**Note:**
+
+* All numbers \(including `target`\) will be positive integers.
+* The solution set must not contain duplicate combinations.
+
+**Example 1:**
+
+```text
+Input: candidates = [2,3,6,7], target = 7,
+A solution set is:
+[
+  [7],
+  [2,2,3]
+]
+```
+
+**Example 2:**
+
+```text
+Input: candidates = [2,3,5], target = 8,
+A solution set is:
+[
+  [2,2,2,2],
+  [2,3,3],
+  [3,5]
+]
+```
+
+### **题意和分析**
+
+给一个没有重复元素的数组，找出里面的元素加起来等于target的所有组合，原数组的元素可以利用多次。这种求所有组合的情况通常都是另外写一个方法来做递归求得（[这里是这类型题的总结](https://leetcode.com/problems/combination-sum/discuss/16502/A-general-approach-to-backtracking-questions-in-Java-%28Subsets-Permutations-Combination-Sum-Palindrome-Partitioning%29)）。
+
+### **代码**
+
+```java
+class Solution {
+    public List<List<Integer>> combinationSum(int[] candidates, int target) {
+        List<List<Integer>> result = new ArrayList<List<Integer>>();
+        if (candidates == null || candidates.length == 0) {
+            return result;
+        }
+        List<Integer> oneRecord = new ArrayList<>();
+        Arrays.sort(candidates);
+        backtrack(candidates, target, 0, oneRecord, result);
+        return result;
+    }
+
+    private void backtrack(int[] candidates, int remian, int index, List<Integer> oneRecord, List<List<Integer>> result) {
+        if (remian < 0 ) {//组合不合适
+            return;
+        } else if (remian == 0) {//找到合适的组合
+            result.add(new ArrayList<>(oneRecord));
+        } else {
+            for (int i = index; i < candidates.length; i++) {
+                oneRecord.add(candidates[i]);
+                backtrack(candidates, remian - candidates[i], i, oneRecord, result);
+                oneRecord.remove(oneRecord.size() - 1);//按照索引移除所有元素
+            }
+        }
+    }
+}
+```
+
+23 Max Area of Island
+
+Given a non-empty 2D array `grid` of 0's and 1's, an **island** is a group of `1`'s \(representing land\) connected 4-directionally \(horizontal or vertical.\) You may assume all four edges of the grid are surrounded by water.
+
+Find the maximum area of an island in the given 2D array. \(If there is no island, the maximum area is 0.\)
+
+**Example 1:**
+
+```text
+[[0,0,1,0,0,0,0,1,0,0,0,0,0],
+ [0,0,0,0,0,0,0,1,1,1,0,0,0],
+ [0,1,1,0,1,0,0,0,0,0,0,0,0],
+ [0,1,0,0,1,1,0,0,1,0,1,0,0],
+ [0,1,0,0,1,1,0,0,1,1,1,0,0],
+ [0,0,0,0,0,0,0,0,0,0,1,0,0],
+ [0,0,0,0,0,0,0,1,1,1,0,0,0],
+ [0,0,0,0,0,0,0,1,1,0,0,0,0]]
+```
+
+Given the above grid, return `6`. Note the answer is not 11, because the island must be connected 4-directionally.
+
+**Example 2:**
+
+```text
+[[0,0,0,0,0,0,0,0]]
+```
+
+Given the above grid, return `0`.
+
+**Note:** The length of each dimension in the given `grid` does not exceed 50.
+
+### 题意和分析
+
+找二维数组中最大的岛的面积，岛为1，是典型DFS的实现。
+
+### 代码
+
+```java
+class Solution {
+   public int maxAreaOfIsland(int[][] grid) {
+      int maxArea = 0;
+      for (int i = 0; i < grid.length; i++) {
+         for (int j = 0; j < grid[0].length; j++) {
+            if (grid[i][j] == 1) {
+               maxArea = Math.max(maxArea, dfs(grid, i, j));
+            }
+         }
+      }
+
+      return maxArea;
+   }
+   private int dfs(int[][] grid, int i, int j) {
+      if (i >= 0 && i < grid.length && j >= 0 && j < grid[0].length && grid[i][j] == 1) {
+         grid[i][j] = 0;//计算过了
+         return 1 + dfs(grid, i - 1, j) + dfs(grid, i + 1, j) + dfs(grid, i, j - 1) + dfs(grid, i, j + 1);//记得前面的1是本身，需要加上
+      }
+      return 0;//当前元素为0，不是island，直接返回
+   }
+}
+```
+
+24 Word Ladder II
+
+Given two words \(_beginWord_ and _endWord_\), and a dictionary's word list, find all shortest transformation sequence\(s\) from _beginWord_ to _endWord_, such that:
+
+1. Only one letter can be changed at a time
+2. Each transformed word must exist in the word list. Note that _beginWord_ is _not_ a transformed word.
+
+**Note:**
+
+* Return an empty list if there is no such transformation sequence.
+* All words have the same length.
+* All words contain only lowercase alphabetic characters.
+* You may assume no duplicates in the word list.
+* You may assume _beginWord_ and _endWord_ are non-empty and are not the same.
+
+**Example 1:**
+
+```text
+Input:
+beginWord = "hit",
+endWord = "cog",
+wordList = ["hot","dot","dog","lot","log","cog"]
+
+Output:
+[
+  ["hit","hot","dot","dog","cog"],
+  ["hit","hot","lot","log","cog"]
+]
+```
+
+**Example 2:**
+
+```text
+Input:
+beginWord = "hit"
+endWord = "cog"
+wordList = ["hot","dot","dog","lot","log"]
+
+Output: []
+
+Explanation: The endWord "cog" is not in wordList, therefore no possible transformation.
+```
+
+```text
+The basic idea is:
+
+1). Use BFS to find the shortest distance between start and end, tracing the distance of crossing nodes from start node to end node, and store node's next level neighbors to HashMap;
+
+2). Use DFS to output paths with the same distance as the shortest distance from distance HashMap: compare if the distance of the next level node equals the distance of the current node + 1.
+
+public List<List<String>> findLadders(String start, String end, List<String> wordList) {
+   HashSet<String> dict = new HashSet<String>(wordList);
+   List<List<String>> res = new ArrayList<List<String>>();         
+   HashMap<String, ArrayList<String>> nodeNeighbors = new HashMap<String, ArrayList<String>>();// Neighbors for every node
+   HashMap<String, Integer> distance = new HashMap<String, Integer>();// Distance of every node from the start node
+   ArrayList<String> solution = new ArrayList<String>();
+
+   dict.add(start);          
+   bfs(start, end, dict, nodeNeighbors, distance);                 
+   dfs(start, end, dict, nodeNeighbors, distance, solution, res);   
+   return res;
+}
+
+// BFS: Trace every node's distance from the start node (level by level).
+private void bfs(String start, String end, Set<String> dict, HashMap<String, ArrayList<String>> nodeNeighbors, HashMap<String, Integer> distance) {
+  for (String str : dict)
+      nodeNeighbors.put(str, new ArrayList<String>());
+
+  Queue<String> queue = new LinkedList<String>();
+  queue.offer(start);
+  distance.put(start, 0);
+
+  while (!queue.isEmpty()) {
+      int count = queue.size();
+      boolean foundEnd = false;
+      for (int i = 0; i < count; i++) {
+          String cur = queue.poll();
+          int curDistance = distance.get(cur);                
+          ArrayList<String> neighbors = getNeighbors(cur, dict);
+
+          for (String neighbor : neighbors) {
+              nodeNeighbors.get(cur).add(neighbor);
+              if (!distance.containsKey(neighbor)) {// Check if visited
+                  distance.put(neighbor, curDistance + 1);
+                  if (end.equals(neighbor))// Found the shortest path
+                      foundEnd = true;
+                  else
+                      queue.offer(neighbor);
+                  }
+              }
+          }
+
+          if (foundEnd)
+              break;
+      }
+  }
+
+// Find all next level nodes.    
+private ArrayList<String> getNeighbors(String node, Set<String> dict) {
+  ArrayList<String> res = new ArrayList<String>();
+  char chs[] = node.toCharArray();
+
+  for (char ch ='a'; ch <= 'z'; ch++) {
+      for (int i = 0; i < chs.length; i++) {
+          if (chs[i] == ch) continue;
+          char old_ch = chs[i];
+          chs[i] = ch;
+          if (dict.contains(String.valueOf(chs))) {
+              res.add(String.valueOf(chs));
+          }
+          chs[i] = old_ch;
+      }
+
+  }
+  return res;
+}
+
+// DFS: output all paths with the shortest distance.
+private void dfs(String cur, String end, Set<String> dict, HashMap<String, ArrayList<String>> nodeNeighbors, HashMap<String, Integer> distance, ArrayList<String> solution, List<List<String>> res) {
+    solution.add(cur);
+    if (end.equals(cur)) {
+       res.add(new ArrayList<String>(solution));
+    } else {
+       for (String next : nodeNeighbors.get(cur)) {            
+            if (distance.get(next) == distance.get(cur) + 1) {
+                 dfs(next, end, dict, nodeNeighbors, distance, solution, res);
+            }
+        }
+    }           
+   solution.remove(solution.size() - 1);
+}
+```
+
+25 Longest Consecutive Sequence
+
+Given an unsorted array of integers, find the length of the longest consecutive elements sequence.
+
+Your algorithm should run in O\(_n_\) complexity.
+
+**Example:**
+
+```text
+Input: [100, 4, 200, 1, 3, 2]
+Output: 4
+Explanation: The longest consecutive elements sequence is [1, 2, 3, 4]. Therefore its length is 4.
+```
+
+### **题意和分析**
+
+没有排序的数组里面寻找最长的子序列，要求时间复杂度是O\(n\)，没有空间复杂度的要求，于是可以用一个HashSet，把数组里面所有的元素放入到set里面，然后遍历数组，对每个元素都进行移除操作，同时用两个指针prev和next求出当前元素的构成连续数列的前面和后面一个数，继续检查prev和next是否在set中存在，如果存在就继续移除，最后用next - prev - 1（因为两个指针指向的元素在set中不存在的时候才停止移除，所以有-1），对每个元素都进行这样的操作后求出连续序列最大的。
+
+ 也可以采用HashMap来做，刚开始map为空，然后遍历所有数组中的元素，如果该数字不在map中，那么分别检查前后两个数字是否在map中，如果在，则返回其哈希表中映射值，若不在，则返回0，将prev+next+1作为当前数字的映射，并更新result结果，然后更新num-left和num-right的映射值。
+
+### **代码**
+
+HashSet
+
+```java
+class Solution {
+   public int longestConsecutive(int[] nums) {
+      if (nums == null || nums.length == 0) return 0;
+
+      HashSet<Integer> set = new HashSet<>();
+      int result = 0;
+
+      //将数组里的所有元素放到HashSet里面
+      for (int num : nums) set.add(num);
+
+      for (int num : nums) {
+         if (set.remove(num)) {//Java的remove方法是有返回值的，同样add也有
+            int prev = num - 1, next = num + 1;
+            while (set.remove(prev)) prev--;
+            while (set.remove(next)) next++;
+
+            result = Math.max(result, next - prev - 1);
+         }
+      }
+      return result;
+   }
+}
+```
+
+HashMap
+
+```java
+class Solution {
+   public int longestConsecutive(int[] nums) {
+      if (nums == null || nums.length == 0) return 0;
+
+      HashMap<Integer, Integer> map = new HashMap<>();
+      int result = 0;
+      for (int num : nums) {
+         if (!map.containsKey(num)) {
+            //注意这里的prev和next是元素在HashMap中的索引值
+            int prev = map.containsKey(num - 1) ? map.get(num - 1) : 0;
+            int next = map.containsKey(num + 1) ? map.get(num + 1) : 0;
+
+            int sum = prev + next + 1;
+            map.put(num, sum);
+
+            result = Math.max(result, sum);
+
+            map.put(num - prev, sum);
+            map.put(num + next, sum);
+         }
+      }
+
+      return result;
+   }
+}
+```
+
+26.  3 Sum Closest
+
+Given an array `nums` of _n_ integers and an integer `target`, find three integers in `nums` such that the sum is closest to `target`. Return the sum of the three integers. You may assume that each input would have exactly one solution.
+
+**Example:**
+
+```text
+Given array nums = [-1, 2, 1, -4], and target = 1.
+
+The sum that is closest to the target is 2. (-1 + 2 + 1 = 2).
+```
+
+### 题意和分析
+
+找到数组中的一个triplet三个数的和距离target的差值相比其它triplets来说是最小的，并返回这个triplet的和，因为不是返回所有可能的triplets，所以不需要去重了。这是上一道题的延伸，思路类似，先排序，然后确定一个index，剩下的两个indices两头扫描。
+
+ 同样，时间复杂度: O\(nlogn\) + O\(n^2\) = O\(n^2\)；空间复杂度O\(n\)。
+
+### 代码
+
+```java
+class Solution {
+    public int threeSumClosest(int[] nums, int target) {
+        if (nums == null || nums.length < 3) {
+            return 0;
+        }
+        
+        int result = 0; 
+        int min = Integer.MAX_VALUE;
+        
+        Arrays.sort(nums);
+        
+        for (int first = 0; first <= nums.length - 3; first++) {
+            int second = first + 1, third = nums.length - 1;
+            while (second < third) {//循环一轮找到最小的min
+                int sum = nums[first] + nums[second] + nums[third];
+                if (Math.abs(sum - target) < min) {
+                    min = Math.abs(sum - target);
+                    result = sum;
+                }
+                
+                if (sum == target) {//等于target那就是差距最小了，直接返回
+                    return sum;
+                } else if (sum < target) {
+                    second++;
+                } else {
+                    third--;
+                }
+            }
+        }
+        return result;
+    }
+}
+```
+
+27. Construct Binary Tree from Preorder and Inorder Traversal
+
+Given preorder and inorder traversal of a tree, construct the binary tree.
+
+**Note:**  
+You may assume that duplicates do not exist in the tree.
+
+For example, given
+
+```text
+preorder = [3,9,20,15,7]
+inorder = [9,3,15,20,7]
+```
+
+Return the following binary tree:
+
+```text
+    3
+   / \
+  9  20
+    /  \
+   15   7
+```
+
+### 题意和分析
+
+这道题用先序和中序来建立二叉树，先序的顺序第一个肯定是root，所以二叉树的根结点可以确定，由于题目中说了没有相同的元素，所以利用先序的根我们可以找到这个根在中序的位置，并且在中序的数组中根结点为中心拆分成左右两部分，然后又用我们熟悉的递归调用就可以重建二叉树了
+
+### 代码
+
+```java
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode(int x) { val = x; }
+ * }
+ */
+class Solution {
+    public TreeNode buildTree(int[] preorder, int[] inorder) {
+        return buildTree(preorder, 0, preorder.length - 1, inorder, 0, inorder.length - 1);
+    }
+
+    private TreeNode buildTree(int[] preorder, int pLeft, int pRight, int[] inorder, int iLeft, int iRight) {
+        if (pLeft > pRight || iLeft > iRight) {
+            return null;
+        }
+        int i = 0;
+        for (i = iLeft; i <= iRight; i++) {
+            if (preorder[pLeft] == inorder[i]) {
+                break;
+            }
+        }
+
+        TreeNode cur = new TreeNode(preorder[pLeft]);
+        cur.left = buildTree(preorder, pLeft + 1, pLeft + i - iLeft, inorder, iLeft, i - 1);
+        cur.right = buildTree(preorder, pLeft + i - iLeft +1, pRight, inorder, i + 1, iRight);
+
+        return cur;
+    }
+}
+```
+
