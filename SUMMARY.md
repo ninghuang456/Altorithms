@@ -15,4 +15,5 @@
 
 * [Array](high-frequency/array.md)
 * [LinkedList](high-frequency/linkedlist.md)
+* [Design/Comprehensive](high-frequency/design-comprehensive.md)
 

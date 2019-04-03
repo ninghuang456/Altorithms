@@ -358,6 +358,14 @@ Here are some examples. Inputs are in the left-hand column and its corresponding
 `3,2,1` → `1,2,3`  
 `1,1,5` → `1,5,1`
 
+排列Arrangement是从N个不同元素中取出M个元素，当N == M时，就是全排列Permutation。如果能够知道下一个排列Next Permutation是什么，也就知道了全排列是什么。全排列的问题在算法上没有特别的，但是要理清思路，还得刻意练习才行。
+
+假如排列是{2,3,6,5,4,1}，求下一个排列的基本步骤是这样：  
+1\) 先从后往前看，找到第一个不是依次增长的数，记录下位置p。比如现在的例子就应该是3，对应的位置是p==1；现在在p位置的数字跟从后向前的数字进行比较_，_找到第一个比p位置的数大的数，然后两个调换位置，比如例子中的4。把3和4调换位置后得到{2,4,6,5,3,1}。最后把p之后的所有数字倒序，得到{2,4,1,3,5,6}，即是要求的下一个排列；  
+2\) 如果从后向前看的时候，上面的数字都是依次增长的，那么说明这是最后一个排列，下一个就是第一个，把所有数字翻转过来即可\(比如{6,5,4,3,2,1}下一个是{1,2,3,4,5,6}\)；
+
+最坏情况需要扫描数组三次，所以时间复杂度是O\(3\*n\)=O\(n\)，空间复杂度是O\(1\)。
+
 ```text
 class Solution {
     public void nextPermutation(int[] nums) {
@@ -388,6 +396,107 @@ class Solution {
       }
         
     }
+}
+```
+
+12 Game of life
+
+According to the [Wikipedia's article](https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life): "The **Game of Life**, also known simply as **Life**, is a cellular automaton devised by the British mathematician John Horton Conway in 1970."
+
+Given a board with m by n cells, each cell has an initial state live \(1\) or dead \(0\). Each cell interacts with its [eight neighbors](https://en.wikipedia.org/wiki/Moore_neighborhood) \(horizontal, vertical, diagonal\) using the following four rules \(taken from the above Wikipedia article\):
+
+1. Any live cell with fewer than two live neighbors dies, as if caused by under-population.
+2. Any live cell with two or three live neighbors lives on to the next generation.
+3. Any live cell with more than three live neighbors dies, as if by over-population..
+4. Any dead cell with exactly three live neighbors becomes a live cell, as if by reproduction.
+
+Write a function to compute the next state \(after one update\) of the board given its current state. The next state is created by applying the above rules simultaneously to every cell in the current state, where births and deaths occur simultaneously.
+
+**Example:**
+
+```text
+Input: 
+[
+  [0,1,0],
+  [0,0,1],
+  [1,1,1],
+  [0,0,0]
+]
+Output: 
+[
+  [0,0,0],
+  [1,0,1],
+  [0,1,1],
+  [0,1,0]
+]
+```
+
+**Follow up**:
+
+1. Could you solve it in-place? Remember that the board needs to be updated at the same time: You cannot update some cells first and then use their updated values to update other cells.
+2. In this question, we represent the board using a 2D array. In principle, the board is infinite, which would cause problems when the active area encroaches the border of the array. How would you address these problems?
+
+### **题意和分析**
+
+参考[这里](http://www.cnblogs.com/grandyang/p/4854466.html)和[这里](https://segmentfault.com/a/1190000003819277)，用二维数组来表示细胞，1代表活细胞，0代表死细胞按照题意，每个细胞满足以下条件：
+
+1. 如果活细胞周围八个位置的活细胞数少于两个，则该位置活细胞死亡
+
+2. 如果活细胞周围八个位置有两个或三个活细胞，则该位置活细胞仍然存活
+
+3. 如果活细胞周围八个位置有超过三个活细胞，则该位置活细胞死亡
+
+4. 如果死细胞周围正好有三个活细胞，则该位置死细胞复活
+
+要求计算给定的二维数组的下一个状态，在in-place位置更新，所以就不能新建一个相同大小的数组，只能更新原有数组，但是题目中要求所有的位置必须被同时更新，不能分批更新，但是在循环程序中我们还是一个位置一个位置更新的，那么当一个位置更新了，这个位置成为其他位置的neighbor时，我们怎么知道其未更新的状态呢，我们可以使用状态机转换：
+
+状态0： 死细胞转为死细胞
+
+状态1： 活细胞转为活细胞
+
+状态2： 活细胞转为死细胞
+
+状态3： 死细胞转为活细胞
+
+对所有状态对2取余，那么状态0和2就变成死细胞，状态1和3就是活细胞。因此先对原数组进行逐个扫描，对于每一个位置，扫描其周围八个位置，如果遇到状态1或2，就计数器累加1，扫完8个邻居，如果少于两个活细胞或者大于三个活细胞，而且当前位置是活细胞的话，标记状态2，而如果有三个活细胞且当前是死细胞的话，标记状态3。完成一遍扫描后再对数据扫描一遍，对2取余。
+
+```text
+class Solution {
+	public void gameOfLife(int[][] board) {
+		if (board == null || board.length == 0 || board[0].length == 0) {
+			return;
+		}
+		int m = board.length;
+		int n = board[0].length;
+
+		for (int i = 0; i < m; i++) {
+			for (int j = 0; j < n; j++) {
+				int lives = livesNeighbors(board, m, n, i, j);
+				if (board[i][j] == 1 && lives >= 2 && lives <= 3) {
+					board[i][j] = 3;
+				}
+				if (board[i][j] == 0 && lives == 3) {
+					board[i][j] = 2;
+				}
+			}
+		}
+
+		for (int i = 0; i < m; i++) {
+			for (int j = 0; j < n; j++) {
+				board[i][j] >>= 1;//除以2
+			}
+		}
+	}
+	public int livesNeighbors(int[][] board, int m, int n, int i,int j) {
+		int lives = 0;
+		for (int x = Math.max(i - 1, 0); x <= Math.min(i + 1, m - 1); x++) {//Math.max和Math.min处理边界问题
+			for (int y = Math.max(j - 1, 0); y <= Math.min(j + 1, n - 1); y++) {
+				lives += board[x][y] & 1;
+			}
+		}
+		lives -= board[i][j] & 1;
+		return lives;
+	}
 }
 ```
 
