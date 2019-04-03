@@ -1661,3 +1661,118 @@ class Solution {
 }
 ```
 
+28. Jump Game
+
+Given an array of non-negative integers, you are initially positioned at the first index of the array.
+
+Each element in the array represents your maximum jump length at that position.
+
+Determine if you are able to reach the last index.
+
+**Example 1:**
+
+```text
+Input: [2,3,1,1,4]
+Output: true
+Explanation: Jump 1 step from index 0 to 1, then 3 steps to the last index.
+```
+
+**Example 2:**
+
+```text
+Input: [3,2,1,0,4]
+Output: false
+Explanation: You will always arrive at index 3 no matter what. Its maximum
+             jump length is 0, which makes it impossible to reach the last index.
+```
+
+### **题意和分析**
+
+这道题首先可以用DP， 维护一个一位数组dp，其中dp\[i\]表示达到i位置时剩余的步数，到达当前位置跟上一个位置（不是前一个位置）的剩余步数和数字（能达到的最远位置）有关，下一个位置的剩余步数（dp值）就等于当前的这个较大值减去1，因为需要花一个跳力到达下一个位置，所以状态转移方程：dp\[i\] = max\(dp\[i - 1\], nums\[i - 1\]\) - 1，如果当某一个时刻dp数组的值为负了，说明无法抵达当前位置，则直接返回false，最后判断**数**组最后一位是否为非负数即可知道是否能抵达该位置。
+
+Greedy的做法会更优，因为其实没有必要用维护一维数组的方式来对每一步的剩余步数进行关注，只知道是否能到达末尾就行了，只需维护一个变量reach，来记录当前步最远能到达的位置坐标，初始为0，遍历整个数组，如果当前的坐标大于reach或者reach已经到达最后一个位置或超出，就跳出循环；否则就更更新reach为当前reach的值和i + nums\[i\]中的较大值。
+
+### **代码**
+
+DP
+
+```java
+class Solution {
+    public boolean canJump(int[] nums) {
+        int len = nums.length;
+        int [] dp = new int[len];
+        Arrays.fill(dp, 0);
+
+        for (int i = 1; i < len; i++) {
+            dp[i] = Math.max(dp[i - 1], nums[i - 1]) - 1;
+            if (dp[i] < 0) {
+                return false;
+            }
+        }
+        return dp[len - 1] >= 0;
+    }
+}
+```
+
+Greedy
+
+```java
+class Solution {
+    public boolean canJump(int[] nums) {
+        int len = nums.length;
+        int reach = 0;
+        for (int i = 0; i < len; i++) {
+            if (i > reach || reach >= len - 1) {
+                break;
+            }
+            reach = Math.max(reach, i + nums[i]);
+        }
+        return reach >= len - 1;
+    }
+}
+```
+
+29. Sub set
+
+Given a set of **distinct** integers, _nums_, return all possible subsets \(the power set\).
+
+**Note:** The solution set must not contain duplicate subsets.
+
+**Example:**
+
+```text
+Input: nums = [1,2,3]
+Output:
+[
+  [3],
+  [1],
+  [2],
+  [1,2,3],
+  [1,3],
+  [2,3],
+  [1,2],
+  []
+]
+
+```
+
+```text
+backtracking:
+class Solution {
+    public List<List<Integer>> subsets(int[] nums) {
+        List<List<Integer>> result = new ArrayList<>();
+        Arrays.sort(nums);//需要排序，这样才知道哪些数字已经用过
+        backtrack(result, new ArrayList<>(), nums, 0);//初始传入0作为起始点
+        return result;
+    }
+    private void backtrack(List<List<Integer>> result, List<Integer> tempList, int[] nums, int start) {
+        result.add(new ArrayList<>(tempList));//注意添加的方式，是新建一个ArrayList对象
+        for (int i = start; i < nums.length; i++) {
+            tempList.add(nums[i]);
+            backtrack(result, tempList, nums, i + 1);
+            tempList.remove(tempList.size() - 1);//每一轮需要清空
+        }
+    }
+}
+```
+
