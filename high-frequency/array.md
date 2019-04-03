@@ -500,5 +500,297 @@ class Solution {
 }
 ```
 
-### 
+13 Subarray Sum Equals K
+
+Given an array of integers and an integer **k**, you need to find the total number of continuous subarrays whose sum equals to **k**.
+
+**Example 1:**  
+
+
+```text
+Input:nums = [1,1,1], k = 2
+Output: 2
+```
+
+**Note:**  
+
+
+1. The length of the array is in range \[1, 20,000\].
+2. The range of numbers in the array is \[-1000, 1000\] and the range of the integer **k** is \[-1e7, 1e7\].
+
+### 题意和分析
+
+这道题是找到所有的子序列的个数，这些子序列的元素的和等于给定的一个target。暴力解法就是两层循环，所有的子序列都计算一遍，找到所有sum\[i, j\] = k的子序列，O\(n^2\)。
+
+我们需要找到sum\[i, j\]，如果我们知道sum\[0, i-1\]和sum\[0, j\]，这样一减就知道sum\[i, j\]是否等于k，换句话说，sum\[j\] - sum\[i\]的话，nums\[i, j\]之间数字的和就是k，比如sum\[j\]跟sum\[i\]一样，那么nums\[i, j\]这段加起来就是0。result += map.get\(sum - k\)这句比较难懂，这个意思是如果sum - k多次等于一个值，那么前面每一个nums\[i\]位置到这里的subarray都算是一个可计入记过的subarray，相当于是需要记得之前有多少个相同的值。
+
+做法就是遍历这个数组，计算current的sum并且把所有的sum都存到一个HashMap里面。举例说明：
+
+Array = {3,4,7,2,-3,1,4,2}，k= 7，如果遇到二者相减（sum - k）等于7，或者sum本身等于7或者7的倍数，subarray的count均+1，（注意黑体字）
+
+* 循环初始map - {{0,1}}， sum - 0， result - 0；
+* 第一此循环遇到3，map - {{0, 1}, {3, 1}}；sum - 3；result - 0；sum - k = -4；
+* 第二次循环遇到4，map - {{0,1}, {3,1}, {**7,1**}}；sum - 7；result - 1；sum - k = 0；
+* 第三次循环遇到7，map - {{0,1}, {3,1}, {**7, 1**}, {**14, 1**}}；sum - 14；result - 2；sum - k = 7；
+* 第四次循环遇到2，map - {{0,1}, {3,1}, {7,1}, {14,1}, {16,1}}；sum - 16；result - 2；sum - k = 9；
+* 第五次循环遇到-3，map - {{0,1}, {3,1}, {7,1}, {14,1}, {16,1}, {13,1}}；sum - 13；result - 2；sum - k = 6；
+* 第六次循环遇到1，map - {{0,1}, {3,1}, {7,1}, {14,**2**}, {16,1}, {13,1}}；sum - 14；result - 3；sum - k = 7；
+* 第七次循环遇到4，map - {{0,1}, {3,1}, {7,1}, {14,2}, {16,1}, {13,1}, {18,1}}；sum - 18；result - 3； sum - k = 11；
+* 第八次循环遇到2，map - {{0,1}, {3,1}, {7,1}, {14,2}, {16,1}, **{13,1}**, {18,1}, {**20,1**}}，sum - 20；result - 4；sum - k = 13；
+* 循环结束
+
+  
+
+Time：O\(n\)；Space：O\(n\)。
+
+### 代码
+
+暴力解法O\(n^2\)
+
+```java
+class Solution {
+    public int subarraySum(int[] nums, int k) {
+        int count = 0;
+        int[] sum = new int[nums.length + 1];
+        sum[0] = 0;
+        for (int i = 1; i <= nums.length; i++) {
+            sum[i] = sum[i - 1] + nums[i - 1];
+        }
+        for (int start = 0; start < nums.length; start++) {
+            for (int end = start + 1; end <= nums.length; end++) {
+                if (sum[end] - sum[start] == k)
+                    count++;
+            }
+        }
+        return count;
+    }
+}
+```
+
+优化成O\(n\)的解法
+
+```java
+class Solution {
+    public int subarraySum(int[] nums, int k) {
+        int sum = 0, result = 0;
+        Map<Integer, Integer> map = new HashMap<>();
+        map.put(0, 1);//把以0为key的pair放进去，从sum为0开始
+
+        for (int i = 0; i < nums.length; i++) {
+            sum += nums[i];//在之前sum的基础上，遇到当前的元素就更新sum，然后检查hashmap看之前出现过没有
+            if (map.containsKey(sum - k)) {
+                result += map.get(sum - k);//记得之前有几个这样的值
+            }
+            map.put(sum, map.getOrDefault(sum
+```
+
+14 Spiral Matrix
+
+### **原题概述**
+
+Given a matrix of _m_ x _n_ elements \(_m_ rows, _n_ columns\), return all elements of the matrix in spiral order.
+
+**Example 1:**
+
+```text
+Input:
+[
+ [ 1, 2, 3 ],
+ [ 4, 5, 6 ],
+ [ 7, 8, 9 ]
+]
+Output: [1,2,3,6,9,8,7,4,5]
+```
+
+**Example 2:**
+
+```text
+Input:
+[
+  [1, 2, 3, 4],
+  [5, 6, 7, 8],
+  [9,10,11,12]
+]
+Output: [1,2,3,4,8,12,11,10,9,5,6,7]
+```
+
+### **题意和分析**
+
+要求由外层向内层螺旋打印数组，只能一行一列地打印，先往右，再往下，再往左，最后往上，用四个变量来记录打印的位置，下一轮从新的打印位置开始。
+
+### **代码**
+
+```java
+class Solution {
+   public List<Integer> spiralOrder(int[][] matrix) {
+
+      List<Integer> result = new ArrayList<>();
+      if (matrix == null || matrix.length == 0 || matrix[0].length == 0) return result;
+
+      int rowBegin = 0;
+      int colEnd = matrix[0].length - 1;
+      int colBegin = 0;
+      int rowEnd = matrix.length - 1;
+
+      while (rowBegin <= rowEnd && colBegin <= colEnd) {
+         //从左向右
+         for (int i = colBegin; i <= colEnd; i++) {
+            result.add(matrix[rowBegin][i]);
+         }
+         rowBegin++;
+
+         //从上到下
+         for (int i = rowBegin; i <= rowEnd; i++) {
+            result.add(matrix[i][colEnd]);
+         }
+         colEnd--;
+
+         //从右到左
+         if (rowBegin <= rowEnd) {//这里检查防止行已经打印完重复打印
+            for (int i = colEnd; i >= colBegin; i--) {
+               result.add(matrix[rowEnd][i]);
+            }
+         }
+         rowEnd--;
+
+         //从下到上
+         if (colBegin <= colEnd) {//这里检查防止列已经打印完重复打印
+            for (int i = rowEnd; i >= rowBegin; i--) {
+               result.add(matrix[i][colBegin]);
+            }
+         }
+         colBegin++;
+
+      }
+      return result;
+   }
+}
+```
+
+15 Word Search
+
+Given a 2D board and a word, find if the word exists in the grid.
+
+The word can be constructed from letters of sequentially adjacent cell, where "adjacent" cells are those horizontally or vertically neighboring. The same letter cell may not be used more than once.
+
+**Example:**
+
+```text
+board =
+[
+  ['A','B','C','E'],
+  ['S','F','C','S'],
+  ['A','D','E','E']
+]
+
+Given word = "ABCCED", return true.
+Given word = "SEE", return true.
+Given word = "ABCB", return false.
+```
+
+### **题意和分析**
+
+这道题是比较明显的深搜
+
+递归，回溯和DFS的区别
+
+> 递归是一种算法结构，回溯是一种算法思想 
+>
+> 一个递归就是在函数中调用函数本身来解决问题 回溯就是通过不同的尝试来生成问题的解，有点类似于穷举，但是和穷举不同的是回溯会“剪枝”，意思就是对已经知道错误的结果没必要再枚举接下来的答案了，比如一个有序数列1,2,3,4,5，我要找和为5的所有集合，从前往后搜索我选了1，然后2，然后选3 的时候发现和已经大于预期，那么4,5肯定也不行，这就是一种对搜索过程的优化。
+>
+> 深度优先搜索（DFS）对于某一种数据结构来说，一般是树（搜索树是起记录路径和状态判断的作用），对于回溯和DFS，其主要的区别是，回溯法在求解过程中不保留完整的树结构，而深度优先搜索则记下完整的搜索树。
+>
+> 为了减少存储空间，在深度优先搜索中，用标志的方法记录访问过的状态，这种处理方法使得深度优先搜索法与回溯法没什么区别了。
+
+如同上面的比较，DFS有两种经典的做法，一是用跟原本二维数组同等大小的数组来记录是否visited过，其中元素为boolean， 如果二维数组board的当前字符和目标字符串word对应的字符相等，则对其上下左右四个邻字符分别调用DFS的递归函数，只要有一个返回true，那么就表示可以找到对应的字符串，否则就不能找到；第二是对第一种做法空间上的优化，每次用一个char来记录当前二维数组里面的char，在递归调用前用一个特殊的字符，比如‘\#’，来代替当前字符说明已经检查过了，然后再递归调用后再改回来方便下次检查。
+
+### **代码**
+
+```java
+class Solution {
+    public boolean exist(char[][] board, String word) {
+        if (board == null || board.length == 0 || board[0].length == 0) {
+            return false;
+        }
+        int m = board.length, n = board[0].length;
+        boolean[][] visited = new boolean[m][n];
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                visited[i][j] = false;
+            }
+        }
+        int index = 0;//字符串的索引
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                if (dfs(board, word, index, i, j, visited)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    private boolean dfs(char[][] board, String word, int index, int i, int j, boolean[][] visited) {
+        if (index == word.length()) {//找完了
+            return true;
+        }
+        int m = board.length, n = board[0].length;
+        if (i < 0 || j < 0 || i >= m || j >= n
+                || visited[i][j] //已被访问过
+                || board[i][j] != word.charAt(index)) {//两个字符不相等
+            return false;
+        }
+        visited[i][j] = true;//设定当前字符已被访问过
+        boolean result = (dfs(board, word, index + 1, i - 1, j, visited)//左
+                || dfs(board, word, index + 1, i + 1, j, visited)//右
+                || dfs(board, word, index + 1, i, j - 1, visited)//上
+                || dfs(board, word, index + 1, i, j + 1, visited));//下
+        visited[i][j] = false;//让“当前的”位置归为初始值，为别的路径的查找准备
+        return result;
+    }
+}
+```
+
+优化空间
+
+```java
+class Solution {
+    public boolean exist(char[][] board, String word) {
+        if (board == null || board.length == 0 || board[0].length == 0) {
+            return false;
+        }
+        int m = board.length, n = board[0].length;
+        int index = 0;//字符串的索引
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                if (dfs(board, word, index, i, j)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    private boolean dfs(char[][] board, String word, int index, int i, int j) {
+        if (index == word.length()) {//找完了
+            return true;
+        }
+        int m = board.length, n = board[0].length;
+        if (i < 0 || j < 0 || i >= m || j >= n
+                || board[i][j] != word.charAt(index)) {//两个字符不相等
+            return false;
+        }
+        char temp = board[i][j];//临时存一下当前的字符
+        board[i][j] = '#';
+        boolean result = (dfs(board, word, index + 1, i - 1, j)//左
+                || dfs(board, word, index + 1, i + 1, j)//右
+                || dfs(board, word, index + 1, i, j - 1)//上
+                || dfs(board, word, index + 1, i, j + 1));//下
+        board[i][j] = temp;//修改回来
+        return result;
+    }
+}
+```
+
+
 
