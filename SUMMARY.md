@@ -14,6 +14,8 @@
 ## High-Frequency
 
 * [Array](high-frequency/array.md)
+* [Array2](high-frequency/array2.md)
 * [LinkedList](high-frequency/linkedlist.md)
 * [Design/Comprehensive](high-frequency/design-comprehensive.md)
+* [Untitled](high-frequency/untitled.md)
 
