@@ -792,5 +792,410 @@ class Solution {
 }
 ```
 
+16 Task Scheduler
 
+Given a char array representing tasks CPU need to do. It contains capital letters A to Z where different letters represent different tasks.Tasks could be done without original order. Each task could be done in one interval. For each interval, CPU could finish one task or just be idle.
+
+However, there is a non-negative cooling interval **n** that means between two **same tasks**, there must be at least n intervals that CPU are doing different tasks or just be idle.
+
+You need to return the **least** number of intervals the CPU will take to finish all the given tasks.
+
+**Example 1:**
+
+```text
+Input: tasks = ["A","A","A","B","B","B"], n = 2
+Output: 8
+Explanation: A -> B -> idle -> A -> B -> idle -> A -> B.
+```
+
+**Note:**
+
+1. The number of tasks is in the range \[1, 10000\].
+2. The integer n is in the range \[0, 100\].
+
+#### 题意和分析
+
+安排CPU的任务，规定在两个相同任务之间至少隔n个时间点，求时间总长。思路比较多，这里的做法是建立一个优先队列，然后把统计好的个数都存入优先队列中，那么大的次数会在队列的前面。这题还是要分块，每块能装n+1个任务，装任务是从优先队列中取，每个任务取一个，装到一个临时数组中，然后遍历取出的任务，对于每个任务，将其哈希表映射的次数减1，如果减1后，次数仍大于0，则将此任务次数再次排入队列中，遍历完后如果队列不为空，说明该块全部被填满，则结果加上n+1。我们之前在队列中取任务是用个变量count来记录取出任务的个数，我们想取出n+1个，如果队列中任务数少于n+1个，那就用count来记录真实取出的个数，当队列为空时，就加上count的个数。
+
+#### 代码
+
+```java
+class Solution {
+    public int leastInterval(char[] tasks, int n) {
+        Map<Character, Integer> counts = new HashMap<>();
+        for (char t : tasks) {
+            counts.put(t, counts.getOrDefault(t, 0) + 1);
+        }
+        PriorityQueue<Integer> pq = new PriorityQueue<Integer>((a, b) -> b - a);
+        pq.addAll(counts.values());
+
+        int alltime = 0;
+        int cycle = n + 1;
+        while (!pq.isEmpty()) {
+            int worktime = 0;
+            List<Integer> tmp = new ArrayList<Integer>();
+            for (int i = 0; i < cycle; i++) {
+                if (!pq.isEmpty()) {
+                    tmp.add(pq.poll());
+                    worktime++;
+                }
+            }
+            for (int cnt : tmp) {
+                if (--cnt > 0) {
+                    pq.offer(cnt);
+                }
+            }
+            alltime += !pq.isEmpty() ? cycle : worktime;
+        }
+
+        return alltime;
+    }
+}
+```
+
+17 Maximal Rectangle
+
+Given a 2D binary matrix filled with 0's and 1's, find the largest rectangle containing only 1's and return its area.
+
+**Example:**
+
+```text
+Input:
+[
+  ["1","0","1","0","0"],
+  ["1","0","1","1","1"],
+  ["1","1","1","1","1"],
+  ["1","0","0","1","0"]
+]
+Output: 6
+```
+
+### 题意和分析
+
+The DP solution proceeds row by row, starting from the first row. Let the maximal rectangle area at row i and column j be computed by \[right\(i,j\) - left\(i,j\)\]\*height\(i,j\).
+
+All the 3 variables left, right, and height can be determined by the information from previous row, and also information from the current row. So it can be regarded as a DP solution. The transition equations are:
+
+> left\(i,j\) = max\(left\(i-1,j\), cur\_left\), cur\_left can be determined from the current row
+
+> right\(i,j\) = min\(right\(i-1,j\), cur\_right\), cur\_right can be determined from the current row
+
+> height\(i,j\) = height\(i-1,j\) + 1, if matrix\[i\]\[j\]=='1';
+
+> height\(i,j\) = 0, if matrix\[i\]\[j\]=='0'
+
+### 代码
+
+```java
+class Solution {
+    public int maximalRectangle(char[][] matrix) {
+        if (matrix == null || matrix.length == 0 || matrix[0] == null || matrix[0].length == 0) return 0;
+        int m = matrix.length, n = matrix[0].length, maxArea = 0;
+        int[] left = new int[n];
+        int[] right = new int[n];
+        int[] height = new int[n];
+        Arrays.fill(right, n - 1);
+        for (int i = 0; i < m; i++) {
+            int rB = n - 1;
+            for (int j = n - 1; j >= 0; j--) {
+                if (matrix[i][j] == '1') {
+                    right[j] = Math.min(right[j], rB);
+                } else {
+                    right[j] = n - 1;
+                    rB = j - 1;
+                }
+            }
+            int lB = 0;
+            for (int j = 0; j < n; j++) {
+                if (matrix[i][j] == '1') {
+                    left[j] = Math.max(left[j], lB);
+                    height[j]++;
+                    maxArea = Math.max(maxArea, height[j] * (right[j] - left[j] + 1));
+                } else {
+                    height[j] = 0;
+                    left[j] = 0;
+                    lB = j + 1;
+                }
+            }
+        }
+        return maxArea;
+    }
+}
+```
+
+18 First Missing Positive
+
+Given an unsorted integer array, find the smallest missing positive integer.
+
+**Example 1:**
+
+```text
+Input: [1,2,0]
+Output: 3
+```
+
+**Example 2:**
+
+```text
+Input: [3,4,-1,1]
+Output: 2
+```
+
+**Example 3:**
+
+```text
+Input: [7,8,9,11,12]
+Output: 1
+```
+
+**Note:**
+
+Your algorithm should run in _O_\(_n_\) time and uses constant extra space.
+
+### **题意和分析**
+
+给一个数组，返回第一个缺失的正数，要求线性时间复杂度O\(n\)和常量空间O\(1\)，因此一般的排序方法是不能用的，另外用空间也有要求所以利用额外空间例如HashMap和HashSet也不能用了；只能in-place来做，遍历数组，把1放到nums\[0\]处，把2放到nums\[1\]处，如果nums\[i\] &gt; 0（**负数和0不用管**），同时nums\[i\]为整数且不大于n（**因为缺失的第一个正数值最大就是数组的长度n，不可能超过**），同时nums\[i\]不等于nums\[nums\[i\] - 1\]的话（**桶排序的思想，对应的数字应该放在对应的位置上**），则交换nums\[i\]和nums\[nums\[i\] - 1\]的位置；然后再遍历一遍，遇到nums\[i\] != i + 1即为第一个缺失的正数。
+
+### **代码**
+
+```java
+class Solution {
+    public int firstMissingPositive(int[] nums) {
+        if (nums == null || nums.length == 0) return 1;
+        int n = nums.length;
+        for (int i = 0; i < n; i++) {
+            while (nums[i] > 0 && nums[i] <= n && nums[i] != nums[nums[i] - 1]) {
+                int temp = nums[nums[i] - 1];
+                nums[nums[i] - 1] = nums[i];
+                nums[i] = temp;
+            }
+        }
+        for (int i = 0; i < n; i++) {
+            if (nums[i] != i + 1) return i + 1;
+        }
+
+        //从1开始连续出现
+        return n + 1;
+    }
+}
+```
+
+19 Merge Sorted Array
+
+Given two sorted integer arrays _nums1_ and _nums2_, merge _nums2_ into _nums1_ as one sorted array.
+
+**Note:**
+
+* The number of elements initialized in _nums1_ and _nums2_ are _m_ and _n_ respectively.
+* You may assume that _nums1_ has enough space \(size that is greater or equal to _m_ + _n_\) to hold additional elements from _nums2_.
+
+**Example:**
+
+```text
+Input:
+nums1 = [1,2,3,0,0,0], m = 3
+nums2 = [2,5,6],       n = 3
+
+Output: [1,2,2,3,5,6]
+```
+
+### 题意与分析
+
+两个排序好的数组nums1和nums2，按照顺序全部元素都放到第一个数组当中，保证装得下所以不用担心nums1数组空间的问题。大致的思路就是在nums1中最后一个位置开始（通过原先两个数组的参数代表有效长度，相加得来），把大的数填在后面，这样就不会覆盖nums1前面的数字了，注意别越界就行。
+
+Time：O\(m + n\)；Space：O\(1\)；
+
+这道题很有可能和[Merge Two Sorted Lists](https://guilindev.gitbook.io/interview/leetcode/ji-chu-shu-ju-jie-gou-zai-suan-fa-zhong-de-ying-yong/linkedlist/he-bing-liang-ge-you-xu-lie-biao)一起问。
+
+### 代码
+
+```java
+class Solution {
+    public void merge(int[] nums1, int m, int[] nums2, int n) {
+        int length = m + n;
+
+        while (n > 0) { //表示nums2里面的元素还没有加完
+            //从最后一位开始检查，每次循环前移一位
+            length--;
+            if (m == 0 || nums1[m - 1] < nums2[n - 1]) {//m=0表示只剩nums2的元素了，直接加入就好
+                n--;//从nums2最后一位开始
+                nums1[length] = nums2[n];
+            } else {//m != 0 &&　nums1[m - 1] > nums2[n - 1]
+                m--;//从nums1最后一位开始
+                nums1[length] = nums1[m];
+            }
+        }
+        //这样写可以短一点: nums1[--length] = (m == 0 || nums[m - 1] < nums[n - 1]) ? nums2[--n] : nums1[--m];
+    }
+}
+```
+
+20 Move Zeroes
+
+### 原题概述
+
+Given an array `nums`, write a function to move all `0`'s to the end of it while maintaining the relative order of the non-zero elements.
+
+**Example:**
+
+```text
+Input: [0,1,0,3,12]
+Output: [1,3,12,0,0]
+```
+
+**Note**:
+
+1. You must do this **in-place** without making a copy of the array.
+2. Minimize the total number of operations.
+
+### 题意和分析
+
+给一个数组，把其中的0挪到最后面去，非0元素的相对顺序不能变，不能另外开一个数组；使用两个指针，从0位置开始查，找到不为0的元素后，与另外一个指针交换值，直到末尾。
+
+### 代码
+
+```java
+class Solution {
+    public void moveZeroes(int[] nums) {
+        for (int left = 0, right = 0; right < nums.length; right++) {
+            if (nums[right] != 0) {//把非0的元素全部换到前面来
+                int temp = nums[right];
+                nums[right] = nums[left];
+                nums[left] = temp;
+                left++;//挪动指针从非0元素到下一位
+            }
+        }
+    }
+}
+```
+
+21 Rotate Image
+
+You are given an _n_ x _n_ 2D matrix representing an image.
+
+Rotate the image by 90 degrees \(clockwise\).
+
+**Note:**
+
+You have to rotate the image [**in-place**](https://en.wikipedia.org/wiki/In-place_algorithm), which means you have to modify the input 2D matrix directly. **DO NOT** allocate another 2D matrix and do the rotation.
+
+**Example 1:**
+
+```text
+Given input matrix = 
+[
+  [1,2,3],
+  [4,5,6],
+  [7,8,9]
+],
+
+rotate the input matrix in-place such that it becomes:
+[
+  [7,4,1],
+  [8,5,2],
+  [9,6,3]
+]
+```
+
+**Example 2:**
+
+```text
+Given input matrix =
+[
+  [ 5, 1, 9,11],
+  [ 2, 4, 8,10],
+  [13, 3, 6, 7],
+  [15,14,12,16]
+], 
+
+rotate the input matrix in-place such that it becomes:
+[
+  [15,13, 2, 5],
+  [14, 3, 4, 1],
+  [12, 6, 8, 9],
+  [16, 7,10,11]
+]
+```
+
+### 题意和分析
+
+计算机里图片的本质是矩阵，旋转矩阵即是旋转图片，有很多方法可以旋转矩阵，我自己比较好理解的两种办法是：
+
+1）首先对原数组取其转置矩阵（行列互换），然后把每行的数字翻转可得到结果，如下所示\(其中蓝色数字表示翻转轴\)：
+
+1  2  3　　　 　　 1  4  7　　　　　  7  4  1
+
+4  5  6　　--&gt;　　 2  5  8　　 --&gt;  　  8  5  2　　
+
+7  8  9 　　　 　　3  6  9　　　　      9  6  3
+
+2）首先以从对角线为轴翻转，然后再以x轴中线上下翻转即可得到结果：
+
+1  2  3　　　 　　 9  6  3　　　　　  7  4  1
+
+4  5  6　　--&gt;　　 8  5  2　　 --&gt;   　 8  5  2　　
+
+7  8  9 　　　 　　7  4  1　　　　　  9  6  3
+
+3）每次循环换四个数字：
+
+1  2  3                 7  2  1                  7  4  1
+
+4  5  6      --&gt;      4  5  6　　 --&gt;  　 8  5  2　　
+
+7  8  9                 9  8  3　　　　　 9  6  3
+
+### 代码
+
+转置矩阵的办法
+
+```java
+class Solution {
+    public void rotate(int[][] matrix) {
+        int n = matrix.length;
+        for (int i = 0; i < n; i++) {
+            for (int j = i; j < n; j++) {//j = i不用重复转置
+                //转换为转置矩阵transport matrix
+                int temp = matrix[i][j];
+                matrix[i][j] = matrix[j][i];
+                matrix[j][i] = temp;
+            }
+        }
+        //逐行将元素翻转
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n/2; j++) {//注意这里是j < n/2，没有=
+                int temp = matrix[i][j];
+                matrix[i][j] = matrix[i][n - j - 1];
+                matrix[i][n - j - 1] = temp;
+            }
+        }
+    }
+}
+```
+
+对角线翻转的办法
+
+```java
+class Solution {
+    public void rotate(int[][] matrix) {
+        int n = matrix.length;
+        //以对角线为轴翻转
+        for (int i = 0; i < n - 1; i++) {
+            for (int j = 0; j < n - i; j++) {
+                int temp = matrix[i][j];
+                matrix[i][j] = matrix[n - 1 - j][n - 1 - i];
+                matrix[n - 1 - j][n - 1 - i] = temp;
+            }
+        }
+        //以x轴中线上下翻转
+        for (int i = 0; i < n / 2; i++) {
+            for (int j = 0; j < n; j++) {
+                int temp = matrix[i][j];
+                matrix[i][j] = matrix[n - 1 - i][j];
+                matrix[n - 1 - i][j] = temp;
+            }
+        }
+    }
+}
+```
 
