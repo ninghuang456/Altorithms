@@ -1,11 +1,6 @@
 # Table of contents
 
 * [Initial page](README.md)
-* [Index](untitled.md)
-
-## Data Structure
-
-* [Data-Structure](tree/tree.md)
 
 ## Basic Operation
 
@@ -17,5 +12,5 @@
 * [Array2](high-frequency/array2.md)
 * [LinkedList](high-frequency/linkedlist.md)
 * [Design/Comprehensive](high-frequency/design-comprehensive.md)
-* [Untitled](high-frequency/untitled.md)
+* [String 1](high-frequency/untitled.md)
 
