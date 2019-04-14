@@ -132,3 +132,131 @@ class Solution {
 }
 ```
 
+4.Valid Parentheses
+
+Given a string containing just the characters `'('`, `')'`, `'{'`, `'}'`, `'['` and `']'`, determine if the input string is valid.
+
+An input string is valid if:
+
+1. Open brackets must be closed by the same type of brackets.
+2. Open brackets must be closed in the correct order.
+
+Note that an empty string is also considered valid.
+
+**Example 1:**
+
+```text
+Input: "()"
+Output: true
+```
+
+**Example 2:**
+
+```text
+Input: "()[]{}"
+Output: true
+```
+
+```text
+class Solution {
+    public boolean isValid(String s) {
+        if (s.length() == 0) {
+            return true;
+        }
+        char[] slist = s.toCharArray();
+        Stack<Character> stack = new Stack<Character>();
+        for (int i = 0; i < s.length(); i++) {
+            char c = slist[i];
+            if(c == '(' || c == '{' || c == '['){
+                stack.push(slist[i]);
+            }
+            if(c == ')') {
+                if (stack.isEmpty() ||stack.pop() != '(') {
+                    return false;
+                }
+            }
+             if(c == '}') {
+                if (stack.isEmpty() || stack.pop() != '{') {
+                    return false;
+                }
+            }
+             if(c == ']') {
+                if (stack.isEmpty() ||stack.pop() != '[') {
+                    return false;
+                }
+            }
+        }
+        if (!stack.isEmpty()) {
+            return false;
+        }
+        return true;
+    }
+}
+```
+
+6.Minimum Window Substring
+
+Given a string S and a string T, find the minimum window in S which will contain all the characters in T in complexity O\(n\).
+
+**Example:**
+
+```text
+Input: S = "ADOBECODEBANC", T = "ABC"
+Output: "BANC"
+```
+
+**Note:**
+
+* If there is no such window in S that covers all characters in T, return the empty string `""`.
+* If there is such window, you are guaranteed that there will always be only one unique minimum window in S.
+
+class Solution { public String minWindow\(String s, String t\) { if\(t.length\(\)&gt; s.length\(\)\) return ""; Map map = new HashMap&lt;&gt;\(\); for\(char c : t.toCharArray\(\)\){ map.put\(c, map.getOrDefault\(c,0\) + 1\); } int counter = map.size\(\);
+
+```text
+class Solution {
+    public String minWindow(String s, String t) {
+        if(t.length()> s.length()) return "";
+        Map<Character, Integer> map = new HashMap<>();
+        for(char c : t.toCharArray()){
+            map.put(c, map.getOrDefault(c,0) + 1);
+        }
+        int counter = map.size();
+        
+        int begin = 0, end = 0;
+        int head = 0;
+        int len = Integer.MAX_VALUE;
+        
+        while(end < s.length()){
+            char c = s.charAt(end);
+            if( map.containsKey(c) ){
+                map.put(c, map.get(c)-1);
+                if(map.get(c) == 0) counter--;
+            }
+            end++;
+            
+            while(counter == 0){
+                char tempc = s.charAt(begin);
+                if(map.containsKey(tempc)){
+                    map.put(tempc, map.get(tempc) + 1);
+                    if(map.get(tempc) > 0){
+                        counter++;
+                    }
+                }
+                if(end-begin < len){
+                    len = end - begin;
+                    head = begin;
+                }
+                begin++;
+            }
+            
+        }
+        if(len == Integer.MAX_VALUE) return "";
+        return s.substring(head, head+len);   
+    }
+}
+```
+
+
+
+
+
