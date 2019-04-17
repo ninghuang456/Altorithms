@@ -5,6 +5,7 @@
 ## Basic Operation
 
 * [Basic Operation](basic-operation/basic-operation.md)
+* [Sort](basic-operation/sort.md)
 
 ## High-Frequency
 
