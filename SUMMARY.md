@@ -14,4 +14,5 @@
 * [LinkedList](high-frequency/linkedlist.md)
 * [Design/Comprehensive](high-frequency/design-comprehensive.md)
 * [String 1](high-frequency/untitled.md)
+* [Tree](high-frequency/tree.md)
 
