@@ -1,7 +1,7 @@
 # 11~20 classic
 
 ```text
-11  Add Two Numbers
+15. 3Sum11  Add Two Numbers
 class Solution {
     public ListNode addTwoNumbers(ListNode l1, ListNode l2) {
          if (l1 == null || l2 == null) {
@@ -199,6 +199,97 @@ class Solution {
      }
 }
 
+17. 3Sum
+class Solution {
+    public List<List<Integer>> threeSum(int[] nums) {
+        List<List<Integer>> result = new ArrayList();
+        if (nums == null || nums.length < 3) return result;
+        Arrays.sort(nums);
+        HashSet<List<Integer>> uniqueSet = new HashSet<>();
+        
+        for (int i = 0 ; i < nums.length; i++) {
+           int j = i +1;
+            int right = nums.length - 1;
+            while (j < right){
+                int sum = nums[i] + nums[j] + nums[right];
+                if (sum == 0){
+                    List<Integer> list = new ArrayList();
+                    list.add(nums[i]);
+                    list.add(nums[j]);
+                    list.add(nums[right]);
+                    if(uniqueSet.add(list)){
+                    result.add(list);
+                    }
+                    right --;
+                    j++;
+                } else if (sum > 0) {
+                    right --;
+                } else {
+                    j++;
+                }        
+            }
+        }
+        return result;
+    }
+}
+
+
+18.Container With Most Water
+class Solution {
+    public int maxArea(int[] height) {
+        int result = 0, left = 0, right = height.length - 1;
+        while (left < right){
+            int high = Math.min(height[left], height[right]);
+            int width = right - left; // don't mess up right and left.
+            int temp = high * width;
+            result = Math.max(result, temp);
+            if (height[left] < height[right]){
+                left ++;
+            }else {
+                right --;
+            } 
+        }
+        return result;
+    }
+}
+
+19. Linked List Cycle
+public class Solution {
+    public boolean hasCycle(ListNode head) {
+        if (head == null || head.next == null) {
+            return false;
+        }
+        ListNode slow = head;
+        ListNode fast = head;
+        while ( fast != null && fast.next!=null){
+             slow = slow.next;
+             fast = fast.next.next;
+            if (fast == slow) {
+                return true;
+            }
+        }
+        return false;
+    }
+}
+
+20. Subarray Sum Equals K
+Given an array of integers and an integer k, you need to find the total number of continuous subarrays whose sum equals to k.
+class Solution {
+    public int subarraySum(int[] nums, int k) {
+        int sum = 0, result = 0;
+        Map<Integer, Integer> preSum = new HashMap<>();
+        preSum.put(0, 1);
+        
+        for (int i = 0; i < nums.length; i++) {
+            sum += nums[i];
+            if (preSum.containsKey(sum - k)) {
+                result += preSum.get(sum - k);
+            }
+            preSum.put(sum, preSum.getOrDefault(sum, 0) + 1);
+        }        
+        return result;        
+    }
+}
 
 ```
 
