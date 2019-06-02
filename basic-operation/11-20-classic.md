@@ -1,6 +1,6 @@
 # 11~20 classic
 
-```text
+```java
 11  Add Two Numbers
 class Solution {
     public ListNode addTwoNumbers(ListNode l1, ListNode l2) {
@@ -272,22 +272,35 @@ public class Solution {
     }
 }
 
-20. Subarray Sum Equals K
-Given an array of integers and an integer k, you need to find the total number of continuous subarrays whose sum equals to k.
+20.Number of Islands
 class Solution {
-    public int subarraySum(int[] nums, int k) {
-        int sum = 0, result = 0;
-        Map<Integer, Integer> preSum = new HashMap<>();
-        preSum.put(0, 1);
-        
-        for (int i = 0; i < nums.length; i++) {
-            sum += nums[i];
-            if (preSum.containsKey(sum - k)) {
-                result += preSum.get(sum - k);
+    public int numIslands(char[][] grid) {
+        if (grid == null || grid.length == 0 || grid[0].length == 0){
+            return 0;
+        }
+        int m = grid.length;
+        int n = grid[0].length;
+        int result = 0;
+        for (int i = 0; i < m; i++) { // m , n need match;
+            for (int j = 0; j < n; j++){
+                if(grid[i][j] == '1'){
+                    dfsIslans(grid,i,j,m,n);
+                    result ++;  
+                }
             }
-            preSum.put(sum, preSum.getOrDefault(sum, 0) + 1);
-        }        
-        return result;        
+        }
+        return result;
+    }
+    
+    private void dfsIslans(char[][] grid, int i, int j, int m, int n){
+        if (i < 0|| j < 0 || i >= m || j >= n || grid[i][j] == '0'){ // i need larger than m; j larger than n;
+            return;
+        }
+        grid[i][j] = '0';
+        dfsIslans(grid, i+1, j, m, n);
+        dfsIslans(grid, i-1, j, m, n);
+        dfsIslans(grid, i, j+1, m, n);
+        dfsIslans(grid, i, j-1, m, n);
     }
 }
 
