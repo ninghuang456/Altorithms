@@ -133,24 +133,119 @@ Deque类
 适用场景:
 一般场景,LinkedList,链表双端队列,允许元素为null；ArrayDeque,数组双端队列,不允许元素为null.
 并发场景下,使用BlockingDeque接口下的一些实现.
-1、取元素操作
-声明：下面介绍的操作只针对队列头部，队列尾部的操作是对称的，理解其一即可。
 
-取元素操作方法有：
+    1) 是Queue的子接口，表示双端队列，即两端（队尾和队首）都能插入和删除的特殊队列；
 
-1、peak()，内部调用peekFirst()：只取头元素，不删除。
-2、poll()，内部调用pollFirst()：取头元素的同时，将元素删除（设为null），如果队列没有任何元素，返回null。
-3、pop()，内部调用removeFirst()：取头元素的同时，将元素删除。如果队列空，则抛出NoSuchElementException异常。
-4、element()，内部调用getFirst()：只取头元素，不删除。如果队列空，则抛出NoSuchElementException异常。
+    2) 当然，Deque可以使用Queue的全部方法，但是自己也扩展了很多方法，主要用于操作两个端口的：
+特点就是Queue的每种方法都多了一个操作队尾的版本
+（同时也提供了一个名称上呼应的操作队首的版本（first（队首）、last（队尾）），
+和Queue的完全相对应（就是Queue的方法多了两个First和Last的后缀而已）：
 
-一般调用比较多的方法是poll方法，因为在队列为空时不会抛出异常，只返回null。
-插入元素的操作方法有：
+         i. 插入：add/offer
 
-1、add()，内部调用addLast()：在队列尾插入元素，不允许插入null元素，否则抛出NullPointerException异常。如果超过容量，则扩容到原来2倍。
-2、offer()，内部最终调用addLast()：与add方法一致。
-3、push()，内部调用addFirst()：在队列头插入元素，不允许插入null元素，否则抛出NullPointerException异常。如果超过容量，则扩容到原来2倍。
+异常不安全：
+
+            a. void add(E ele);  // Queue
+
+            b. void addFirst(E ele); // Deque，从队首加，和a.等价
+
+            c. void addLast(E ele);  // Deque，从队尾加
+
+异常安全：
+
+            a. boolean offer(E ele);  // Queue
+
+            b. boolean offerFirst | offerLast(E ele); // Deque
+
+         ii. 取出并删除：remove/poll
+
+异常不安全：E remove | removeFirst | removeLast();
+
+异常安全：E poll | pollFirst | pollLast();
+
+         iii. 查看但不删除：element（Queue）/get（Deque）
+         /peek，有点儿特殊，不安全的查看没有直接沿用Queue的名称（element），而是get！
+
+异常不安全：
+
+            a. E element(); // Queue，查看队首
+
+            b. E getFirst | getLast();  // Deque
+
+异常安全：E peek | peekFirst | peekLast();
+
+！！其中，Queue的版本和Deque的First版本完全等价，只是为了命名上和Last对称罢了！例如poll和pollFirst完全等价；
+
+    3) 特殊的，Deque也有自己特有的一些常用方法：
+
+         i. 找到并删除指定元素：boolean removeFirstOccurrence | removeLastOccurrence(E e);  
+         // 删除队列中第一个出现的/最后一个出现的e，
+如果不存在或者空或其它返回false，成功删除（即改变了队列）则返回true
+
+         ii. Deque不仅有普通的正向迭代器dq.iterator，也有反向迭代器：Iterator<E> descendingIterator();  
+         // 得到的同样是Iterator类型的迭代器，只不过是反向的
+
+！！即起始位置在队尾，其hasNext、next是朝队首迭代的！
+
+         
+
+2. 用Deque实现栈：
+
+    1) Java1.0的时候就提供了一个Stack类，是Vector的子类，用于实现栈这种数据结构（FILO），
+    即一种只能在一端进出元素的数据结构；
+
+    2) 但是和Vector一样，Stack过于古老，并且实现地非常不好，问题多多，因此现在基本已经不用了；
+
+    3) Deque是双端队列，两端都可以进出，因此可以直接用Deque来代替栈了（只操作一端就是栈了，
+    只有First方法或者只用Last方法就变成栈了）；
+
+    4) 但是为了迎合Stack的风格，Deque还是提供了push/pop方法，让它用起来感觉是栈：
+    只不过这两个方法默认的端口是队首
+
+         i. void push(E e);  // 等价于void addFirst(E e);
+
+         ii. E pop();  // 等价于E removeFirst();
+
+！！可以看到提供的两个方法都是一场不安全的版本，
+如果有异常安全的需求那就自行使用offer/poll(First/Last)方法
 
 
+
+3. ArrayDeque：
+
+    1) 顾名思义，就是用数组实现的Deque；
+
+    2) 既然是底层是数组那肯定也可以指定其capacity，但不过由于双端队列本身数据结构的限制，
+    要求只能在初始化的时候指定capacity，
+因此没有像ArrayList那样随时都可以调整的ensureCapacity方法了，
+只能在构造器中指定其初始的capacity：ArrayDeque(int numElements);   // 初始元素个数，默认长度是16
+
+！！同样由于本身数据结构的限制，ArrayDeque没有trimToSize方法可以为自己瘦身！！
+
+    3) ArrayDeque的使用方法就是上面的Deque的使用方法，基本没有对Deque拓展什么方法；
+
+
+
+4. LinkedList：
+
+    1) 是一种双向链表数据结构，由于双向链表的特性，它既具有线性表的特性也具有双端队列的特性；
+
+    2) 在Java的集合中，LinkedList同时（直接）继承了List和Deque；
+
+    3) 由于它是用链表实现的，因此不像数组那样可以指定初始长度，它只有一个空的构造器；
+
+    4) 其余就是它可以使用List和Deque的全部方法，从功能的广度上（覆盖面）来将它是最强大的！
+
+    5) 具体方法就不介绍了，既可以当成List使，也可以当成Deque使；
+
+
+
+5. 各类线性表的性能比较以及选择：
+
+    1) 性能主要是看底层是如何实现，不过就是数组和链表两种，因此性能也是围绕这两种数据结构展开的；
+
+    2) 链表遍历、插入、删除高效（相对的数组不行），而数组随机访问、批量处理高效（相对的链表不行），
+链表使用迭代器迭代高效（数组不行，数组直接随机访问遍历更快）；
 
 ```
 
