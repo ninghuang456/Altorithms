@@ -129,6 +129,27 @@ peek : 查看堆栈顶部的对象，，并作为此函数的值返回该对象�
 empty : 测试堆栈是否为空
 search : 返回对象在堆栈中的位置，以 1 为基数
 ===============================================================================
+Deque类
+适用场景:
+一般场景,LinkedList,链表双端队列,允许元素为null；ArrayDeque,数组双端队列,不允许元素为null.
+并发场景下,使用BlockingDeque接口下的一些实现.
+1、取元素操作
+声明：下面介绍的操作只针对队列头部，队列尾部的操作是对称的，理解其一即可。
+
+取元素操作方法有：
+
+1、peak()，内部调用peekFirst()：只取头元素，不删除。
+2、poll()，内部调用pollFirst()：取头元素的同时，将元素删除（设为null），如果队列没有任何元素，返回null。
+3、pop()，内部调用removeFirst()：取头元素的同时，将元素删除。如果队列空，则抛出NoSuchElementException异常。
+4、element()，内部调用getFirst()：只取头元素，不删除。如果队列空，则抛出NoSuchElementException异常。
+
+一般调用比较多的方法是poll方法，因为在队列为空时不会抛出异常，只返回null。
+插入元素的操作方法有：
+
+1、add()，内部调用addLast()：在队列尾插入元素，不允许插入null元素，否则抛出NullPointerException异常。如果超过容量，则扩容到原来2倍。
+2、offer()，内部最终调用addLast()：与add方法一致。
+3、push()，内部调用addFirst()：在队列头插入元素，不允许插入null元素，否则抛出NullPointerException异常。如果超过容量，则扩容到原来2倍。
+
 
 
 ```
