@@ -4,6 +4,7 @@
 
 ## Basic Operation
 
+* [Solution Steps](basic-operation/solution-steps.md)
 * [Basic Operation](basic-operation/basic-operation.md)
 * [Sort](basic-operation/sort.md)
 * [1~10 classic](basic-operation/1-10-classic.md)
