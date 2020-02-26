@@ -84,6 +84,23 @@ class Solution {
     }
 }
 
+6: Rotate Array
+  public void rotate(int[] nums, int k) {
+       k  %= nums.length;
+       if (k == 0) return ;
+       revertArray(nums, 0 , nums.length - 1);
+       revertArray(nums,0, k- 1);
+       revertArray(nums,k,nums.length - 1);
+    }
+    public void revertArray(int[] nums, int start, int end) {
+         while(start < end) {
+           int temp = nums[end];
+           nums[end] = nums[start];
+           nums[start] = temp; 
+           start ++;
+           end --;
+         }
+    }
 
 ```
 
