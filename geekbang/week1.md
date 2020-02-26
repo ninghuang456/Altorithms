@@ -9,7 +9,7 @@ class Solution {
         if (nums == null || nums.length < 2) return new int[0];
         HashMap<Integer,Integer> map = new HashMap<Integer,Integer>();
         for (int i = 0; i < nums.length; i ++) {
-            if (map.containsKey(target - nums[i])) {
+            if (map.containsKey(target - nums[i])) { // target - nums[i];
                 return new int[]{map.get(target - nums[i]),i};
             }
             map.put(nums[i],i);
@@ -24,9 +24,9 @@ class Solution {
         if (l1 == null || l2 == null) {
             return l1 == null ? l2 : l1;
         }
-        ListNode head = null;
+        ListNode head = null; 
         if (l1.val < l2.val) {
-            head = l1;
+            head = l1; // not head.next = l1. since null can't have next;
             head.next = mergeTwoLists(l1.next, l2);
         } else {
             head = l2;
@@ -56,13 +56,34 @@ class Solution {
                 digits[i] = digits[i] + 1;
                 return digits;
             }
-            digits[i] = 0;
+            digits[i] = 0; // one will go to next position;
         }
         int[] result = new int[digits.length + 1];
             result[0] = 1;
          return result;
     }
 }
+
+ 5 Merge Sorted Array
+class Solution {
+    public void merge(int[] nums1, int m, int[] nums2, int n) {
+        if (nums1 == null || nums2 == null ) return;
+        int lastIndex = m + n - 1;
+        int index1 = m - 1;
+        int index2 = n - 1;
+        while (index1 >= 0 && index2 >= 0) { // not using for in the lastIndex
+            if (nums1[index1] > nums2[index2]) {
+                nums1[lastIndex --] = nums1[index1 --]; // don't confused for nums1 and nums2.
+            } else {
+                nums1[lastIndex --] = nums2[index2--];
+            }
+        }
+        while(index2 >= 0) {
+            nums1[lastIndex --] = nums2[index2--];
+        }
+    }
+}
+
 
 ```
 
