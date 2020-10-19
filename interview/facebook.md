@@ -2,5 +2,5 @@
 description: FaceBook
 ---
 
-# Frequency1~20
+# Frequency1~40
 
