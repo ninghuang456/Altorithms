@@ -4,7 +4,7 @@ description: FaceBook
 
 # Frequency1~40
 
-## 1570- Dot Product of Two Sparse Vectors
+## 1570  Dot Product of Two Sparse Vectors
 
 ```java
 class SparseVector {
