@@ -223,3 +223,33 @@ class Solution {
 }
 ```
 
+## 340 Longest Substring with At Most K Distinct Characters
+
+```java
+// Input: s = "eceba", k = 2
+//Output: 3
+//Explanation: T is "ece" which its length is 3.
+class Solution {
+    public int lengthOfLongestSubstringKDistinct(String s, int k) {
+        if (k < 1 || s == null || s.length() == 0) return 0;
+        HashMap<Character, Integer> window = new HashMap<>();
+        int left = 0; int right = 0; int max = 0;
+        while (right < s.length()){
+            char r = s.charAt(right);
+            right ++;
+            window.put(r, window.getOrDefault(r, 0) + 1);
+            while (window.size() > k){
+                char l = s.charAt(left);
+                left ++;
+                window.put(l, window.get(l)- 1);
+                if(window.get(l) == 0){
+                    window.remove(l);
+                }
+            }
+            max = Math.max(max, right - left);
+        }
+        return max;
+    }
+}
+```
+
