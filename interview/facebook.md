@@ -151,7 +151,8 @@ class Solution {
         int n = accounts.size();
         UnionFind uf = new UnionFind(n);
 
-        // Step 1: traverse all emails except names, if we have not seen an email before, put it with its index into map.
+        // Step 1: traverse all emails except names, 
+        //if we have not seen an email before, put it with its index into map.
         // Otherwise, union the email to its parent index.
         Map<String, Integer> mailToIndex = new HashMap<>();
         for (int i = 0; i < n; i++) {
