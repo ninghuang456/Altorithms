@@ -253,3 +253,99 @@ class Solution {
 }
 ```
 
+## 249 Group Shifted Strings
+
+```java
+//Input: ["abc", "bcd", "acef", "xyz", "az", "ba", "a", "z"],
+//Output: 
+//[
+//  ["abc","bcd","xyz"],
+//  ["az","ba"],
+//  ["acef"],
+//  ["a","z"]
+//]
+public class Solution {
+    public List<List<String>> groupStrings(String[] strings) {
+        List<List<String>> result = new ArrayList<List<String>>();
+        Map<String, List<String>> map = new HashMap<String, List<String>>();
+        for (String str : strings) {
+            int offset = str.charAt(0) - 'a';
+            String key = "";
+            for (int i = 0; i < str.length(); i++) {
+                char c = (char) (str.charAt(i) - offset);
+                if (c < 'a') {
+                    c += 26;
+                }
+                key += c;
+            }
+            if (!map.containsKey(key)) {
+                List<String> list = new ArrayList<String>();
+                map.put(key, list);
+            }
+            map.get(key).add(str);
+        }
+        for (String key : map.keySet()) {
+            List<String> list = map.get(key);
+            Collections.sort(list);
+            result.add(list);
+        }
+        return result;
+    }
+}
+```
+
+## 670 Maximum Swap
+
+```java
+class Solution {
+    public int maximumSwap(int num) {
+        char[] digits = Integer.toString(num).toCharArray();
+        
+        int[] buckets = new int[10];
+        for (int i = 0; i < digits.length; i++) {
+            buckets[digits[i] - '0'] = i;
+        }
+        
+        for (int i = 0; i < digits.length; i++) {
+            for (int k = 9; k > digits[i] - '0'; k--) {
+                if (buckets[k] > i) {
+                    char tmp = digits[i];
+                    digits[i] = digits[buckets[k]];
+                    digits[buckets[k]] = tmp;
+                    return Integer.valueOf(new String(digits));
+                }
+            }
+        }
+        
+        return num;
+    }
+}
+```
+
+## 270 Closest Binary Search Tree Value
+
+```java
+Input: root = [4,2,5,1,3], target = 3.714286
+
+    4
+   / \
+  2   5
+ / \
+1   3
+
+Output: 4
+
+class Solution {
+    public int closestValue(TreeNode root, double target) {
+    int ret = root.val;   
+    while(root != null){
+        if(Math.abs(target - root.val) < Math.abs(target - ret)){
+            ret = root.val;
+        }      
+        root = root.val > target? root.left: root.right;
+    }     
+    return ret;
+  }
+}
+```
+
