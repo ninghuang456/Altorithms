@@ -349,3 +349,91 @@ class Solution {
 }
 ```
 
+## 543 Diameter of Binary Tree
+
+```java
+Example:
+Given a binary tree
+          1
+         / \
+        2   3
+       / \     
+      4   5    
+Return 3, which is the length of the path [4,2,1,3] or [5,2,1,3].
+
+class Solution {
+    int maxd = 0;
+    public int diameterOfBinaryTree(TreeNode root) {
+        depth(root);
+        return maxd;
+    }
+    public int depth(TreeNode node){
+        if(node==null){
+            return 0;
+        }
+        int Left = depth(node.left);
+        int Right = depth(node.right);
+        maxd=Math.max(Left+Right,maxd);
+        //将每个节点最大直径(左子树深度+右子树深度)当前最大值比较并取大者
+        return Math.max(Left,Right)+1;//返回节点深度
+        // 
+    }
+}
+// https://leetcode-cn.com/problems/diameter-of-binary-tree
+///solution/er-cha-shu-de-zhi-jing-by-leetcode-solution/
+```
+
+## 621 Task Scheduler
+
+
+
+Given a characters array `tasks`, representing the tasks a CPU needs to do, where each letter represents a different task. Tasks could be done in any order. Each task is done in one unit of time. For each unit of time, the CPU could complete either one task or just be idle.
+
+However, there is a non-negative integer `n` that represents the cooldown period between two **same tasks** \(the same letter in the array\), that is that there must be at least `n` units of time between any two same tasks.
+
+Return _the least number of units of times that the CPU will take to finish all the given tasks_.
+
+**Example 1:**
+
+```text
+Input: tasks = ["A","A","A","B","B","B"], n = 2
+Output: 8
+Explanation: 
+A -> B -> idle -> A -> B -> idle -> A -> B
+There is at least 2 units of time between any two same tasks.
+```
+
+```java
+
+class Solution {
+       public int leastInterval(char[] tasks, int n) {
+        if (tasks.length <= 1 || n < 1) return tasks.length;
+        //步骤1
+        int[] counts = new int[26];
+        for (int i = 0; i < tasks.length; i++) {
+            counts[tasks[i] - 'A']++;
+        }
+        //步骤2
+        Arrays.sort(counts);
+        int maxCount = counts[25];
+        int retCount = (maxCount - 1) * (n + 1) + 1;
+        int i = 24;
+        //步骤3
+        while (i >= 0 && counts[i] == maxCount) {
+            retCount++;
+            i--;
+        }
+        //步骤4
+        return Math.max(retCount, tasks.length); 
+        // 如果按照最长的排完之后，后面还有剩下的没有排的，
+        //比如字符串序列式AAABBBCCCD，然后n=2的话，那拍好就是ABCABCABCD，
+        //按照公式计算出来的结果是(3-1)*(3)+1+2=9，但是实际的序列应该是ABCABCABCD，应该是10，
+        //所以通过求max来补充掉这个正好全排列但是还有多出去的情况
+    }
+}
+```
+
+## 
+
+## 
+
