@@ -434,7 +434,143 @@ class Solution {
 }
 ```
 
-## 
+## 314 Binary Tree Vertical Order Traversal
 
-## 
+![](../.gitbook/assets/verticaltravel-2.jpg)
+
+```java
+class Solution {
+  public List<List<Integer>> verticalOrder(TreeNode root) {
+    List<List<Integer>> result = new ArrayList<>();
+    if (root == null) return result;
+    Map<Integer, List<Integer>> map = new HashMap<>();
+    int min = 0, max = 0;
+    Queue<TreeNode> queue = new LinkedList<>();
+    Queue<Integer> helper = new LinkedList<>();
+    queue.offer(root);
+    helper.offer(0);
+
+    while (!queue.isEmpty()) {
+        int size = queue.size();
+        for (int i = 0; i < size; i++) {
+            TreeNode cur = queue.poll();
+            int pos = helper.poll();
+            min = Math.min(min, pos);
+            max = Math.max(max, pos);
+            if (!map.containsKey(pos)) map.put(pos, new ArrayList<>());
+            map.get(pos).add(cur.val);
+            if (cur.left != null) {
+                queue.offer(cur.left);
+                helper.offer(pos - 1);
+            }
+            if (cur.right != null) {
+                queue.offer(cur.right);
+                helper.offer(pos + 1);   
+            }
+        }
+    }
+
+    for (int i = min; i <= max; i++) result.add(- min + i, map.get(i));
+    
+    return result;
+}
+
+}
+```
+
+## 689 Maximum Sum of 3 Non-Overlapping Subarrays
+
+```java
+//This is a more general DP solution, and it is similar to that buy and sell stock problem.
+
+//dp[i][j] stands for in i th sum, the max non-overlap sum we can have from 0 to j
+//id[i][j] stands for in i th sum, the first starting index for that sum.
+
+class Solution {
+    public int[] maxSumOfThreeSubarrays(int[] nums, int k) {
+        int[][] dp = new int[4][nums.length + 1];
+        int sum = 0;
+        int[] accu = new int[nums.length + 1];
+        for(int i = 0; i < nums.length; i++) {
+            sum += nums[i];
+            accu[i] = sum;
+        }
+        int[][] id = new int[4][nums.length + 1];
+        int max = 0, inId = 0;
+        for(int i = 1; i < 4; i++) {
+            for(int j = k-1 ; j < nums.length; j++) {
+           int tmpmax = j - k < 0 ? accu[j] : accu[j] - accu[j-k] + dp[i-1][j-k];
+                if(j - k >= 0) {
+                    dp[i][j] = dp[i][j-1];
+                    id[i][j] = id[i][j-1];
+                }
+                if(j > 0 && tmpmax > dp[i][j-1]) {
+                    dp[i][j] = tmpmax;
+                    id[i][j] = j-k+1;
+                }
+            }
+        }
+        int[] res = new int[3];
+        res[2] = id[3][nums.length-1];
+        res[1] = id[2][res[2] - 1];
+        res[0] = id[1][res[1] - 1];        
+        return res;
+    }
+}
+```
+
+## 1026 Maximum Difference Between Node and Ancestor
+
+```java
+class Solution {
+    int res = 0;
+    public int maxAncestorDiff(TreeNode root) {
+        if (root == null) return 0;
+        dfs(root, root.val, root.val);
+        return res;
+    }
+   // 最大差值一定是ancestors里面的最大值或最小值跟当前值的差值的绝对值。
+    //因此只保存最大和最新的ancestor值即可 
+    private void dfs(TreeNode node, int min, int max) {
+        if (node == null) return;
+        min = Math.min(node.val, min);
+        max = Math.max(node.val, max);
+        res = Math.max(res, Math.max(Math.abs(max - node.val),Math.abs(min - node.val)));
+        dfs(node.left, min, max);
+        dfs(node.right, min, max);
+    }
+}
+```
+
+## 986 Interval List Intersections
+
+```java
+Input: A = [[0,2],[5,10],[13,23],[24,25]], 
+B = [[1,5],[8,12],[15,24],[25,26]]
+Output: [[1,2],[5,5],[8,10],[15,23],[24,24],[25,25]]
+
+class Solution {
+    public int[][] intervalIntersection(int[][] A, int[][] B) {
+        int i = 0; int j = 0; int k = 0; 
+        int al = A.length; int bl = B.length; 
+        int[][] res = new int[al + bl][2];
+        while (i < a1 && j < b1){
+            int a1 = A[i][0]; int a2 = A[i][1];
+            int b1 = B[j][0]; int b2 = B[j][1];
+            if (b1 <= a2 && b2 >= a1) {
+                res[k][0] = Math.max(a1, b1);
+                res[k][1] = Math.min(a2,b2);
+                k ++;
+            }
+            if (a2 < b2){
+                i ++;
+            } else {
+                j ++;
+            }
+        }
+        return Arrays.copyOf(res, k);
+        // ans.toArray(new int[0][]);
+    }
+}
+```
 
