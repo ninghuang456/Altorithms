@@ -691,6 +691,56 @@ public class Solution {
 }
 ```
 
+## 56 Merge Intervals
+
+```java
+class Solution {
+    public int[][] merge(int[][] intervals) {
+        Arrays.sort(intervals, (a,b) -> a[0] - b[0]); // -> not =>
+        int k = 0;
+        int i = 0;
+        while (i < intervals.length) {
+            int start = intervals[i][0];
+            int end = intervals[i][1];
+            while (i < intervals.length - 1 && end >= intervals[i + 1][0]){ // overlap need to first compare end with next start
+                i ++;
+                end = Math.max(intervals[i][1], end);// need to check bigger one, since previous just check overlap.
+            }
+            intervals[k][0] = start;
+            intervals[k][1] = end;
+            k ++;
+            i ++; 
+        }
+        return Arrays.copyOf(intervals, k);
+    }
+}
+```
+
+## 50 Pow\(x, n\)
+
+```java
+class Solution {
+    public double myPow(double x, int n) {
+        if (n < 0) {
+            x = 1/x;
+            n = -n;
+        }
+        return myNewPow( x, n);
+    }
+    
+    public double myNewPow(double x, int n) { // double type need to keep not int.
+        if (n == 0) return 1.00; // 1.00 not 1
+        if (n == 1) return x;
+        double half = myNewPow(x, n/2); // 后续遍历
+        if (n % 2 == 0){  
+            return half * half;
+        } else {
+            return half * half * x;     
+        }
+    }
+}
+```
+
 ## 
 
 
