@@ -1202,6 +1202,221 @@ public TreeNode toBST(ListNode head, ListNode tail){
 }
 ```
 
+## 104-Maximum Depth of Binary Tree
+
+```java
+class Solution {
+    public int maxDepth(TreeNode root) {
+       if (root == null) return 0;
+       return 1 + Math.max(maxDepth(root.left), maxDepth(root.right));
+        
+    }
+}
+```
+
+## 139- Word Break
+
+```java
+Input: s = "leetcode", wordDict = ["leet", "code"]
+Output: true
+Explanation: Return true because "leetcode" can be segmented as "leet code".
+
+class Solution {
+    public boolean wordBreak(String s, List<String> wordDict) {
+        Set<String> wordSet = new HashSet<>(wordDict); // set的contains方法效率比list的contains方法效率高        
+        int len = s.length();
+        boolean[] dp = new boolean[len + 1]; // 多一个0个字符的字符串情况
+        dp[0] = true; // 初始化
+        
+        // 找到wordDict中最大长度的单词
+        int maxWordLen = 0;
+        for (String word : wordDict) { // DP + 剪枝，当超过字典中最大字符串的长度时，就不再检查是否存在了，复杂度一样
+            maxWordLen = Math.max(maxWordLen, word.length());
+        }
+        
+        for (int i = 1; i <= len; i++) {
+            /**
+            第二个循环，这里j在i左边，从i位置开始，这里需要计算的是[i - maxlength, i]这个区间里有没有满足dp[j] && wordSet.contains(s.substring(j,i)条件的情况,
+            这里j不能从0开始往右直到i，否则计算的是[0, i - maxlength]这个区间，和要求的是反着的。
+            仔细思考一下：相当于j + maxWordLen >= i，所有从i开始向左比较好枚举
+            */
+            for (int j = i; j >= 0 && j >= i - maxWordLen; j--) { 
+                if (dp[j] && wordSet.contains(s.substring(j, i))) {
+                    dp[i] = true;
+                    break;
+                }
+            }
+        }
+        return dp[len];
+    }
+}
+```
+
+## 133-Clone Graph
+
+```java
+class Solution {
+    public HashMap<Integer, Node> map = new HashMap<>(); 
+   //Node.val is unique for each node.
+    public Node cloneGraph(Node node) {
+        return clone(node);
+    }
+    public Node clone(Node node) {
+        if (node == null) return null;
+        if (map.containsKey(node.val)) 
+            return map.get(node.val);     
+        Node newNode = new Node(node.val, new ArrayList<Node>());
+        map.put(newNode.val, newNode);
+        for (Node neighbor : node.neighbors) 
+            newNode.neighbors.add(clone(neighbor));
+        return newNode;
+    }
+}
+```
+
+## 463-Island Perimeter
+
+```java
+class Solution {
+    public int islandPerimeter(int[][] grid) {
+         int islands = 0, neighbours = 0;
+
+        for (int i = 0; i < grid.length; i++) {
+            for (int j = 0; j < grid[i].length; j++) {
+                if (grid[i][j] == 1) {
+                    islands++; // count islands
+                    if (i < grid.length - 1 && grid[i + 1][j] == 1) neighbours++; // count down neighbours
+                    if (j < grid[i].length - 1 && grid[i][j + 1] == 1) neighbours++; // count right neighbours
+                }
+            }
+        }
+
+        return islands * 4 - neighbours * 2;
+        
+    }
+}
+```
+
+## 647- Palindromic Substrings
+
+```java
+Input: "aaa"
+Output: 6
+Explanation: Six palindromic strings: "a", "a", "a", "aa", "aa", "aaa".
+
+public class Solution {
+    int count = 0;
+    
+    public int countSubstrings(String s) {
+        if (s == null || s.length() == 0) return 0;
+        
+        for (int i = 0; i < s.length(); i++) { // i is the mid point
+            extendPalindrome(s, i, i); // odd length;
+            extendPalindrome(s, i, i + 1); // even length
+        }
+        
+        return count;
+    }
+    
+    private void extendPalindrome(String s, int left, int right) {
+        while (left >=0 && right < s.length() && s.charAt(left) == s.charAt(right)) {
+            count++; left--; right++;
+        }
+    }
+}
+```
+
+## 378- Kth Smallest Element in a Sorted Matrix
+
+```java
+matrix = [
+   [ 1,  5,  9],
+   [10, 11, 13],
+   [12, 13, 15]
+],
+k = 8,
+
+return 13.
+
+public class Solution {
+    public int kthSmallest(int[][] matrix, int k) {
+        int lo = matrix[0][0], hi = matrix[matrix.length - 1][matrix[0].length - 1] + 1;//[lo, hi)
+        while(lo < hi) {
+            int mid = lo + (hi - lo) / 2;
+            int count = 0,  j = matrix[0].length - 1;
+            for(int i = 0; i < matrix.length; i++) {
+                while(j >= 0 && matrix[i][j] > mid) j--;
+                count += (j + 1);
+            }
+            if(count < k) lo = mid + 1;
+            else hi = mid;
+        }
+        return lo;
+    }
+}
+```
+
+## 347- Top K Frequent Elements
+
+```java
+class Solution {
+    public List<Integer> topKFrequent(int[] nums, int k) {
+         Map<Integer, Integer> map = new HashMap<>();
+        for(int n: nums){
+            map.put(n, map.getOrDefault(n,0)+1);
+        }
+           
+        PriorityQueue<Map.Entry<Integer, Integer>> maxHeap = 
+                         new PriorityQueue<>((a,b)->(b.getValue()-a.getValue()));
+        for(Map.Entry<Integer,Integer> entry: map.entrySet()){
+            maxHeap.add(entry);
+        }
+        
+        List<Integer> res = new ArrayList<>();
+        while(res.size()<k){
+            Map.Entry<Integer, Integer> entry = maxHeap.poll();
+            res.add(entry.getKey());
+        }
+        return res;
+        
+    }
+}
+```
+
+## 43- Multiply Strings
+
+```java
+Input: num1 = "2", num2 = "3"
+Output: "6"
+
+class Solution {
+    public String multiply(String num1, String num2) {
+         int m = num1.length(), n = num2.length();
+    int[] pos = new int[m + n];
+   
+    for(int i = m - 1; i >= 0; i--) {
+        for(int j = n - 1; j >= 0; j--) {
+            int mul = (num1.charAt(i) - '0') * (num2.charAt(j) - '0'); 
+            int p1 = i + j, p2 = i + j + 1;
+            int sum = mul + pos[p2];
+
+            pos[p1] += sum / 10;
+            pos[p2] = (sum) % 10;
+        }
+    }  
+    
+    StringBuilder sb = new StringBuilder();
+    for(int p : pos) if(!(sb.length() == 0 && p == 0)) sb.append(p);
+    return sb.length() == 0 ? "0" : sb.toString();
+        
+    }
+}
+```
+
+## 
+
+## 
+
 ## 
 
 
