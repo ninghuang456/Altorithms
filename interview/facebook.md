@@ -1147,6 +1147,61 @@ TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
 }
 ```
 
+## 138-Copy List with Random Pointer
+
+```java
+Input: head = [[7,null],[13,0],[11,4],[10,2],[1,0]]
+Output: [[7,null],[13,0],[11,4],[10,2],[1,0]]
+
+class Solution {
+    public Node copyRandomList(Node head) {
+        HashMap<Node, Node> map = new HashMap<>();
+        Node cur = head;
+        while (cur != null) {
+            map.put(cur, new Node(cur.val));
+            cur = cur.next; 
+        }
+        cur = head;
+        while (cur != null) {
+            map.get(cur).next = map.get(cur.next);
+            map.get(cur).random = map.get(cur.random);
+            cur = cur.next;
+        }
+       return map.get(head);
+    }
+}
+```
+
+## 109- Convert Sorted List to Binary Search Tree
+
+```java
+Input: head = [-10,-3,0,5,9]
+Output: [0,-3,9,-10,null,5]
+Explanation: One possible answer is [0,-3,9,-10,null,5],
+which represents the shown height balanced BST.
+
+public class Solution {
+public TreeNode sortedListToBST(ListNode head) {
+    if(head==null) return null;
+    return toBST(head,null);
+}
+public TreeNode toBST(ListNode head, ListNode tail){
+    ListNode slow = head;
+    ListNode fast = head;
+    if(head==tail) return null;
+    
+    while(fast!=tail&&fast.next!=tail){
+        fast = fast.next.next;
+        slow = slow.next;
+    }
+    TreeNode thead = new TreeNode(slow.val);
+    thead.left = toBST(head,slow);
+    thead.right = toBST(slow.next,tail);
+    return thead;
+}
+}
+```
+
 ## 
 
 
