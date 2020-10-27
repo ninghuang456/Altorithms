@@ -659,6 +659,40 @@ private int findLast(int[] nums, int target){
 }
 ```
 
+## 426-Convert Binary Search Tree to Sorted Doubly Linked List
+
+```java
+
+class Solution {
+    public Node treeToDoublyList(Node root) {
+        if (root == null) return null;
+        Stack<Node> stack = new Stack<>();
+        Node cur = root;
+        Node first = null; Node last = null;
+        while (!stack.isEmpty() || cur != null) {
+            while (cur != null) {
+                stack.push(cur);
+                cur = cur.left;
+            }
+            Node node = stack.pop();
+            if (first == null){
+                first = node;
+            }
+            if (last != null) {
+                last.right = node;
+                node.left = last;
+            }
+            last = node;
+            cur = node.right;
+            
+        }
+        first.left = last;
+        last.right = first;
+        return first;
+    }
+}
+```
+
 ## 
 
 ## 
