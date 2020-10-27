@@ -2,7 +2,7 @@
 description: FaceBook
 ---
 
-# Frequency1~40
+# Frequency 40-80
 
 ## 1570  Dot Product of Two Sparse Vectors
 

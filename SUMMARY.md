@@ -18,5 +18,6 @@
 
 ## Interview
 
-* [Frequency1~40](interview/facebook.md)
+* [Frequency 1-40](interview/frequency-1-40.md)
+* [Frequency 40-80](interview/facebook.md)
 
