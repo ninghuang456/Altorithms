@@ -797,6 +797,356 @@ class Solution {
 
 ```
 
+## 200- Number of Islands
+
+```java
+public class Solution {
+    private int rows;
+    private int cols;
+
+    public int numIslands(char[][] grid) {
+        //           x-1,y
+        //  x,y-1    x,y      x,y+1
+        //           x+1,y
+        int[][] directions = {{-1, 0}, {0, -1}, {1, 0}, {0, 1}};
+
+        rows = grid.length;
+        if (rows == 0) {
+            return 0;
+        }
+        cols = grid[0].length;
+        boolean[] marked = new boolean[rows * cols];
+        int count = 0;
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols; j++) {
+                if (!marked[i * cols + j] && grid[i][j] == '1') {
+                    count++;
+                    LinkedList<Integer> queue = new LinkedList<>();
+                    queue.addLast(i * cols + j);
+                    marked[i * cols + j] = true;
+                    while (!queue.isEmpty()) {
+                        int cur = queue.removeFirst();
+                        int curX = cur / cols;
+                        int curY = cur % cols;
+                        // 得到 4 个方向的坐标
+                        for (int k = 0; k < 4; k++) {
+                            int newX = curX + directions[k][0];
+                            int newY = curY + directions[k][1];
+                            if (inArea(newX, newY) && grid[newX][newY] == '1' && !marked[newX * cols + newY]) {
+                                queue.addLast(newX * cols + newY);
+                                marked[newX * cols + newY] = true;
+                            }
+                        }
+                    }
+                }
+            }
+
+        }
+        return count;
+    }
+
+    private boolean inArea(int x, int y) {
+        // 等于号这些细节不要忘了
+        return x >= 0 && x < rows && y >= 0 && y < cols;
+    }
+}
+```
+
+## 78-Subsets
+
+```java
+Input: nums = [1,2,3]
+Output:
+[
+  [3],
+  [1],
+  [2],
+  [1,2,3],
+  [1,3],
+  [2,3],
+  [1,2],
+  []
+]
+class Solution {
+    public List<List<Integer>> subsets(int[] nums) {
+        List<List<Integer>> res = new ArrayList<>();
+        List<Integer> temp = new LinkedList<>();
+        if (nums == null || nums.length == 0) return res;
+        backTracking(res,nums,temp,0);
+        return res;
+    }
+    
+    public void backTracking(List<List<Integer>> res, int[] nums, List<Integer> temp, int size) {
+        if (temp.size() <= nums.length) {
+            res.add(new ArrayList<>(temp));
+        }
+        for (int i = size; i < nums.length; i ++) {
+            temp.add(nums[i]);
+            backTracking(res,nums,temp,i + 1);
+            temp.remove(temp.size() - 1);
+        }
+    }
+}
+```
+
+## 752- Open the Lock
+
+```java
+Input: deadends = ["0201","0101","0102","1212","2002"], target = "0202"
+Output: 6
+Explanation:
+A sequence of valid moves would be "0000" -> "1000" -> "1100" -> "1200" -> "1201" -> "1202" -> "0202".
+Note that a sequence like "0000" -> "0001" -> "0002" -> "0102" -> "0202" would be invalid,
+because the wheels of the lock become stuck after the display becomes the dead end "0102".
+
+class Solution {
+    public int openLock(String[] deadends, String target) {
+        if (target == null || target.length() == 0) return 0;
+        Queue<String> queue = new LinkedList<>();
+        Set<String> visted = new HashSet<>();
+        Set<String> deadSet = new HashSet<>(); // convert deadends to set to improve speed
+        deadSet.addAll(Arrays.asList(deadends));
+        queue.offer("0000");
+        visted.add("0000"); // add not offer
+        int steps = 0;
+        while (!queue.isEmpty()) {
+            int size = queue.size();
+            for (int i = 0; i < size; i ++){ // 
+                String cur = queue.poll();
+              //  if (deadSet.contains(cur)) continue; // deadset can add here 
+                if (cur.equals(target)){
+                    return steps;
+                }
+                for (int k = 0; k < cur.length(); k ++){ // it is k not i this time.
+                    String s1 = moveUp(cur, k);
+                    String s2 = moveDown(cur,k);
+                    if (!deadSet.contains(cur) && !visted.contains(s1)){ //deadset can also add here.
+                        queue.offer(s1);
+                        visted.add(s1);
+                    }
+                    if (!deadSet.contains(cur) && !visted.contains(s2)){
+                        queue.offer(s2);
+                        visted.add(s2);
+                    }
+                }
+            }
+            steps ++;
+        }
+        
+       return -1; 
+        
+    }
+    
+    public String moveUp(String s, int j){
+         char[] ch = s.toCharArray(); // remember this.
+    if (ch[j] == '9')
+        ch[j] = '0';
+    else
+        ch[j] += 1;
+    return new String(ch);
+       }
+    
+        public String moveDown(String s, int j){
+          char[] ch = s.toCharArray();
+    if (ch[j] == '0')
+        ch[j] = '9';
+    else
+        ch[j] -= 1;
+    return new String(ch);
+    }
+}
+```
+
+## 33-Search in Rotated Sorted Array
+
+```java
+Input: nums = [4,5,6,7,0,1,2], target = 0
+Output: 4
+
+class Solution { 
+        public int search(int[] nums, int target) {
+        if (nums == null || nums.length == 0){return -1;}
+        int start = 0;
+        int end = nums.length - 1;
+        int mid;
+        while (start <= end) {
+             mid = start + (end - start) /2;
+            if (nums[mid] == target) {return mid;}
+            if (nums[start] <= nums[mid]){
+                if(target >= nums[start] && target < nums[mid]){
+                    end = mid - 1;
+                } else {
+                    start = mid + 1;
+                }
+            } else {
+                if(target <= nums[end] && nums[mid] < target ){
+                    start = mid + 1;
+                } else {
+                    end = mid - 1;
+                }
+            }
+        }
+        return -1;
+    }
+}
+```
+
+## 695- Max Area of Island
+
+```java
+
+class Solution {
+    public int maxAreaOfIsland(int[][] grid) {
+        int row = grid.length;
+        int col = grid[0].length;
+        int max = 0;
+        for (int i = 0; i < row; i ++){
+            for (int j = 0; j < col; j ++){
+                if (grid[i][j] == 1){
+                    int area = getArea(grid, i , j);
+                    max = Math.max(area, max);
+                }
+            }
+        }
+        return max;
+    }
+    
+    public int getArea(int[][] grid, int i, int j){
+        if (!inArea(grid, i, j)){
+            return 0;
+        }
+        if (grid[i][j] != 1){
+            return 0;
+        }
+        grid[i][j] = 2;
+        int sum = 1 + getArea(grid, i - 1, j) + getArea(grid, i, j - 1) + getArea(grid, i + 1, j) + getArea(grid, i, j + 1);   
+        return sum; 
+    }
+    
+    public boolean inArea(int[][] grid, int i, int j){
+        return i >= 0 && i < grid.length && j >= 0 && j < grid[0].length;
+    }
+}
+```
+
+## 146.LRU Cache
+
+```java
+class Node {
+    int key, value;
+    Node pre, next;
+    public Node (int key, int value) {
+        this.key = key;
+        this.value = value;
+    }
+}
+
+class DoubleList {
+    Node head;
+    Node tail;
+    int size;
+    public DoubleList(int size){
+        this.size = size;
+        head = new Node(-1,-1);
+        tail = new Node(-1,-1);
+        head.next = tail;
+        tail.pre = head;  
+    }
+    
+    public void remove(Node node) {
+        node.pre.next = node.next;
+        node.next.pre = node.pre;
+        node.pre = null;
+        node.next = null;
+        size --;
+    }
+    
+    public void addFirst(Node node) {
+        node.next = head.next;
+        node.pre = head;
+        head.next.pre = node;
+        head.next = node;
+        size ++;
+    }
+    
+    public Node removeLast() {
+        if (tail.pre == head){
+            return null;
+        }
+        Node node = tail.pre;
+        remove(node);
+        return node;
+    }
+    
+    public int getSize() {
+        return this.size;
+    }
+    
+}
+
+class LRUCache {
+    DoubleList cache;
+    HashMap<Integer, Node> map;
+    int capacity;
+
+    public LRUCache(int capacity) {
+        this.capacity = capacity;
+        cache = new DoubleList(0);
+        map = new HashMap<>();
+    }
+    
+    public int get(int key) {
+        if (!map.containsKey(key)){
+            return -1;
+        }
+        Node node = map.get(key);
+        put(key, node.value);
+        return node.value;
+        
+    }
+    
+    public void put(int key, int value) {
+        if(map.containsKey(key)){
+           Node node = map.get(key);
+            cache.remove(node);
+            node.value = value;
+            map.put(key,node);
+            cache.addFirst(node);
+            return;
+        }
+        if (cache.getSize() == capacity){
+           Node lastNode = cache.removeLast();
+           map.remove(lastNode.key); 
+        }
+        Node newNode = new Node(key,value);
+        map.put(key,newNode);
+        cache.addFirst(newNode);
+    }
+}
+```
+
+## 236-Lowest Common Ancestor of a Binary Tree
+
+```java
+class Solution {
+TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
+    // base case
+    if (root == null) return null;
+    if (root == p || root == q) return root;
+    TreeNode left = lowestCommonAncestor(root.left, p, q);
+    TreeNode right = lowestCommonAncestor(root.right, p, q);
+// 后续遍历
+    if (left != null && right != null) {
+        return root;
+    }
+    if (left == null && right == null) {
+        return null;
+    }
+    return left == null ? right : left;
+}
+}
+```
+
 ## 
 
 
