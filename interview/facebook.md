@@ -741,6 +741,62 @@ class Solution {
 }
 ```
 
+## 333- Largest BST Subtree
+
+```java
+一棵树如果是二叉搜索树，那么它的左右子树也必然是二叉搜索树，
+则对于一个节点为根的子树，如果我们已经知道了左右子树是不是二叉搜索树，
+以及左右子树的值的范围 [l,r][l,r] ，那么如果左右子树均为二叉搜索树，
+根据性质我们只要判断该节点的值是不是大于左子树的最大值和小于右子树的最小值
+即能推断出该节点为根的子树是不是二叉搜索树，而又因为我们已经拿到了左右子树的信息
+
+
+class Solution {
+
+    class Result {
+        TreeNode node; // BST根节点
+        int size; // BST的size
+        int max; // BST的最大值
+        int min; // BST的最小值
+    }
+
+    public int largestBSTSubtree(TreeNode root) {
+        Result r = visit(root);
+        return r == null ? 0 : r.size;
+    }
+
+    public Result visit(TreeNode node) {
+        if (node == null) return null;
+
+        Result l = null, r = null;
+        if (node.left != null) l = visit(node.left);
+        if (node.right != null) r = visit(node.right);
+
+        // 当前树为BST
+        boolean lValid = (l == null || (l.node == node.left && l.max < node.val));
+        boolean rValid = (r == null || (r.node == node.right && r.min > node.val));
+        if (lValid && rValid) {
+            Result result = new Result();
+            result.node = node;
+            result.max = r == null ? node.val : r.max;
+            result.min = l == null ? node.val : l.min;
+            result.size = (l == null ? 0 : l.size) + (r == null ? 0 : r.size) + 1;
+            return result;
+        }
+
+        // 左右子树中找到了BST
+        if (l != null && r != null) {
+            return l.size > r.size ? l : r;
+        }
+        if (l != null) return l;
+        if (r != null) return r;
+
+        return null;
+    }
+}
+
+```
+
 ## 
 
 
