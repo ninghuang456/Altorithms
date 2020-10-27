@@ -7,13 +7,10 @@ description: Facebook
 ## 766-Toeplitz Matrix
 
 ```java
-A matrix is Toeplitz if every diagonal from top-left to bottom-right has the same element.
-
+A matrix is Toeplitz if every diagonal from top-left to 
+bottom-right has the same element.
 Now given an M x N matrix, return True if and only if the matrix is Toeplitz.
- 
-
 Example 1:
-
 Input:
 matrix = [
   [1,2,3,4],
@@ -58,9 +55,10 @@ Input: [[1,0,2,0,1],[0,0,0,0,0],[0,0,1,0,0]]
 
 Output: 7 
 
-Explanation: Given three buildings at (0,0), (0,4), (2,2), and an obstacle at (0,2),
-             the point (1,2) is an ideal empty land to build a house, as the total 
-             travel distance of 3+3+1=7 is minimal. So return 7.
+Explanation: Given three buildings at (0,0), (0,4), (2,2), 
+ and an obstacle at (0,2),
+the point (1,2) is an ideal empty land to build a house, as the total 
+travel distance of 3+3+1=7 is minimal. So return 7.
              
 public class Solution {
 public int shortestDistance(int[][] grid) {
@@ -88,19 +86,19 @@ public int shortestDistance(int[][] grid) {
                         int y = node[1];
                         record2[x][y] += dist;
                         record1[x][y] ++;
-                        if (x > 0 && grid[x - 1][y] == 0 && !visited[x - 1][y]) {
+                if (x > 0 && grid[x - 1][y] == 0 && !visited[x - 1][y]) {
                             queue.offer(new int[]{x - 1, y});
                             visited[x - 1][y] = true;
-                        }
-                        if (x + 1 < row && grid[x + 1][y] == 0 && !visited[x + 1][y]) {
+              }
+                if (x + 1 < row && grid[x + 1][y] == 0 && !visited[x + 1][y]) {
                             queue.offer(new int[]{x + 1, y});
                             visited[x + 1][y] = true;
                         }
-                        if (y > 0 && grid[x][y - 1] == 0 && !visited[x][y - 1]) {
+               if (y > 0 && grid[x][y - 1] == 0 && !visited[x][y - 1]) {
                             queue.offer(new int[]{x, y - 1});
                             visited[x][y - 1] = true;
                         }
-                        if (y + 1 < col && grid[x][y + 1] == 0 && !visited[x][y + 1]) {
+           if (y + 1 < col && grid[x][y + 1] == 0 && !visited[x][y + 1]) {
                             queue.offer(new int[]{x, y + 1});
                             visited[x][y + 1] = true;
                         }
@@ -113,7 +111,8 @@ public int shortestDistance(int[][] grid) {
     int result = Integer.MAX_VALUE;
     for (int r = 0; r < row; r++) {
         for (int c = 0; c < col; c++) {
-            if (grid[r][c] == 0 && record1[r][c] == num1 && record2[r][c] < result) {
+            if (grid[r][c] == 0 && record1[r][c] == num1
+                 && record2[r][c] < result) {
                 result = record2[r][c];
             }
         }
@@ -144,15 +143,17 @@ class Solution {
             need.put(t1, need.getOrDefault(t1,0) + 1);
         }
         int left = 0; int right = 0; int valid = 0;
-        int start = 0; int len = Integer.MAX_VALUE; // use one minRight to record
-        while (right < s.length()) { // 区间[left, right)是左闭右开的，所以初始情况下窗口没有包含任何元素：
+        int start = 0; int len = Integer.MAX_VALUE;
+        // use one minRight to record
+        while (right < s.length()) { 
+        // 区间[left, right)是左闭右开的，所以初始情况下窗口没有包含任何元素：
             char s1 = s.charAt(right);
             right ++;
             if (need.containsKey(s1)) {
                 window.put(s1,window.getOrDefault(s1,0) + 1);
                 if (window.get(s1).equals(need.get(s1))) valid ++;
             }
-       // 右指针移动当于在寻找一个「可行解」，然后移动左指针在优化这个「可行解」，最终找到最优解
+ // 右指针移动当于在寻找一个「可行解」，然后移动左指针在优化这个「可行解」，最终找到最优解
             while (valid == need.size()) {
               if (right - left < len) {
                     start = left;
@@ -160,7 +161,8 @@ class Solution {
                 }
                 char s2 = s.charAt(left);
                 left ++;
-                if (need.containsKey(s2)) { // every time need containsKey not contains
+                if (need.containsKey(s2)) { 
+                // every time need containsKey not contains
                    if (window.get(s2).equals(need.get(s2))) valid --;
                    window.put(s2,window.get(s2) - 1);
                 }
@@ -177,9 +179,8 @@ class Solution {
 
 ```java
 An array is monotonic if it is either monotone increasing or monotone decreasing.
-
-An array A is monotone increasing if for all i <= j, A[i] <= A[j].  An array A is monotone decreasing if for all i <= j, A[i] >= A[j].
-
+An array A is monotone increasing if for all i <= j, A[i] <= A[j].
+ An array A is monotone decreasing if for all i <= j, A[i] >= A[j].
 Return true if and only if the given array A is monotonic.
 Input: [1,2,2,3]
 Output: true
@@ -205,19 +206,15 @@ A = [
   [ 1, 0, 0],
   [-1, 0, 3]
 ]
-
 B = [
   [ 7, 0, 0 ],
   [ 0, 0, 0 ],
   [ 0, 0, 1 ]
 ]
-
 Output:
-
      |  1 0 0 |   | 7 0 0 |   |  7 0 0 |
 AB = | -1 0 3 | x | 0 0 0 | = | -7 0 3 |
-                  | 0 0 1 |
-                  
+                  | 0 0 1 |          
 public class Solution {
     public int[][] multiply(int[][] A, int[][] B) {
         int m = A.length, n = A[0].length, nB = B[0].length;
@@ -275,7 +272,9 @@ class Solution {
         while (i < intervals.length) {
             int start = intervals[i][0];
             int end = intervals[i][1];
-            while (i < intervals.length - 1 && end >= intervals[i + 1][0]){ // test overlap need to first check end with next start
+            while (i < intervals.length - 1 
+            && end >= intervals[i + 1][0]){ 
+            // test overlap need to first check end with next start
                 i ++;
                 end = Math.max(intervals[i][1], end);
             }
@@ -337,7 +336,8 @@ class Solution {
 }       
 
 // DFS function returns an array including all substrings derived from s.
-List<String> DFS(String s, Set<String> wordDict, HashMap<String, LinkedList<String>>map) {
+List<String> DFS(String s, Set<String> wordDict, 
+HashMap<String, LinkedList<String>>map) {
     if (map.containsKey(s)) 
         return map.get(s);
         
@@ -366,7 +366,8 @@ class Solution {
     public ListNode mergeKLists(ListNode[] lists) {
         
        // if(lists == null || lists.length == 0) return null;
-        PriorityQueue<ListNode> pq = new PriorityQueue<>((l1,l2)-> l1.val - l2.val);
+        PriorityQueue<ListNode> pq = 
+        new PriorityQueue<>((l1,l2)-> l1.val - l2.val);
         ListNode head = new ListNode(-1);
         ListNode cur = head;
         for(int i = 0; i < lists.length; i ++){
@@ -397,12 +398,10 @@ Explanation: Swap the number 2 and the number 7.
 class Solution {
     public int maximumSwap(int num) {
         char[] digits = Integer.toString(num).toCharArray();
-        
         int[] buckets = new int[10];
         for (int i = 0; i < digits.length; i++) {
             buckets[digits[i] - '0'] = i;
         }
-        
         for (int i = 0; i < digits.length; i++) {
             for (int k = 9; k > digits[i] - '0'; k--) {
                 if (buckets[k] > i) {
@@ -500,7 +499,8 @@ class Solution {
         if (node == null) return;
         min = Math.min(node.val, min);
         max = Math.max(node.val, max);
-        res = Math.max(res, Math.max(Math.abs(max - node.val),Math.abs(min - node.val)));
+        res = Math.max(res, Math.max(Math.abs(max - node.val),
+        Math.abs(min - node.val)));
         dfs(node.left, min, max);
         dfs(node.right, min, max);
     }
@@ -586,7 +586,8 @@ class BSTIterator {
 ```java
  a path is defined as any node sequence from some starting node 
  to any node in the tree along the parent-child connections. 
- The path must contain at least one node and does not need to go through the root.
+ The path must contain at least one node and does
+  not need to go through the root.
  
  class Solution { // 拆成两个问题 经过改节点的最大距离 对比所有最大距离
    int max = Integer.MIN_VALUE;
@@ -610,7 +611,7 @@ class BSTIterator {
         //  // 选择以当前节点为根的含有最大值的路劲，左或右；返回给上一层递归的父节点作为路径
         return root.val + Math.max(leftMax, rightMax); // 不能左右同时返回
     }
-    // https://leetcode-cn.com/problems/binary-tree-maximum-path-sum/solution/shou-hui-tu-jie-hen-you-ya-de-yi-dao-dfsti-by-hyj8/
+
 }
  
 ```
