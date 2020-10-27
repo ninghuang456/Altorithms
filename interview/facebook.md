@@ -140,8 +140,12 @@ class Solution {
 ## 721 Accounts Merge
 
 ```java
-//accounts = [["John", "johnsmith@mail.com", "john00@mail.com"], ["John", "johnnybravo@mail.com"], ["John", "johnsmith@mail.com", "john_newyork@mail.com"], ["Mary", "mary@mail.com"]]
-//Output: [["John", 'john00@mail.com', 'john_newyork@mail.com', 'johnsmith@mail.com'],  ["John", "johnnybravo@mail.com"], ["Mary", "mary@mail.com"]]
+//accounts = [["John", "johnsmith@mail.com", "john00@mail.com"], 
+//["John", "johnnybravo@mail.com"], ["John", "johnsmith@mail.com",
+// "john_newyork@mail.com"], ["Mary", "mary@mail.com"]]
+//Output: [["John", 'john00@mail.com', 'john_newyork@mail.com', 
+//'johnsmith@mail.com'],  ["John", "johnnybravo@mail.com"], 
+//["Mary", "mary@mail.com"]]
 class Solution {
     public List<List<String>> accountsMerge(List<List<String>> accounts) {
         if (accounts.size() == 0) {
@@ -168,7 +172,8 @@ class Solution {
             }
         }
 
-        // Step 2: traverse every email list, find the parent of current list index and put all emails into the set list
+        // Step 2: traverse every email list, find the parent of current 
+        //list index and put all emails into the set list
         // that belongs to key of its parent index
         Map<Integer, Set<String>> disjointSet = new HashMap<>();
         for (int i = 0; i < n; i++) {
@@ -183,7 +188,8 @@ class Solution {
             disjointSet.put(parentIndex, curSet);
         }
 
-        // step 3: traverse ket set of disjoint set group, retrieve all emails from each parent index, and then SORT
+        // step 3: traverse ket set of disjoint set group, retrieve all 
+        //emails from each parent index, and then SORT
         // them, as well as adding the name at index 0 of every sublist
         List<List<String>> result = new ArrayList<>();
         for (int index : disjointSet.keySet()) {
@@ -428,7 +434,8 @@ class Solution {
         return Math.max(retCount, tasks.length); 
         // 如果按照最长的排完之后，后面还有剩下的没有排的，
         //比如字符串序列式AAABBBCCCD，然后n=2的话，那拍好就是ABCABCABCD，
-        //按照公式计算出来的结果是(3-1)*(3)+1+2=9，但是实际的序列应该是ABCABCABCD，应该是10，
+        //按照公式计算出来的结果是(3-1)*(3)+1+2=9，但是实际的序列应该是ABCABCABCD，
+        //应该是10，
         //所以通过求max来补充掉这个正好全排列但是还有多出去的情况
     }
 }
@@ -481,9 +488,10 @@ class Solution {
 ## 689 Maximum Sum of 3 Non-Overlapping Subarrays
 
 ```java
-//This is a more general DP solution, and it is similar to that buy and sell stock problem.
-
-//dp[i][j] stands for in i th sum, the max non-overlap sum we can have from 0 to j
+//This is a more general DP solution, and it is similar to
+// that buy and sell stock problem.
+//dp[i][j] stands for in i th sum, the max non-overlap
+// sum we can have from 0 to j
 //id[i][j] stands for in i th sum, the first starting index for that sum.
 
 class Solution {
@@ -499,7 +507,8 @@ class Solution {
         int max = 0, inId = 0;
         for(int i = 1; i < 4; i++) {
             for(int j = k-1 ; j < nums.length; j++) {
-           int tmpmax = j - k < 0 ? accu[j] : accu[j] - accu[j-k] + dp[i-1][j-k];
+           int tmpmax = j - k < 0 ? accu[j] :
+                         accu[j] - accu[j-k] + dp[i-1][j-k];
                 if(j - k >= 0) {
                     dp[i][j] = dp[i][j-1];
                     id[i][j] = id[i][j-1];
@@ -535,7 +544,8 @@ class Solution {
         if (node == null) return;
         min = Math.min(node.val, min);
         max = Math.max(node.val, max);
-        res = Math.max(res, Math.max(Math.abs(max - node.val),Math.abs(min - node.val)));
+        res = Math.max(res, Math.max(Math.abs(max - node.val),
+                         Math.abs(min - node.val)));
         dfs(node.left, min, max);
         dfs(node.right, min, max);
     }
@@ -609,12 +619,14 @@ class Solution {
                 }
                 //乘法和除法是先计算两旁的数再push
                 if (sign == '*') {
-                    stack.push(stack.pop() * num); //stack中最顶上的数字是当前符号的前一个数字
+                    stack.push(stack.pop() * num); 
+                    //stack中最顶上的数字是当前符号的前一个数字
                 }
                 if (sign == '/') {
                     stack.push(stack.pop() / num);
                 }
-                sign = ch; //更新当前sign的符号，下一次循环根据sign的值处理该sign两边的数字
+                sign = ch; 
+                //更新当前sign的符号，下一次循环根据sign的值处理该sign两边的数字
                 num = 0;
             }
         }
@@ -637,7 +649,8 @@ class Solution {
     public ListNode mergeKLists(ListNode[] lists) {
         
        // if(lists == null || lists.length == 0) return null;
-        PriorityQueue<ListNode> pq = new PriorityQueue<>((l1,l2)-> l1.val - l2.val);
+        PriorityQueue<ListNode> pq = 
+        new PriorityQueue<>((l1,l2)-> l1.val - l2.val);
         ListNode head = new ListNode(-1);
         ListNode cur = head;
         for(int i = 0; i < lists.length; i ++){
@@ -702,9 +715,12 @@ class Solution {
         while (i < intervals.length) {
             int start = intervals[i][0];
             int end = intervals[i][1];
-            while (i < intervals.length - 1 && end >= intervals[i + 1][0]){ // overlap need to first compare end with next start
+            while (i < intervals.length - 1 && 
+            end >= intervals[i + 1][0]){ 
+            // overlap need to first compare end with next start
                 i ++;
-                end = Math.max(intervals[i][1], end);// need to check bigger one, since previous just check overlap.
+                end = Math.max(intervals[i][1], end);
+                // need to check bigger one, since previous just check overlap.
             }
             intervals[k][0] = start;
             intervals[k][1] = end;
@@ -728,7 +744,8 @@ class Solution {
         return myNewPow( x, n);
     }
     
-    public double myNewPow(double x, int n) { // double type need to keep not int.
+    public double myNewPow(double x, int n) { 
+    // double type need to keep not int.
         if (n == 0) return 1.00; // 1.00 not 1
         if (n == 1) return x;
         double half = myNewPow(x, n/2); // 后续遍历
@@ -773,8 +790,8 @@ class Solution {
         if (node.right != null) r = visit(node.right);
 
         // 当前树为BST
-        boolean lValid = (l == null || (l.node == node.left && l.max < node.val));
-        boolean rValid = (r == null || (r.node == node.right && r.min > node.val));
+    boolean lValid = (l == null || (l.node == node.left && l.max < node.val));
+    boolean rValid = (r == null || (r.node == node.right && r.min > node.val));
         if (lValid && rValid) {
             Result result = new Result();
             result.node = node;
@@ -832,7 +849,8 @@ public class Solution {
                         for (int k = 0; k < 4; k++) {
                             int newX = curX + directions[k][0];
                             int newY = curY + directions[k][1];
-                            if (inArea(newX, newY) && grid[newX][newY] == '1' && !marked[newX * cols + newY]) {
+                            if (inArea(newX, newY) && grid[newX][newY] 
+                              == '1' && !marked[newX * cols + newY]) {
                                 queue.addLast(newX * cols + newY);
                                 marked[newX * cols + newY] = true;
                             }
@@ -876,7 +894,8 @@ class Solution {
         return res;
     }
     
-    public void backTracking(List<List<Integer>> res, int[] nums, List<Integer> temp, int size) {
+    public void backTracking(List<List<Integer>> res, int[] nums,
+           List<Integer> temp, int size) {
         if (temp.size() <= nums.length) {
             res.add(new ArrayList<>(temp));
         }
@@ -895,16 +914,20 @@ class Solution {
 Input: deadends = ["0201","0101","0102","1212","2002"], target = "0202"
 Output: 6
 Explanation:
-A sequence of valid moves would be "0000" -> "1000" -> "1100" -> "1200" -> "1201" -> "1202" -> "0202".
-Note that a sequence like "0000" -> "0001" -> "0002" -> "0102" -> "0202" would be invalid,
-because the wheels of the lock become stuck after the display becomes the dead end "0102".
+A sequence of valid moves would be "0000" -> "1000" -> "1100" 
+-> "1200" -> "1201" -> "1202" -> "0202".
+Note that a sequence like "0000" -> "0001" -> "0002" 
+-> "0102" -> "0202" would be invalid,
+because the wheels of the lock become stuck after
+ the display becomes the dead end "0102".
 
 class Solution {
     public int openLock(String[] deadends, String target) {
         if (target == null || target.length() == 0) return 0;
         Queue<String> queue = new LinkedList<>();
         Set<String> visted = new HashSet<>();
-        Set<String> deadSet = new HashSet<>(); // convert deadends to set to improve speed
+        Set<String> deadSet = new HashSet<>(); 
+        // convert deadends to set to improve speed
         deadSet.addAll(Arrays.asList(deadends));
         queue.offer("0000");
         visted.add("0000"); // add not offer
@@ -917,10 +940,12 @@ class Solution {
                 if (cur.equals(target)){
                     return steps;
                 }
-                for (int k = 0; k < cur.length(); k ++){ // it is k not i this time.
+                for (int k = 0; k < cur.length(); k ++){ 
+                // it is k not i this time.
                     String s1 = moveUp(cur, k);
                     String s2 = moveDown(cur,k);
-                    if (!deadSet.contains(cur) && !visted.contains(s1)){ //deadset can also add here.
+                    if (!deadSet.contains(cur) && !visted.contains(s1)){ 
+                    //deadset can also add here.
                         queue.offer(s1);
                         visted.add(s1);
                     }
@@ -1019,7 +1044,9 @@ class Solution {
             return 0;
         }
         grid[i][j] = 2;
-        int sum = 1 + getArea(grid, i - 1, j) + getArea(grid, i, j - 1) + getArea(grid, i + 1, j) + getArea(grid, i, j + 1);   
+        int sum = 1 + getArea(grid, i - 1, j) + 
+        getArea(grid, i, j - 1) + getArea(grid, i + 1, j) + 
+        getArea(grid, i, j + 1);   
         return sum; 
     }
     
@@ -1223,21 +1250,26 @@ Explanation: Return true because "leetcode" can be segmented as "leet code".
 
 class Solution {
     public boolean wordBreak(String s, List<String> wordDict) {
-        Set<String> wordSet = new HashSet<>(wordDict); // set的contains方法效率比list的contains方法效率高        
+        Set<String> wordSet = new HashSet<>(wordDict); 
+        // set的contains方法效率比list的contains方法效率高        
         int len = s.length();
         boolean[] dp = new boolean[len + 1]; // 多一个0个字符的字符串情况
         dp[0] = true; // 初始化
         
         // 找到wordDict中最大长度的单词
         int maxWordLen = 0;
-        for (String word : wordDict) { // DP + 剪枝，当超过字典中最大字符串的长度时，就不再检查是否存在了，复杂度一样
+        for (String word : wordDict) { 
+        // DP + 剪枝，当超过字典中最大字符串的长度时，就不再检查是否存在了，复杂度一样
             maxWordLen = Math.max(maxWordLen, word.length());
         }
         
         for (int i = 1; i <= len; i++) {
             /**
-            第二个循环，这里j在i左边，从i位置开始，这里需要计算的是[i - maxlength, i]这个区间里有没有满足dp[j] && wordSet.contains(s.substring(j,i)条件的情况,
-            这里j不能从0开始往右直到i，否则计算的是[0, i - maxlength]这个区间，和要求的是反着的。
+            第二个循环，这里j在i左边，从i位置开始，
+            这里需要计算的是[i - maxlength, i]这个区间里有没有满足dp[j] 
+            && wordSet.contains(s.substring(j,i)条件的情况,
+            这里j不能从0开始往右直到i，否则计算的是[0, i - maxlength]这个区间，
+            和要求的是反着的。
             仔细思考一下：相当于j + maxWordLen >= i，所有从i开始向左比较好枚举
             */
             for (int j = i; j >= 0 && j >= i - maxWordLen; j--) { 
@@ -1285,8 +1317,10 @@ class Solution {
             for (int j = 0; j < grid[i].length; j++) {
                 if (grid[i][j] == 1) {
                     islands++; // count islands
-                    if (i < grid.length - 1 && grid[i + 1][j] == 1) neighbours++; // count down neighbours
-                    if (j < grid[i].length - 1 && grid[i][j + 1] == 1) neighbours++; // count right neighbours
+                    if (i < grid.length - 1 && grid[i + 1][j] == 1) 
+                    neighbours++; // count down neighbours
+                    if (j < grid[i].length - 1 && grid[i][j + 1] == 1) 
+                    neighbours++; // count right neighbours
                 }
             }
         }
@@ -1319,7 +1353,8 @@ public class Solution {
     }
     
     private void extendPalindrome(String s, int left, int right) {
-        while (left >=0 && right < s.length() && s.charAt(left) == s.charAt(right)) {
+        while (left >=0 && right < s.length() && 
+          s.charAt(left) == s.charAt(right)) {
             count++; left--; right++;
         }
     }
@@ -1340,7 +1375,8 @@ return 13.
 
 public class Solution {
     public int kthSmallest(int[][] matrix, int k) {
-        int lo = matrix[0][0], hi = matrix[matrix.length - 1][matrix[0].length - 1] + 1;//[lo, hi)
+        int lo = matrix[0][0], hi = 
+        matrix[matrix.length - 1][matrix[0].length - 1] + 1;//[lo, hi)
         while(lo < hi) {
             int mid = lo + (hi - lo) / 2;
             int count = 0,  j = matrix[0].length - 1;
