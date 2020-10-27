@@ -577,6 +577,44 @@ class BSTIterator {
 }
 ```
 
+## 124-Binary Tree Maximum Path Sum
+
+```java
+ a path is defined as any node sequence from some starting node 
+ to any node in the tree along the parent-child connections. 
+ The path must contain at least one node and does not need to go through the root.
+ 
+ class Solution { // 拆成两个问题 经过改节点的最大距离 对比所有最大距离
+   int max = Integer.MIN_VALUE;
+    public int maxPathSum(TreeNode root) {
+        if (root == null) {
+            return 0;
+        }
+        dfs(root);
+        return max;
+    }
+    public int dfs(TreeNode root) { // 后序遍历
+        if (root == null) {
+            return 0;
+        }
+        //计算左边分支最大值，左边分支如果为负数还不如不选择
+        int leftMax = Math.max(0, dfs(root.left));
+        //计算右边分支最大值，右边分支如果为负数还不如不选择
+        int rightMax = Math.max(0, dfs(root.right));
+        //left->root->right 作为路径与历史最大值做比较  // 更新遍历在当前节点时的最大路径和
+        max = Math.max(max, root.val + leftMax + rightMax);
+        //  // 选择以当前节点为根的含有最大值的路劲，左或右；返回给上一层递归的父节点作为路径
+        return root.val + Math.max(leftMax, rightMax); // 不能左右同时返回
+    }
+    // https://leetcode-cn.com/problems/binary-tree-maximum-path-sum/solution/shou-hui-tu-jie-hen-you-ya-de-yi-dao-dfsti-by-hyj8/
+}
+ 
+```
+
+## 
+
+## 
+
 ## 
 
 ## 
