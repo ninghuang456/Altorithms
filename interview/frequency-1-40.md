@@ -1005,6 +1005,57 @@ public class Solution extends VersionControl {
 }
 ```
 
+## 88-Merge Sorted Array
+
+```java
+addNum(1)
+addNum(2)
+findMedian() -> 1.5
+addNum(3) 
+findMedian() -> 2
+
+class Solution {
+    public void merge(int[] nums1, int m, int[] nums2, int n) {
+        int last = m + n - 1;
+        int index1 = m - 1;
+        int index2 = n - 1;
+        while (index1 >= 0 && index2 >= 0){
+            if (nums1[index1] > nums2[index2]){
+                nums1[last--] = nums1[index1--];
+            } else {
+                nums1[last--] = nums2[index2--];
+            }
+        }
+        while (index2 >= 0){
+            nums1[last--] = nums2[index2--];
+        }
+    }
+}
+```
+
+## 295- Find Median from Data Stream
+
+```java
+class MedianFinder {
+   private Queue<Integer> small = new PriorityQueue<>((o1,o2) -> (o2 - o1)); // need <>
+   private Queue<Integer> large = new PriorityQueue();
+    // Adds a number into the data structure.
+    public void addNum(int num) {
+        large.add(num);
+        small.add(large.poll());
+        if (large.size() < small.size())
+            large.add(small.poll());
+    }
+
+    // Returns the median of current data stream
+    public double findMedian() {
+        return large.size() > small.size()
+               ? large.peek()
+               : (large.peek() + small.peek()) / 2.0;
+    }
+}
+```
+
 ## 766-Toeplitz Matrix
 
 ```java
