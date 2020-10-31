@@ -38,7 +38,7 @@ class Solution {
 }
 ```
 
-## 1249 Minimum Remove to Make Valid Parentheses
+## 1249- Minimum Remove to Make Valid Parentheses
 
 ```java
 //Input: s = "lee(t(c)o)de)" Output: "lee(t(c)o)de"
@@ -279,6 +279,281 @@ class Solution {
         if (carry > 0) sb.append(carry);
         return sb.reverse().toString();
     }
+}
+```
+
+## 269-Alien Dictionary
+
+```java
+//[
+//  "wrt",
+//  "wrf",
+//  "er",
+//  "ett",
+//  "rftt"
+//]
+//Output: "wertf"
+//该题是要在前后单词之间寻找排序关系 不是在本单词中找
+
+class Solution {
+public String alienOrder(String[] words) {
+    
+    // Step 0: Create data structures and find all unique letters.
+    Map<Character, List<Character>> adjList = new HashMap<>();
+    Map<Character, Integer> counts = new HashMap<>();
+    for (String word : words) {
+        for (char c : word.toCharArray()) {
+            counts.put(c, 0);
+            adjList.put(c, new ArrayList<>());
+        }
+    }
+    
+    // Step 1: Find all edges.
+    for (int i = 0; i < words.length - 1; i++) {
+        String word1 = words[i];
+        String word2 = words[i + 1];
+        // Check that word2 is not a prefix of word1.
+        if (word1.length() > word2.length() && word1.startsWith(word2)) {
+            return "";
+        }
+        // Find the first non match and insert the corresponding relation.
+        for (int j = 0; j < Math.min(word1.length(), word2.length()); j++) {
+            if (word1.charAt(j) != word2.charAt(j)) {
+                adjList.get(word1.charAt(j)).add(word2.charAt(j));
+                counts.put(word2.charAt(j), counts.get(word2.charAt(j)) + 1);
+                break;
+            }
+        }
+    }
+    
+    // Step 2: Breadth-first search.
+    StringBuilder sb = new StringBuilder();
+    Queue<Character> queue = new LinkedList<>();
+    for (Character c : counts.keySet()) {
+        if (counts.get(c).equals(0)) {
+            queue.add(c);
+        }
+    }
+    while (!queue.isEmpty()) {
+        Character c = queue.remove();
+        sb.append(c);
+        for (Character next : adjList.get(c)) {
+            counts.put(next, counts.get(next) - 1);
+            if (counts.get(next).equals(0)) {
+                queue.add(next);
+            }
+        }
+    }
+    
+    if (sb.length() < counts.size()) {
+        return "";
+    }
+    return sb.toString();
+  }
+}
+```
+
+## 301 - Remove Invalid Parentheses
+
+```java
+Remove the minimum number of invalid parentheses in order 
+to make the input string valid. Return all possible results.
+//Input: "()())()"  Output: ["()()()", "(())()"]
+Input: "(a)())()"
+Output: ["(a)()()", "(a())()"]
+
+class Solution {
+    public List<String> removeInvalidParentheses(String s) {
+        List<String> result = new ArrayList<>();
+        if (s == null) {
+            return result;
+        }
+        Set<String> visited = new HashSet<>();
+        Queue<String> queue = new LinkedList<>();//存储状态
+        //初始化
+        visited.add(s);
+        queue.add(s);
+        boolean found = false;//在某个level是否发现valid的状态
+        while (!queue.isEmpty()) {
+            s = queue.poll();
+            if (isValid(s)) {
+                //找到一个答案，加入到结果集
+                result.add(s);
+                found = true;
+            }
+            if (found) {// 不用再把下面一层再加入了 只要循环完这一轮就可以了
+                continue;
+            }
+            //产生所有的状态
+            for (int i = 0; i < s.length(); i++) {
+                //只移除左括号或右括号，字母什么的不移除
+                if (s.charAt(i) != '(' && s.charAt(i) != ')') {
+                    continue;
+                }
+                //产生一个临时状态
+                String temp = s.substring(0, i) + s.substring(i + 1);
+               //为什么这里i + 1不会越界？
+                if (!visited.contains(temp)) {
+                    queue.add(temp);
+                    visited.add(temp);
+                }
+            }
+        }
+        return result;
+    }
+    
+    public boolean isValid(String s){
+        int count = 0;
+        for (int i = 0; i < s.length(); i++){
+            if(s.charAt(i)=='(') count++;
+            if(s.charAt(i)==')') count--;
+            if(count < 0) return false;
+        }
+        return count == 0;
+    }
+}
+```
+
+## 158- Read N Characters Given Read4 II - Call multiple times
+
+```java
+public class Solution extends Reader4 {
+    int size = 0;
+    int i = 0;
+    char[] temp = new char[4];
+    public int read(char[] buf, int n) {
+        int index = 0;
+        while(index < n){
+            if(size == 0){
+                size = read4(temp);
+                if(size == 0)
+                    break;
+            }      
+            while(index < n && i < size){
+                buf[index++] = temp[i++];
+            }
+            if(i == size){
+                // 说明临时字符数组中的内容已经读完，size置零以便执行下一次read4操作
+                i = 0;
+                size = 0;
+            }     
+        }
+        
+        return index;
+    }
+}
+```
+
+## 211 Design Add and Search Words Data Structure
+
+```java
+class WordDictionary {
+     boolean isEnd;
+     WordDictionary[] next;
+    /** Initialize your data structure here. */
+    public WordDictionary() {
+        isEnd = false;
+        next = new WordDictionary[26];
+    }
+    /** Adds a word into the data structure. */
+    public void addWord(String word) {
+        WordDictionary root = this;
+        WordDictionary cur = root;
+        for (char c : word.toCharArray()){
+            if (cur.next[c - 'a'] == null){
+               WordDictionary nodeNext = new WordDictionary();
+               cur.next[c-'a'] = nodeNext;
+            }
+            cur = cur.next[c - 'a']; 
+        }
+      cur.isEnd = true;  
+    }
+    
+    /** Returns if the word is in the data structure. 
+     A word could contain the dot character '.' to represent any one letter. */
+    public boolean search(String word) {
+        return wordSearchHelper(word,0, this);
+        
+    }
+    
+    public boolean wordSearchHelper(String word, int index, WordDictionary cur){
+        if(index == word.length()) return cur.isEnd;
+        char c = word.charAt(index);
+        if(c != '.'){
+            return (cur.next[c - 'a'] != null) && 
+            wordSearchHelper(word, index + 1, cur.next[c - 'a']);
+        } else {
+            for (char k = 'a'; k <= 'z'; k++){
+                if(cur.next[k - 'a'] != null && 
+                  wordSearchHelper(word, index + 1, cur.next[k - 'a'])){
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+}
+```
+
+## 297- Serialize and Deserialize Binary Tree
+
+```java
+public class Codec {
+
+    // Encodes a tree to a single string.
+    public String spliter = ",";
+    public String nulval = "null";
+    public String serialize(TreeNode root) {
+        StringBuilder sb = new StringBuilder();
+        if(root == null) return sb.append(nulval).toString();
+        serializeHelper(root,sb);
+        return sb.toString();
+    }
+    
+    public void serializeHelper(TreeNode node, StringBuilder sb) {
+        if(node == null) {
+            sb.append(nulval).append(spliter);
+            return;
+        }
+        sb.append(node.val).append(spliter);
+        serializeHelper(node.left, sb);
+        serializeHelper(node.right, sb);
+    }
+
+    // Decodes your encoded data to tree.
+    public TreeNode deserialize(String data) {
+        Queue<String> queue = new LinkedList<>();
+        queue.addAll(Arrays.asList(data.split(spliter)));
+        return deserializeHelper(queue);
+    }
+    public TreeNode deserializeHelper(Queue<String> queue) {
+        String cur = queue.poll();
+        if (cur.equals(nulval)) {
+            return null;
+        } 
+        TreeNode node = new TreeNode(Integer.valueOf(cur));
+        node.left = deserializeHelper(queue);
+        node.right = deserializeHelper(queue);
+        return node; 
+    }
+}
+```
+
+## 215- Kth Largest Element in an Array
+
+```java
+class Solution {
+    public int findKthLargest(int[] nums, int k) {
+    PriorityQueue<Integer> pq = new PriorityQueue<>();
+    // default size will resize automatically
+    for(int val : nums) {
+        pq.offer(val);
+        if(pq.size() > k) {
+            pq.poll();
+        }
+    }
+    return pq.peek();
+  }
 }
 ```
 
