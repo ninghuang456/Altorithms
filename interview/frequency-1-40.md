@@ -65,8 +65,6 @@ class Solution {
 
 ```
 
-## 
-
 ## 766-Toeplitz Matrix
 
 ```java
