@@ -4,6 +4,59 @@ description: Facebook
 
 # Frequency 1-40
 
+## 953 - Verifying an Alien Dictionary
+
+```java
+//Input: words = ["hello","leetcode"], order = "hlabcdefgijkmnopqrstuvwxyz" Output: true
+//Explanation: As 'h' comes before 'l' in this language, then the sequence is sorted.
+class Solution {
+    int[] mapping = new int[26];
+    public boolean isAlienSorted(String[] words, String order) {
+        for (int i = 0; i < order.length(); i++)
+            mapping[order.charAt(i) - 'a'] = i; // hashMap key - value
+        for (int i = 1; i < words.length; i++)
+            if (bigger(words[i - 1], words[i]))
+                return false;
+        return true;
+    }
+
+    boolean bigger(String s1, String s2) {
+        int n = s1.length(), m = s2.length();
+        for (int i = 0; i < n && i < m; ++i)
+            if (s1.charAt(i) != s2.charAt(i))
+          return mapping[s1.charAt(i) - 'a'] > mapping[s2.charAt(i) - 'a'];
+        return n > m;
+    }
+}
+```
+
+## 1249 Minimum Remove to Make Valid Parentheses
+
+```java
+//Input: s = "lee(t(c)o)de)" Output: "lee(t(c)o)de"
+//Explanation: "lee(t(co)de)" , "lee(t(c)ode)" would also be accepted.
+
+class Solution {
+  public String minRemoveToMakeValid(String s) { // 子问题不独立 所以不用DP
+      StringBuilder sb = new StringBuilder(s); 
+      Stack<Integer> st = new Stack<>();
+      // 用stack 判断是否当前的括号需要换掉
+      for (int i = 0; i < sb.length(); ++i) {
+         if (sb.charAt(i) == '(') st.add(i);
+          if (sb.charAt(i) == ')') {
+           if (!st.empty()) st.pop();
+              else sb.setCharAt(i, '*');
+              // 因为SB是根据S变得 所以是要setCharAt() 而不是APPEND
+         }
+  }
+  while (!st.empty())
+    sb.setCharAt(st.pop(), '*');
+  return sb.toString().replaceAll("\\*", "");
+  }
+}
+
+```
+
 ## 766-Toeplitz Matrix
 
 ```java
