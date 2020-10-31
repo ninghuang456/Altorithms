@@ -557,6 +557,136 @@ class Solution {
 }
 ```
 
+## 523- Continuous Subarray Sum
+
+```java
+Given a list of non-negative numbers and a target integer k,
+ write a function to check if the array has a continuous 
+ subarray of size at least 2 that sums up to a multiple of k, 
+that is, sums up to n*k where n is also an integer.
+
+Input: [23, 2, 4, 6, 7],  k=6 Output: True
+Explanation: Because [2, 4] is a continuous subarray of size 2 and sums up to 6.
+Input: [23, 2, 6, 4, 7],  k=6 Output: True
+Explanation: Because [23, 2, 6, 4, 7] is an continuous subarray of 
+size 5 and sums up to 42.
+
+class Solution {
+  public boolean checkSubarraySum(int[] nums, int k) {
+    Map<Integer, Integer> map = new HashMap<Integer, Integer>(){{put(0,-1);}};;
+    int runningSum = 0;
+    for (int i=0; i < nums.length;i++) {
+        runningSum += nums[i];
+        if (k != 0) runningSum %= k; 
+        Integer prev = map.get(runningSum);
+        if (prev != null) {
+            if (i - prev > 1) return true;
+        }
+        else map.put(runningSum, i);
+    }
+    return false;
+  }
+}
+
+```
+
+## 438-Find All Anagrams in a String
+
+```java
+Input: s: "cbaebabacd" p: "abc" Output: [0, 6]
+class Solution {
+    public List<Integer> findAnagrams(String s, String t) {
+        HashMap<Character, Integer> window = new HashMap<>(); 
+        HashMap<Character, Integer> need = new HashMap<>();
+        List<Integer> res = new ArrayList<>();
+        for (char t1 : t.toCharArray()) {
+            need.put(t1, need.getOrDefault(t1,0) + 1);
+        }
+        int left = 0; int right = 0; int valid = 0;
+        while (right < s.length()) { 
+   // 区间[left, right)是左闭右开的，所以初始情况下窗口没有包含任何元素：
+            char s1 = s.charAt(right);
+            right ++;
+            if (need.containsKey(s1)) {
+                window.put(s1,window.getOrDefault(s1,0) + 1);
+                if (window.get(s1).equals(need.get(s1))){
+                    valid ++;
+                }
+            }          
+    // 右指针移动当于在寻找一个「可行解」，然后移动左指针在优化这个「可行解」，最终找到最优解
+            while (right - left >= t.length()) {
+                 if (valid == need.size()) res.add(left);
+                  char s2 = s.charAt(left);
+                  left ++;
+                  if (need.containsKey(s2)) { 
+                 // every time need containsKey not contains
+                   if (window.get(s2).equals(need.get(s2))){
+                      valid --;
+                   }
+                    window.put(s2,window.get(s2) - 1);
+                }
+            }
+        }
+        return res;  
+    }
+}
+```
+
+## 938-Range Sum of BST
+
+```java
+Given the root node of a binary search tree, return the
+ sum of values of all nodes with value between L and R (inclusive).
+Input: root = [10,5,15,3,7,null,18], L = 7, R = 15
+Output: 32
+对于当前节点 node，如果 node.val 小于等于 L，那么只需要继续搜索它的右子树；
+如果 node.val 大于等于 R，那么只需要继续搜索它的左子树；
+如果 node.val 在区间 (L, R) 中，则需要搜索它的所有子树。
+class Solution { // 递归
+    int ans;
+    public int rangeSumBST(TreeNode root, int L, int R) {
+        ans = 0;
+        dfs(root, L, R);
+        return ans;
+    }
+
+    public void dfs(TreeNode node, int L, int R) {
+        if (node != null) {
+            if (L <= node.val && node.val <= R)
+                ans += node.val;
+            if (L < node.val)
+                dfs(node.left, L, R);
+            if (node.val < R)
+                dfs(node.right, L, R);
+        }
+    }
+}
+//迭代
+class Solution {
+    public int rangeSumBST(TreeNode root, int L, int R) {
+        int ans = 0;
+        Stack<TreeNode> stack = new Stack();
+        stack.push(root);
+        while (!stack.isEmpty()) {
+            TreeNode node = stack.pop();
+            if (node != null) {
+                if (L <= node.val && node.val <= R)
+                    ans += node.val;
+                if (L < node.val)
+                    stack.push(node.left);
+                if (node.val < R)
+                    stack.push(node.right);
+            }
+        }
+        return ans;
+    }
+}
+
+
+```
+
+## 
+
 ## 766-Toeplitz Matrix
 
 ```java
