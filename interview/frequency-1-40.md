@@ -791,6 +791,220 @@ class Solution {
 }
 ```
 
+## 670- Maximum Swap
+
+```java
+Input: 2736
+Output: 7236
+Explanation: Swap the number 2 and the number 7.
+
+class Solution {
+    public int maximumSwap(int num) {
+     char[] digits = Integer.toString(num).toCharArray(); 
+     int[] buckets = new int[10];
+        for (int i = 0; i < digits.length; i++) {
+            buckets[digits[i] - '0'] = i;
+        }
+        
+        for (int i = 0; i < digits.length; i++) {
+            for (int k = 9; k > digits[i] - '0'; k--) {
+                if (buckets[k] > i) {
+                    char tmp = digits[i];
+                    digits[i] = digits[buckets[k]];
+                    digits[buckets[k]] = tmp;
+                    return Integer.valueOf(new String(digits));
+                }
+            }
+        }
+        
+        return num;
+    }
+}
+```
+
+## 173-Binary Search Tree Iterator
+
+```java
+class BSTIterator {
+    Stack<TreeNode> stack = new Stack<>();
+    TreeNode cur = null;
+
+    public BSTIterator(TreeNode root) {
+        cur = root;
+    }
+
+    /** @return the next smallest number */
+    public int next() {
+        int res = -1;
+        while (cur != null || !stack.isEmpty()) {
+            // 节点不为空一直压栈
+            while (cur != null) {
+                stack.push(cur);
+                cur = cur.left; // 考虑左子树
+            }
+            // 节点为空，就出栈
+            cur = stack.pop();
+            res = cur.val;
+            // 考虑右子树
+            cur = cur.right;
+            break; 
+// even sometime next() is o(h) but amortized time complex is o(1);
+        }
+
+        return res;
+    }
+
+    /** @return whether we have a next smallest number */
+    public boolean hasNext() {
+        return cur != null || !stack.isEmpty();
+    }
+}
+/*只需要把 stack 和 cur 作为成员变量，然后每次调用 next 
+就执行一次 while 循环，并且要记录当前值，结束掉本次循环。*/
+
+```
+
+## 124- Binary Tree Maximum Path Sum
+
+```java
+class Solution { //分两步策略 ：1 经过节点的路径最大， 
+//2：全局变量对比出经过每一个节点的路径最大
+   int max = Integer.MIN_VALUE;
+    public int maxPathSum(TreeNode root) {
+        if (root == null) {
+            return 0;
+        }
+        dfs(root);
+        return max;
+    }
+    public int dfs(TreeNode root) { // 后序遍历 左右根
+        if (root == null) {
+            return 0;
+        }
+        //计算左边分支最大值，左边分支如果为负数还不如不选择
+        int leftMax = Math.max(0, dfs(root.left));
+        //计算右边分支最大值，右边分支如果为负数还不如不选择
+        int rightMax = Math.max(0, dfs(root.right));
+        //left->root->right 作为路径与历史最大值做比较  
+        // 更新遍历在当前节点时的最大路径和全局变量
+        max = Math.max(max, root.val + leftMax + rightMax);
+        //如果不考虑这个步骤 那就是经过节点的最大路径和
+        // 选择以当前节点为根的含有最大值的路劲，左或右；返回给上一层递归的父节点作为路径
+        return root.val + Math.max(leftMax, rightMax); // 不能左右同时返回
+    }
+}
+```
+
+## 528-Random Pick with Weight
+
+```java
+w[i] describes the weight of ith index (0-indexed).
+We need to call the function pickIndex() which randomly
+ returns an integer in the range [0, w.length - 1]. 
+pickIndex() should return the integer proportional to its weight in the w array. 
+For example, for w = [1, 3], 
+the probability of picking the index 0 is 1 / (1 + 3) = 0.25 (i.e 25%) 
+while the probability of picking the index 1 is 3 / (1 + 3) = 0.75 (i.e 75%).
+More formally, the probability of picking index i is w[i] / sum(w).
+Example 1:
+Input
+["Solution","pickIndex"]
+[[[1]],[]]
+Output
+[null,0]
+
+Explanation
+Solution solution = new Solution([1]);
+solution.pickIndex(); 
+// return 0. Since there is only one single element on the array
+// the only option is to return the first element.
+
+class Solution {
+    //权重累加数组
+    int[] arr;
+    public Solution(int[] w) {
+        arr = new int[w.length];
+        int sum = 0;
+        for (int i = 0; i < w.length; i++) {
+            sum += w[i];
+            arr[i] = sum;
+        }
+    }
+    public int pickIndex() {
+        //产生随机数
+        Random random = new Random();
+        int randomNum = random.nextInt(arr[arr.length - 1]) + 1;
+        //二分查找随机数所在的区间
+        int left = 0, right = arr.length - 1;
+        while (left < right) {
+            int mid = left + ((right - left) >> 1);
+            if (arr[mid] == randomNum) {
+                return mid;
+            } else if (arr[mid] > randomNum) {
+                right = mid;
+            } else {
+                left = mid + 1;
+            }
+        }
+        return left;
+    }
+}
+```
+
+## 125- Valid Palindrome
+
+```java
+Given a string, determine if it is a palindrome,
+considering only alphanumeric characters and ignoring cases.
+Input: "A man, a plan, a canal: Panama"
+Output: true
+class Solution {
+    public boolean isPalindrome(String s) {
+        int left = 0;
+        int right = s.length() - 1;
+        while (left < right) {
+       while(left < right && !Character.isLetterOrDigit(s.charAt(left))) 
+          left ++;
+       while(left < right && ! Character.isLetterOrDigit(s.charAt(right))) 
+          right --;
+       if(Character.toLowerCase(s.charAt(left)) 
+                              != Character.toLowerCase(s.charAt(right)))
+        return false;
+            left ++;
+            right--;
+        }
+       return true;
+    }
+}
+```
+
+## 278-First Bad Version
+
+```java
+Input: n = 5, bad = 4
+Output: 4
+Explanation:
+call isBadVersion(3) -> false
+call isBadVersion(5) -> true
+call isBadVersion(4) -> true
+Then 4 is the first bad version.
+
+public class Solution extends VersionControl {
+    public int firstBadVersion(int n) {
+        int low = 1, high = n;
+        while(low <= high){ //exit loop when low > high
+            int mid = low + (high - low)/2;
+            if(isBadVersion(mid)){
+                high = mid - 1;
+            }else{
+                low = mid + 1;
+            }
+        }
+        return low;
+    }
+}
+```
+
 ## 766-Toeplitz Matrix
 
 ```java
