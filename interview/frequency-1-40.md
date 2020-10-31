@@ -65,6 +65,227 @@ class Solution {
 
 ```
 
+## 1428- Leftmost Column with at Least a One
+
+```java
+class Solution {
+    public int leftMostColumnWithOne(BinaryMatrix binaryMatrix) {
+        List<Integer> dimen = binaryMatrix.dimensions();
+        int m = dimen.get(0), n = dimen.get(1);
+        int left = 0, right = n - 1, ans = -1;
+        while (left <= right) {
+            int mid = left + (right - left) / 2;
+            if (existOneInColumn(binaryMatrix, m, mid)) {
+                ans = mid;          // record as current ans
+                right = mid - 1;    // try to find in the left side
+            } else {
+                left = mid + 1;     // try to find in the right side
+            }
+        }
+        return ans;
+    }
+    boolean existOneInColumn(BinaryMatrix binaryMatrix, int m, int c) {
+        for (int r = 0; r < m; r++) 
+        if (binaryMatrix.get(r, c) == 1) 
+            return true;
+        return false;
+    }
+}
+```
+
+## 560 - Subarray Sum Equals K
+
+```java
+// Input:nums = [1,1,1], k = 2 Output: 2
+//Input: nums = [1,2,3], k = 3 Output: 2
+
+class Solution {
+    public int subarraySum(int[] nums, int k) {
+        int sum = 0; int res = 0; // sum[i, j] = sum[0, j] - sum[0, i - 1];
+        HashMap<Integer, Integer> map = new HashMap<>();
+        map.put(0,1); // don't forget this, we have one presum equals 0;
+        for (int i = 0; i < nums.length; i ++) {
+            sum += nums[i];
+            if (map.containsKey(sum - k)){
+                res += map.get(sum - k); 
+         // may be has more than one presum equals same number.
+            }
+            map.put(sum, map.getOrDefault(sum, 0) + 1);
+        }
+        return res;
+    }
+}
+```
+
+## 680 Valid Palindrome II
+
+```java
+// Input: "aba" Output: True
+class Solution {
+    public boolean validPalindrome(String s) {
+        int left = 0; int right = s.length() - 1;
+        while (left < right) {
+            if (s.charAt(left) != s.charAt(right)){
+                return extendPalindrome(s,left + 1, right) || 
+                 extendPalindrome(s,left, right - 1);
+            }
+            left ++;
+            right--;
+        }
+        return true;
+    }
+    
+    public boolean extendPalindrome(String s, int left, int right){
+        int l = left; int r = right;
+        while (l < r){
+            if (s.charAt(l) != s.charAt(r)) return false;
+            l++;
+            r--;
+        }
+        return true;
+    }
+}
+```
+
+## 973-K Closest Points to Origin
+
+```java
+class Solution {
+    public int[][] kClosest(int[][] points, int K) {
+    PriorityQueue<int[]> pq = new PriorityQueue<int[]>((p1,p2) -> 
+p2[0] * p2[0] + p2[1] * p2[1] - p1[0] * p1[0] - p1[1] * p1[1]);
+   // P2 - P1, int[[]
+    for (int i = 0; i < points.length; i ++){
+        pq.offer(points[i]);
+        if (pq.size() > K){
+            pq.poll();
+        }
+    }
+    int[][] res = new int[K][2];
+                                                    
+    for (int i = K - 1; i >= 0; i --){
+        res[i] = pq.poll();
+    }
+     return res;                                               
+    }
+}
+```
+
+## 238-Product of Array Except Self
+
+```java
+// Input:  [1,2,3,4] Output: [24,12,8,6]
+class Solution {
+    public int[] productExceptSelf(int[] nums) {
+        int n = nums.length;
+        int[] front = new int[n]; int[] back = new int[n]; 
+        int[] res = new int[n];
+        front[0] = 1;
+        back[n - 1] = 1;
+        for (int i = 1; i < n; i ++) {
+            front[i] = nums[i - 1] * front[i - 1];
+        }
+        
+        for (int j = n - 2; j >= 0; j --) {
+            back[j] = back[j + 1] * nums[j + 1];
+        }
+ 
+        for (int i = 0; i < n; i ++) {
+            res[i] = front[i] * back[i];
+        }
+        return res;
+    }
+}
+```
+
+## 273- Integer to English Words
+
+```java
+class Solution {
+    public String numberToWords(int num) {
+        if(num == 0) return "Zero";
+        return helper(num);  
+    }
+    public String helper(int num ) {
+        String[] words = new String[] {"", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten",
+                                      "Eleven", "Twelve", "Thirteen", "Fourteen", "Fifteen", "Sixteen", "Seventeen",
+                                       "Eighteen", "Nineteen"}; // Fifteen, Twelve Forty Nineteen Ninety Hundred
+        String[] words1 = new String[]{"","","Twenty ", "Thirty ", "Forty ", "Fifty ", "Sixty ",  "Seventy ", "Eighty ", "Ninety "};
+       StringBuilder sb = new StringBuilder();
+        if (num >= 1000000000) {
+            sb.append(helper(num/1000000000)).append(" Billion ");
+            num %= 1000000000; 
+        }
+        if (num >= 1000000) {
+            sb.append(helper(num/1000000)).append(" Million ");
+            num %= 1000000; 
+        }
+        if (num >= 1000) {
+            sb.append(helper(num/1000)).append(" Thousand ");
+            num %= 1000; 
+        }
+        if (num >= 100) {
+            sb.append(helper(num/100)).append(" Hundred ");
+            num %= 100; 
+        }
+        if (num >= 20) {
+             sb.append(words1[num/10]).append(words[num%10]);
+        } else {
+          sb.append(words[num]);  
+        }
+        return sb.toString().trim();
+    }
+}
+```
+
+## 415 - Add Strings
+
+```java
+class Solution {
+    public String addStrings(String num1, String num2) {
+        StringBuilder res = new StringBuilder("");
+        int i = num1.length() - 1, j = num2.length() - 1, carry = 0;
+        while(i >= 0 || j >= 0){
+            int n1 = i >= 0 ? num1.charAt(i) - '0' : 0; 
+            //因为有可能一长一短的情况
+            int n2 = j >= 0 ? num2.charAt(j) - '0' : 0;
+            int tmp = n1 + n2 + carry;
+            carry = tmp / 10;
+            res.append(tmp % 10);
+            i--; j--;
+        }
+        if(carry == 1) res.append(1);
+        return res.reverse().toString();
+    }
+}
+```
+
+## 67- Add Binary
+
+```java
+class Solution {
+    public String addBinary(String a, String b) {
+        StringBuilder sb = new StringBuilder();
+        int i = a.length() - 1; int j = b.length() - 1; int carry = 0;
+        while (i >= 0  || j >= 0) {
+            int m = i >= 0 ? a.charAt(i) - '0' : 0;
+            // also - '0';
+            int n = j >= 0 ? b.charAt(j) - '0' : 0;
+            int sum = m + n + carry;
+            carry = sum / 2;
+            sb.append(sum % 2);
+            i --; j --;
+        }
+        if (carry > 0) sb.append(carry);
+        return sb.reverse().toString();
+    }
+}
+```
+
+## 
+
+## 
+
 ## 766-Toeplitz Matrix
 
 ```java
