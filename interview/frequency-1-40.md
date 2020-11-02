@@ -1536,25 +1536,30 @@ class Solution {
 ## 1026-Maximum Difference Between Node and Ancestor
 
 ```java
+ Given the root of a binary tree, find the maximum value V for which 
+ there exists different nodes A and B where V = |A.val - B.val| and 
+ A is an ancestor of B.
+ // 最大差值一定是ancestors里面的最大值或最小值跟当前值的差值的绝对值。
 class Solution {
     int res = 0;
     public int maxAncestorDiff(TreeNode root) {
-        if (root == null) return 0;
-        dfs(root, root.val, root.val);
+        maxAncestorDiffHelper(root, root.val, root.val); 
+        // 开始是ROOT.VAL不是0
         return res;
     }
     
+    public void maxAncestorDiffHelper(TreeNode root, int min, int max) {
+        if (root == null) return;
+         min = Math.min(root.val, min);
+         max = Math.max(root.val, max);
+        res = getMax(res, Math.abs(root.val - min), Math.abs(root.val - max));
+        maxAncestorDiffHelper(root.left, min, max);
+        maxAncestorDiffHelper(root.right, min, max);
+    }
     
-   // 最大差值一定是ancestors里面的最大值或最小值跟当前值的差值的绝对值。
-    //因此只保存最大和最新的ancestor值即可 
-    private void dfs(TreeNode node, int min, int max) {
-        if (node == null) return;
-        min = Math.min(node.val, min);
-        max = Math.max(node.val, max);
-        res = Math.max(res, Math.max(Math.abs(max - node.val),
-        Math.abs(min - node.val)));
-        dfs(node.left, min, max);
-        dfs(node.right, min, max);
+    public int getMax(int va1, int va2, int va3) {
+       int max1 = Math.max(va1, va2);
+       return Math.max(max1, va3); 
     }
 }
 ```
