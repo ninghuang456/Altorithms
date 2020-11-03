@@ -51,6 +51,7 @@ class Solution {
       // 用stack 判断是否当前的括号需要换掉
       for (int i = 0; i < sb.length(); ++i) {
          if (sb.charAt(i) == '(') st.add(i);
+         // stack 存的是位置 不是CHAR
           if (sb.charAt(i) == ')') {
            if (!st.empty()) st.pop();
               else sb.setCharAt(i, '*');
