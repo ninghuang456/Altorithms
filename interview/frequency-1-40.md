@@ -109,6 +109,7 @@ class Solution {
         int sum = 0; int res = 0; // sum[i, j] = sum[0, j] - sum[0, i - 1];
         HashMap<Integer, Integer> map = new HashMap<>();
         map.put(0,1); // don't forget this, we have one presum equals 0;
+        // key is sum value, is nums of same key.
         for (int i = 0; i < nums.length; i ++) {
             sum += nums[i];
             if (map.containsKey(sum - k)){
