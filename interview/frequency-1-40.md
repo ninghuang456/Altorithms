@@ -70,25 +70,29 @@ class Solution {
 
 ```java
 class Solution {
+// 	至少有一个 1 的最左端列  
     public int leftMostColumnWithOne(BinaryMatrix binaryMatrix) {
-        List<Integer> dimen = binaryMatrix.dimensions();
-        int m = dimen.get(0), n = dimen.get(1);
-        int left = 0, right = n - 1, ans = -1;
-        while (left <= right) {
+        List<Integer> dim = binaryMatrix.dimensions();
+        int r = dim.get(0); int c = dim.get(1);
+        int left = 0; int right = c - 1; int res = -1;
+        while (left <= right){
             int mid = left + (right - left) / 2;
-            if (existOneInColumn(binaryMatrix, m, mid)) {
-                ans = mid;          // record as current ans
-                right = mid - 1;    // try to find in the left side
+            if(containsOne(r, mid, binaryMatrix)){
+                right = mid - 1;
+                res = mid; // record mid since it may have no such condition.
+                // To find left most we reduce right side once it satisfied condition.
             } else {
-                left = mid + 1;     // try to find in the right side
+                left = mid + 1;
             }
+        
         }
-        return ans;
+     return res;
+        
     }
-    boolean existOneInColumn(BinaryMatrix binaryMatrix, int m, int c) {
-        for (int r = 0; r < m; r++) 
-        if (binaryMatrix.get(r, c) == 1) 
-            return true;
+    public  boolean containsOne(int r, int c, BinaryMatrix binaryMatrix){
+        for (int i = 0; i < r; i ++) {
+            if (binaryMatrix.get(i, c) == 1) return true;
+        }
         return false;
     }
 }
