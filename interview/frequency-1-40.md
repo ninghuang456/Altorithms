@@ -210,6 +210,9 @@ class Solution {
 ## 273- Integer to English Words
 
 ```java
+Convert a non-negative integer num to its English words representation.
+Example 1: Input: num = 123 Output: "One Hundred Twenty Three"
+
 class Solution {
     public String numberToWords(int num) {
         if(num == 0) return "Zero";
@@ -250,6 +253,9 @@ class Solution {
 ## 415 - Add Strings
 
 ```java
+Given two non-negative integers num1 and num2 
+represented as string, return the sum of num1 and num2.
+
 class Solution {
     public String addStrings(String num1, String num2) {
         StringBuilder res = new StringBuilder("");
@@ -273,6 +279,10 @@ class Solution {
 ## 67- Add Binary
 
 ```java
+Given two binary strings, return their sum (also a binary string).
+The input strings are both non-empty and contains only characters 1 or 0.
+Example 1: Input: a = "11", b = "1" Output: "100"
+
 class Solution {
     public String addBinary(String a, String b) {
         StringBuilder sb = new StringBuilder();
