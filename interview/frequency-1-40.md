@@ -254,6 +254,7 @@ class Solution {
     public String addStrings(String num1, String num2) {
         StringBuilder res = new StringBuilder("");
         int i = num1.length() - 1, j = num2.length() - 1, carry = 0;
+        //从后往前加 用最后一个数字开始
         while(i >= 0 || j >= 0){
             int n1 = i >= 0 ? num1.charAt(i) - '0' : 0; 
             //因为有可能一长一短的情况
