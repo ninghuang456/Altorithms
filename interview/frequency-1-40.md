@@ -1521,22 +1521,18 @@ class Solution {
   public List<List<Integer>> verticalOrder(TreeNode root) {
     List<List<Integer>> result = new ArrayList<>();
     if (root == null) return result;
-    Map<Integer, List<Integer>> map = new HashMap<>();
-    int min = 0, max = 0;
+    TreeMap<Integer, List<Integer>> map = new TreeMap<>();
     Queue<TreeNode> queue = new LinkedList<>();
     Queue<Integer> helper = new LinkedList<>();
     queue.offer(root);
     helper.offer(0);
-
     while (!queue.isEmpty()) {
         int size = queue.size();
         for (int i = 0; i < size; i++) {
             TreeNode cur = queue.poll();
             int pos = helper.poll();
-            min = Math.min(min, pos);
-            max = Math.max(max, pos);
             if (!map.containsKey(pos)) map.put(pos, new ArrayList<>());
-            map.get(pos).add(cur.val);
+            map.get(pos).add(cur.val);// add current value based on post
             if (cur.left != null) {
                 queue.offer(cur.left);
                 helper.offer(pos - 1);
@@ -1547,9 +1543,9 @@ class Solution {
             }
         }
     }
-
-    for (int i = min; i <= max; i++) result.add(- min + i, map.get(i));
-    
+    for (Map.Entry<Integer, List<Integer>> entry : map.entrySet()){
+        result.add(entry.getValue());
+    }
     return result;
 }
 
