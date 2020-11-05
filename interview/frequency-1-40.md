@@ -126,6 +126,8 @@ class Solution {
 ## 680 Valid Palindrome II
 
 ```java
+Given a non-empty string s, you may delete at most 
+one character. Judge whether you can make it a palindrome.
 // Input: "aba" Output: True
 class Solution {
     public boolean validPalindrome(String s) {
@@ -134,6 +136,7 @@ class Solution {
             if (s.charAt(left) != s.charAt(right)){
                 return extendPalindrome(s,left + 1, right) || 
                  extendPalindrome(s,left, right - 1);
+                 // 把没走完的路继续下去 因为只让挪动一个数字
             }
             left ++;
             right--;
