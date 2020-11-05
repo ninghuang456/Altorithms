@@ -940,19 +940,21 @@ class Solution {
         //产生随机数
         Random random = new Random();
         int randomNum = random.nextInt(arr[arr.length - 1]) + 1;
+        //找到累加后的最后一个数
         //二分查找随机数所在的区间
-        int left = 0, right = arr.length - 1;
-        while (left < right) {
-            int mid = left + ((right - left) >> 1);
+        int left = 0, right = arr.length - 1; int ans = -1;
+        while (left <= right) {
+            int mid = left + ((right - left) / 2);
             if (arr[mid] == randomNum) {
                 return mid;
             } else if (arr[mid] > randomNum) {
-                right = mid;
+                right = mid - 1;
+                ans = mid;
             } else {
                 left = mid + 1;
             }
         }
-        return left;
+        return ans;
     }
 }
 ```
