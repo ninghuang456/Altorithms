@@ -16,6 +16,7 @@
 * [String 1](high-frequency/untitled.md)
 * [Tree](high-frequency/tree.md)
 * [BinarySearch](high-frequency/binarysearch.md)
+* [Array3](high-frequency/array3.md)
 
 ## Interview
 
