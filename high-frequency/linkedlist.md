@@ -57,7 +57,7 @@ class Solution {
 }
 ```
 
-2 Copy List with Random Pointer
+## 2 Copy List with Random Pointer
 
 A linked list is given such that each node contains an additional random pointer which could point to any node in the list or null.
 
@@ -108,7 +108,7 @@ class Solution {
 }
 ```
 
-3 Merge Two Sorted Lists
+## 3 Merge Two Sorted Lists
 
 Merge two sorted linked lists and return it as a new list. The new list should be made by splicing together the nodes of the first two lists.
 
@@ -145,7 +145,7 @@ class Solution {
 }
 ```
 
-4 Reverse Linked List
+## 4 Reverse Linked List
 
 ```text
 /**
@@ -169,7 +169,7 @@ class Solution {
 }
 ```
 
-5 Merge k Sorted Lists
+## 5 Merge k Sorted Lists
 
 ```text
 /**
@@ -221,7 +221,7 @@ class Solution {
 }
 ```
 
-6 Linked List Cycle
+## 6 Linked List Cycle
 
 Given a linked list, determine if it has a cycle in it.
 
@@ -257,80 +257,4 @@ public class Solution {
 ```
 
 
-
-* Reverse Nodes in k-Group
-
-  原题概述
-
-  Given a linked list, reverse the nodes of a linked list k at a time and return its modified list.
-
-  k is a positive integer and is less than or equal to the length of the linked list. If the number of nodes is not a multiple of k then left-out nodes in the end should remain as it is.
-
-  Example:
-
-  Given this linked list: 1-&gt;2-&gt;3-&gt;4-&gt;5
-
-  For k = 2, you should return: 2-&gt;1-&gt;4-&gt;3-&gt;5
-
-  For k = 3, you should return: 3-&gt;2-&gt;1-&gt;4-&gt;5
-
-  Note:
-
-  •    Only constant extra memory is allowed.
-
-  •    You may not alter the values in the list's nodes, only nodes itself may be changed.
-
-  题意和分析
-
-  这道题要求以k个结点为一组进行翻转，实际上是把原链表分成若干小段，然后分别对其进行翻转，以题目中给的例子来看，对于给定链表1-&gt;2-&gt;3-&gt;4-&gt;5，一般在处理链表问题时，我们大多时候都会在开头再加一个dummy node，因为翻转链表时头结点可能会变化，为了记录当前最新的头结点的位置而引入的dummy node，那么我们加入dummy node后的链表变为-1-&gt;1-&gt;2-&gt;3-&gt;4-&gt;5，如果k为3的话，我们的目标是将1,2,3翻转一下，那么我们需要一些指针，pre和next分别指向要翻转的链表的前后的位置，然后翻转后pre的位置更新到如下新的位置： 
-
-  -1-&gt;1-&gt;2-&gt;3-&gt;4-&gt;5
-
-  \|           \|
-
-  pre         next
-
-  -1-&gt;3-&gt;2-&gt;1-&gt;4-&gt;5
-
-  ```text
-      |  |
-     pre next
-  ```
-
-以此类推，只要next走过k个节点，就可以进行局部翻转了。 也可以使用递归来做，我们用head记录每段的开始位置，current记录结束位置的下一个节点，然后我们调用reverse函数来将这段翻转，然后得到一个newHead，原来的head就变成了末尾，这时候后面接上递归调用下一段得到的新节点，返回newHead即可。
-
-```text
-/**
- * Definition for singly-linked list.
- * public class ListNode {
- *     int val;
- *     ListNode next;
- *     ListNode(int x) { val = x; }
- * }
- */
-class Solution {
-    public ListNode reverseKGroup(ListNode head, int k) {
-        ListNode curr = head;
-        int count = 0;
-        while (curr != null && count != k) { // find the k+1 node
-            curr = curr.next;
-            count++;
-        }
-        if (count == k) { // if k+1 node is found
-            curr = reverseKGroup(curr, k); // reverse list with k+1 node as head
-            // head - head-pointer to direct part, 
-            // curr - head-pointer to reversed part;
-            while (count-- > 0) { // reverse current k-group: 
-                ListNode tmp = head.next; // tmp - next head in direct part
-                head.next = curr; // preappending "direct" head to the reversed list 
-                curr = head; // move head of reversed part to a new node
-                head = tmp; // move "direct" head to the next node in direct part
-            }
-            head = curr;
-        }
-        return head;
-    }
-}
-
-```
 
