@@ -2,7 +2,7 @@
 description: Facebook
 ---
 
-# Frequency 1-40
+# Farebook Frequency 1-40
 
 ## 953 - Verifying an Alien Dictionary
 

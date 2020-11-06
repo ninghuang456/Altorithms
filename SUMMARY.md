@@ -19,7 +19,7 @@
 
 ## Interview
 
-* [Frequency 1-40](interview/frequency-1-40.md)
-* [Frequency 40-80](interview/facebook.md)
+* [Farebook Frequency 1-40](interview/frequency-1-40.md)
+* [FaceBook Frequency 40-80](interview/facebook.md)
 * [Amazon Frequency 1~ 30](interview/amazon-frequency-1-30.md)
 
