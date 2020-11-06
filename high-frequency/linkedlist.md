@@ -1,6 +1,6 @@
 # LinkedList
 
-1 Add Two Numbers
+## 1 Add Two Numbers
 
 ou are given two **non-empty** linked lists representing two non-negative integers. The digits are stored in **reverse order** and each of their nodes contain a single digit. Add the two numbers and return it as a linked list.
 
@@ -14,7 +14,7 @@ Output: 7 -> 0 -> 8
 Explanation: 342 + 465 = 807.
 ```
 
-```text
+```java
 /**
  * Definition for singly-linked list.
  * public class ListNode {
