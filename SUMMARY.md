@@ -15,6 +15,7 @@
 * [LinkedList](high-frequency/linkedlist.md)
 * [String 1](high-frequency/untitled.md)
 * [Tree](high-frequency/tree.md)
+* [BinarySearch](high-frequency/binarysearch.md)
 
 ## Interview
 
