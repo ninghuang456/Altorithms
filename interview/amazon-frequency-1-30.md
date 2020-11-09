@@ -374,3 +374,227 @@ class Solution {
 }
 ```
 
+## 21-Merge Two Sorted Lists
+
+```java
+class Solution {
+    public ListNode mergeTwoLists(ListNode l1, ListNode l2) {
+        if (l1 == null) return l2;
+        if (l2 == null) return l1;
+        if (l1.val < l2.val){
+            l1.next = mergeTwoLists(l1.next, l2);
+            return l1;
+        }
+        l2.next = mergeTwoLists(l1, l2.next);
+        return l2;
+        }
+        
+    }
+
+```
+
+## 763-Partition Labels
+
+```java
+A string S of lowercase English letters is given.
+ We want to partition this string into as many parts as possible so that each 
+ letter appears in at most one part, and return a list of integers 
+ representing the size of these parts.
+Example 1:
+Input: S = "ababcbacadefegdehijhklij"
+Output: [9,7,8]
+Explanation:
+The partition is "ababcbaca", "defegde", "hijhklij".
+This is a partition so that each letter appears in at most one part.
+A partition like "ababcbacadefegde", "hijhklij" 
+is incorrect, because it splits S into less parts.
+
+class Solution {
+    public List<Integer> partitionLabels(String S) {
+        if(S == null || S.length() == 0){
+            return null;
+        }
+        List<Integer> list = new ArrayList<>();
+        int[] map = new int[26];  
+       // record the last index of the each char
+        for(int i = 0; i < S.length(); i++){
+            map[S.charAt(i)-'a'] = i;
+        }
+        // record the end index of the current sub string
+        int last = 0;
+        int start = 0;
+        for(int i = 0; i < S.length(); i++){
+            last = Math.max(last, map[S.charAt(i)-'a']);
+            if(last == i){
+                list.add(last - start + 1);
+                start = last + 1;
+            }
+        }
+        return list;
+    }
+}
+```
+
+## 56.Merge Intervals
+
+```java
+class Solution {
+    public int[][] merge(int[][] intervals) {
+        Arrays.sort(intervals, (a,b) -> a[0] - b[0]); // -> not =>
+        int k = 0;
+        int i = 0;
+        while (i < intervals.length) {
+            int start = intervals[i][0];
+            int end = intervals[i][1];
+            while (i < intervals.length - 1 && end >= intervals[i + 1][0]){ 
+            // test overlap need to first check end with next start
+                i ++;
+                end = Math.max(intervals[i][1], end);
+            }
+            intervals[k][0] = start;
+            intervals[k][1] = end;
+            k ++;
+            i ++; 
+        }
+        return Arrays.copyOf(intervals, k);
+    }
+}
+```
+
+## 238-Product of Array Except Self
+
+```java
+class Solution {
+    public int[] productExceptSelf(int[] nums) {
+        int n = nums.length;
+        int[] front = new int[n]; int[] back = new int[n]; int[] res = new int[n];
+        front[0] = 1;
+        back[n - 1] = 1;
+        for (int i = 1; i < n; i ++) {
+            front[i] = nums[i - 1] * front[i - 1];
+        }
+        
+        for (int j = n - 2; j >= 0; j --) {
+            back[j] = back[j + 1] * nums[j + 1];
+        }
+        
+        for (int i = 0; i < n; i ++) {
+            res[i] = front[i] * back[i];
+        }
+        return res;
+    }
+}
+```
+
+## 23-Merge k Sorted Lists
+
+```java
+class Solution {
+    public ListNode mergeKLists(ListNode[] lists) {
+        
+       // if(lists == null || lists.length == 0) return null;
+        PriorityQueue<ListNode> pq = new PriorityQueue<>((l1,l2)-> l1.val - l2.val);
+        ListNode head = new ListNode(-1);
+        ListNode cur = head;
+        for(int i = 0; i < lists.length; i ++){
+            if(lists[i] != null){
+             pq.offer(lists[i]);   
+            }
+        }
+        while(!pq.isEmpty()){
+            ListNode temp = pq.poll();
+            cur.next = temp;
+            cur = cur.next;
+            if(temp.next != null){
+                pq.offer(temp.next);
+            }
+        }
+        return head.next;
+    }
+}
+```
+
+## 273-Integer to English Words
+
+```java
+class Solution {
+    public String numberToWords(int num) {
+        if(num == 0) return "Zero";
+        return helper(num);  
+    }
+    
+    public String helper(int num ) {
+        String[] words = new String[] {"", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten",
+                                      "Eleven", "Twelve", "Thirteen", "Fourteen", "Fifteen", "Sixteen", "Seventeen",
+                                       "Eighteen", "Nineteen"}; // Fifteen, Twelve Forty Nineteen Ninety Hundred
+        String[] words1 = new String[]{"","","Twenty ", "Thirty ", "Forty ", "Fifty ", "Sixty ",  "Seventy ", "Eighty ", "Ninety "};
+       StringBuilder sb = new StringBuilder();
+        if (num >= 1000000000) {
+            sb.append(helper(num/1000000000)).append(" Billion ");
+            num %= 1000000000; 
+        }
+        if (num >= 1000000) {
+            sb.append(helper(num/1000000)).append(" Million ");
+            num %= 1000000; 
+        }
+        if (num >= 1000) {
+            sb.append(helper(num/1000)).append(" Thousand ");
+            num %= 1000; 
+        }
+        if (num >= 100) {
+            sb.append(helper(num/100)).append(" Hundred ");
+            num %= 100; 
+        }
+        if (num >= 20) {
+             sb.append(words1[num/10]).append(words[num%10]);
+        } else {
+          sb.append(words[num]);  
+        }
+        
+        return sb.toString().trim();
+        
+    }
+}
+```
+
+## 139-Word Break
+
+![](../.gitbook/assets/wordbreak.png)
+
+```java
+方法一：动态规划
+
+初始化 dp=[False,\cdots,False]dp=[False,⋯,False]，长度为 n+1n+1。
+nn 为字符串长度。dp[i]dp[i] 表示 ss 的前 ii 位是否可以用 wordDictwordDict 中的单词表示。
+初始化 dp[0]=Truedp[0]=True，空字符可以被表示。
+遍历字符串的所有子串，遍历开始索引 ii，遍历区间 [0,n)[0,n)：
+遍历结束索引 jj，遍历区间 [i+1,n+1)[i+1,n+1)：
+若 dp[i]=Truedp[i]=True 且 s[i,\cdots,j)s[i,⋯,j) 
+在 wordlistwordlist 中：dp[j]=Truedp[j]=True。解释：dp[i]=Truedp[i]=True 
+说明 ss 的前 ii 位可以用 wordDictwordDict 表示，则 s[i,\cdots,j)s[i,⋯,j) 
+出现在 wordDictwordDict 中，说明 ss 的前 jj 位可以表示。
+返回 dp[n]dp[n]
+复杂度分析
+时间复杂度：O(n^{2})O(n 
+2
+ )
+空间复杂度：O(n)O(n)
+
+class Solution {
+    public boolean wordBreak(String s, List<String> wordDict) {
+        boolean[] dp = new boolean[s.length() + 1];
+        Set<String> set = new HashSet<>(wordDict);
+        dp[0] = true;
+        for (int i = 1; i <= s.length(); i++) {
+            for (int j = 0; j < i; j++) {
+                if (dp[j] && set.contains(s.substring(j, i))){
+                    dp[i] = true;
+                    break;
+                }
+            }
+        }
+        return dp[s.length()];
+    }
+}
+```
+
