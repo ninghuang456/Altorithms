@@ -347,3 +347,30 @@ class Solution {
 
 ```
 
+## 5-Longest Palindromic Substring
+
+```java
+class Solution {
+    int lo = 0; int maxLen = 0;
+    public String longestPalindrome(String s) {
+        if (s.length() < 2) return s;
+        for (int i = 0; i < s.length(); i ++) {
+            extendedPalindrome(s, i , i);
+            extendedPalindrome(s, i, i + 1);
+        }
+        return s.substring(lo, lo + maxLen);
+    }
+    public void extendedPalindrome(String s, int l, int r){
+      //  int l = left; int r = right; //作用域
+        while (l >= 0 && l < s.length() && r >= 0 && r < s.length() && s.charAt(l) == s.charAt(r)){
+            l --;
+            r ++;
+        }
+        if (maxLen < r - l - 1){ // 
+            lo = l + 1;
+            maxLen = r - l - 1;
+        }
+    }
+}
+```
+
