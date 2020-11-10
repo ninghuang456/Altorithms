@@ -861,5 +861,274 @@ class Solution {
 }
 ```
 
+## 127-Word Ladder
+
+```java
+Input:
+beginWord = "hit",
+endWord = "cog",
+wordList = ["hot","dot","dog","lot","log","cog"]
+
+class Solution {
+    public int ladderLength(String beginWord, String endWord, List<String> wordList) {
+         HashSet<String> wordSet = new HashSet<>(wordList);
+         if(!wordSet.contains(endWord)) return 0;
+         Queue<String> queue = new LinkedList<>();
+         HashSet<String> visited = new HashSet<>();
+         queue.offer(beginWord);
+         visited.add(beginWord);
+         int steps = 0;
+         while (!queue.isEmpty()){
+             steps ++;
+             int size = queue.size();
+             for (int i = 0; i < size; i ++){
+                 String word = queue.poll();
+                if(word.equals(endWord)) return steps;
+                 for (int j = 0; j < word.length(); j ++){
+                     char[] letters = word.toCharArray();
+                     for (char l = 'a'; l <= 'z'; l ++){
+                         letters[j] = l;
+                         String nextWord = new String(letters);
+                         if(!visited.contains(nextWord) && wordSet.contains(nextWord)){
+                             queue.offer(nextWord);
+                             visited.add(nextWord);
+                         }
+                     }
+                 }
+             }
+         }
+         return 0;    
+         
+        
+    }
+}
+```
+
+## 212-Word Search II
+
+```java
+class Solution {
+    public List<String> findWords(char[][] board, String[] words) {
+        //构建字典树
+        wordTrie myTrie=new wordTrie();
+        trieNode root= myTrie.root;
+        for(String s:words)
+            myTrie.insert(s);
+        //使用set防止重复
+        Set<String> result =new HashSet<>();
+        int m=board.length;
+        int n=board[0].length;
+        boolean [][]visited=new boolean[m][n];
+        //遍历整个二维数组
+        for(int i=0;i<board.length; i++){
+            for (int j = 0; j < board [0].length; j++){
+                find(board,visited,i,j,m,n,result,root);
+            }
+        }
+        System.out.print(result);
+        return new LinkedList<String>(result);
+    }
+    private void find(char [] [] board, boolean [][]visited,int i,int j,int m,int n,Set<String> result,trieNode cur){
+        //边界以及是否已经访问判断
+        if(i<0||i>=m||j<0||j>=n||visited[i][j])
+            return;
+        cur=cur.child[board[i][j]-'a'];
+        visited[i][j]=true;
+        if(cur==null)
+        {
+            //如果单词不匹配，回退
+            visited[i][j]=false;
+            return;
+        }
+        //找到单词加入
+        if(cur.isLeaf)
+        {
+            result.add(cur.val);
+//找到单词后不能回退，因为可能是“ad” “addd”这样的单词得继续回溯
+//            visited[i][j]=false;
+//            return;
+        }
+        find(board,visited,i+1,j,m,n,result,cur);
+        find(board,visited,i,j+1,m,n,result,cur);
+        find(board,visited,i,j-1,m,n,result,cur);
+        find(board,visited,i-1,j,m,n,result,cur);
+        //最后要回退，因为下一个起点可能会用到上一个起点的字符
+        visited[i][j]=false;
+    }
+
+
+//字典树
+class wordTrie{
+    public trieNode root=new trieNode();
+    public void insert(String s){
+        trieNode cur=root;
+        for(char c:s.toCharArray()){
+            if(cur.child[c-'a']==null){ // like containsKey
+                cur.child [c-'a'] = new trieNode();
+            }
+            cur=cur.child [c-'a'];
+        }
+        cur.isLeaf=true;
+        cur.val=s;
+    }
+}
+//字典树结点
+class trieNode {
+    public String val;
+    public trieNode[] child=new trieNode[26];
+    public boolean isLeaf=false;
+    trieNode(){
+    }
+}
+
+}
+```
+
+## 210-Course Schedule II
+
+```java
+class Solution {
+    public int[] findOrder(int numCourses, int[][] prerequisites) {
+        int[] indegrees = new int[numCourses];
+        List<ArrayList<Integer>> adjTable = new ArrayList<>();
+        ArrayList<Integer> res = new ArrayList<>();
+        for (int i = 0; i < numCourses; i ++) {
+            adjTable.add(new ArrayList<Integer>());
+        }
+        for (int[] pre : prerequisites){
+            indegrees[pre[0]] ++;
+            adjTable.get(pre[1]).add(pre[0]);
+        }
+        Queue<Integer> queue = new LinkedList<>();
+        for (int i = 0; i < indegrees.length; i ++) {
+            if(indegrees[i] == 0){
+                queue.offer(i);
+            }
+        }
+        while (!queue.isEmpty()) {
+            int cur = queue.poll();
+            numCourses --;
+            res.add(cur);
+            List<Integer> adj = adjTable.get(cur);
+            for (int next : adj) {
+                indegrees[next] --;
+                if (indegrees[next] == 0) {
+                    queue.offer(next);
+                }
+            }
+        }
+        if (numCourses != 0) return new int[0];
+        int[] finalRes = new int[res.size()];
+        for (int i = 0; i < res.size(); i ++){
+            finalRes[i] = res.get(i);
+        }
+        return finalRes;
+    }
+}
+```
+
+## 348-Design Tic-Tac-Toe
+
+```java
+Input
+["TicTacToe", "move", "move", "move", "move", "move", "move", "move"]
+[[3], [0, 0, 1], [0, 2, 2], [2, 2, 1], [1, 1, 2], [2, 0, 1], [1, 0, 2], [2, 1, 1]]
+Output
+[null, 0, 0, 0, 0, 0, 0, 1]
+
+public class TicTacToe {
+private int[] rows;
+private int[] cols;
+private int diagonal;
+private int antiDiagonal;
+
+/** Initialize your data structure here. */
+public TicTacToe(int n) {
+    rows = new int[n];
+    cols = new int[n];
+}
+
+/** Player {player} makes a move at ({row}, {col}).
+    @param row The row of the board.
+    @param col The column of the board.
+    @param player The player, can be either 1 or 2.
+    @return The current winning condition, can be either:
+            0: No one wins.
+            1: Player 1 wins.
+            2: Player 2 wins. */
+public int move(int row, int col, int player) {
+    int toAdd = player == 1 ? 1 : -1;
+    
+    rows[row] += toAdd;
+    cols[col] += toAdd;
+    if (row == col)
+    {
+        diagonal += toAdd;
+    }
+    
+    if (col == (cols.length - row - 1))
+    {
+        antiDiagonal += toAdd;
+    }
+    
+    int size = rows.length;
+    if (Math.abs(rows[row]) == size ||
+        Math.abs(cols[col]) == size ||
+        Math.abs(diagonal) == size  ||
+        Math.abs(antiDiagonal) == size)
+    {
+        return player;
+    }
+    
+    return 0;
+}
+}
+```
+
+## 957-Prison Cells After N Days
+
+```java
+
+
+class Solution {
+    public int[] prisonAfterNDays(int[] cells, int N) {
+		if(cells==null || cells.length==0 || N<=0) return cells;
+        boolean hasCycle = false;
+        int cycle = 0;
+        HashSet<String> set = new HashSet<>(); 
+        for(int i=0;i<N;i++){
+            int[] next = nextDay(cells);
+            String key = Arrays.toString(next);
+            if(!set.contains(key)){ //store cell state
+                set.add(key);
+                cycle++;
+            }
+            else{ //hit a cycle
+                hasCycle = true;
+                break;
+            }
+            cells = next;
+        }
+        if(hasCycle){
+            N%=cycle;
+            for(int i=0;i<N;i++){
+                cells = nextDay(cells);
+            }   
+        }
+        return cells;
+    }
+    
+    private int[] nextDay(int[] cells){
+        int[] tmp = new int[cells.length];
+        for(int i=1;i<cells.length-1;i++){
+            tmp[i]=cells[i-1]==cells[i+1]?1:0;
+        }
+        return tmp;
+    }
+}
+```
+
+## 
+
 ## 
 
