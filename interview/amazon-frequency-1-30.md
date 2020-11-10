@@ -693,7 +693,7 @@ class Solution {
         
         for (String ban : banned) {
             if (map.containsKey(ban)) {
-                map.remove(ban);
+                map.remove(ban); // use remove method to ban
             }
         }
         for (Map.Entry<String, Integer> wordEntry : map.entrySet()) {
