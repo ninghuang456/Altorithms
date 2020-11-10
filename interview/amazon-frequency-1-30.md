@@ -663,5 +663,39 @@ class Solution {
 }
 ```
 
+## 819- Most Common Word
+
+```java
+class Solution {
+    public String mostCommonWord(String paragraph, String[] banned) {
+        if (paragraph.length()==0) {
+            return "";
+        }
+        String result = "";
+        HashMap<String, Integer> map = new HashMap<>();
+        String[] words = paragraph.replaceAll("\\W+" , " ").toLowerCase().split("\\s+");
+        for (String word : words) {
+            if (map.containsKey(word)){
+                map.put(word,map.get(word) + 1);
+            } else {
+                map.put(word,1);
+            }
+        }
+        
+        for (String ban : banned) {
+            if (map.containsKey(ban)) {
+                map.remove(ban);
+            }
+        }
+        for (Map.Entry<String, Integer> wordEntry : map.entrySet()) {
+         if (result.length() == 0 || wordEntry.getValue() > map.get(result)) {
+            result = wordEntry.getKey();
+         }
+      }
+       return result;
+    }
+}
+```
+
 ## 
 
