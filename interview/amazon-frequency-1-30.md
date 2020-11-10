@@ -793,5 +793,73 @@ class Solution {
 }
 ```
 
+## 994-Rotting Oranges
+
+```java
+一开始，我们找出所有腐烂的橘子，将它们放入队列，作为第 0 层的结点。
+然后进行 BFS 遍历，每个结点的相邻结点可能是上、下、左、右四个方向的结点，
+注意判断结点位于网格边界的特殊情况。
+由于可能存在无法被污染的橘子，我们需要记录新鲜橘子的数量。
+在 BFS 中，每遍历到一个橘子（污染了一个橘子），就将新鲜橘子的数量减一。
+如果 BFS 结束后这个数量仍未减为零，说明存在无法被污染的橘子。
+
+class Solution {
+    public int orangesRotting(int[][] grid) {
+    int M = grid.length;
+    int N = grid[0].length;
+    Queue<Integer> queue = new LinkedList<>();
+
+    int count = 0; // count 表示新鲜橘子的数量
+    for (int r = 0; r < M; r++) {
+        for (int c = 0; c < N; c++) {
+            if (grid[r][c] == 1) {
+                count++;
+            } else if (grid[r][c] == 2) {
+                queue.add(r*N + c);
+            }
+        }
+    }
+
+    int round = 0; // round 表示腐烂的轮数，或者分钟数
+    while (count > 0 && !queue.isEmpty()) {
+        round++;
+        int n = queue.size();
+        for (int i = 0; i < n; i++) {
+            int orange = queue.poll();
+            int r = orange/N;
+            int c = orange%N;
+            if (r-1 >= 0 && grid[r-1][c] == 1) {
+                grid[r-1][c] = 2;
+                count--;
+                queue.add((r-1)*N + c);
+            }
+            if (r+1 < M && grid[r+1][c] == 1) {
+                grid[r+1][c] = 2;
+                count--;
+                queue.add((r+1)*N + c);
+            }
+            if (c-1 >= 0 && grid[r][c-1] == 1) {
+                grid[r][c-1] = 2;
+                count--;
+                queue.add(r*N + c - 1);
+            }
+            if (c+1 < N && grid[r][c+1] == 1) {
+                grid[r][c+1] = 2;
+                count--;
+                queue.add(r*N + c + 1);
+            }
+        }
+    }
+
+    if (count > 0) {
+        return -1;
+    } else {
+        return round;
+    }
+}
+    
+}
+```
+
 ## 
 
