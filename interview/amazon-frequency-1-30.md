@@ -889,7 +889,8 @@ class Solution {
                      for (char l = 'a'; l <= 'z'; l ++){
                          letters[j] = l;
                          String nextWord = new String(letters);
-                         if(!visited.contains(nextWord) && wordSet.contains(nextWord)){
+                         if(!visited.contains(nextWord) 
+                         && wordSet.contains(nextWord)){
                              queue.offer(nextWord);
                              visited.add(nextWord);
                          }
