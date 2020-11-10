@@ -706,5 +706,92 @@ class Solution {
 }
 ```
 
+## 682- Baseball Game
+
+```java
+An integer x - Record a new score of x.
+"+" - Record a new score that is the sum of the previous two scores. 
+It is guaranteed there will always be two previous scores.
+"D" - Record a new score that is double the previous score. 
+It is guaranteed there will always be a previous score.
+"C" - Invalidate the previous score, removing it from the record. 
+It is guaranteed there will always be a previous score.
+Return the sum of all the scores on the record.
+Example 1:
+
+Input: ops = ["5","2","C","D","+"]
+Output: 30
+Explanation:
+"5" - Add 5 to the record, record is now [5].
+"2" - Add 2 to the record, record is now [5, 2].
+"C" - Invalidate and remove the previous score, record is now [5].
+"D" - Add 2 * 5 = 10 to the record, record is now [5, 10].
+"+" - Add 5 + 10 = 15 to the record, record is now [5, 10, 15].
+The total sum is 5 + 10 + 15 = 30.
+
+class Solution {
+    public int calPoints(String[] ops) {
+        Stack<Integer> stack = new Stack();
+
+        for(String op : ops) {
+            if (op.equals("+")) {
+                int top = stack.pop();
+                int newtop = top + stack.peek();
+                stack.push(top);
+                stack.push(newtop);
+            } else if (op.equals("C")) {
+                stack.pop();
+            } else if (op.equals("D")) {
+                stack.push(2 * stack.peek());
+            } else {
+                stack.push(Integer.valueOf(op));
+            }
+        }
+
+        int ans = 0;
+        for(int score : stack) ans += score;
+        return ans;
+    }
+}
+
+```
+
+## 1010- Pairs of Songs With Total Durations Divisible by 60
+
+```java
+Input: [30,20,150,100,40]
+Output: 3
+Explanation: Three pairs have a total duration divisible by 60:
+(time[0] = 30, time[2] = 150): total duration 180
+(time[1] = 20, time[3] = 100): total duration 120
+(time[1] = 20, time[4] = 40): total duration 60
+
+整数对60取模，可能有60种余数。故初始化一个长度为60的数组，统计各余数出现的次数。
+遍历time数组，每个值对60取模，并统计每个余数值（0-59）出现的个数。
+因为余数部分需要找到合适的cp组合起来能被60整除。
+余数为0的情况，只能同余数为0的情况组合（如60s、120s等等）。
+0的情况出现k次，则只能在k中任选两次进行两两组合。用k * (k - 1) / 2表示。
+余数为30的情况同上。
+其余1与59组合，2与58组合，故使用双指针分别从1和59两头向中间遍历。
+1的情况出现m次，59的情况出现n次，则总共有m*n种组合。
+
+class Solution {
+    public int numPairsDivisibleBy60(int[] time) {
+        int count = 0;
+		int[] seconds = new int[60];
+		for(int t : time) {
+			seconds[t % 60] += 1; 
+		}
+		count += seconds[30] * (seconds[30] - 1) / 2;
+		count += seconds[0] * (seconds[0] - 1) / 2;
+		int i = 1, j = 59;
+		while(i < j) {
+			count += seconds[i++] * seconds[j--];
+		}
+		return count;
+	}
+}
+```
+
 ## 
 
