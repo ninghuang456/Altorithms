@@ -666,6 +666,14 @@ class Solution {
 ## 819- Most Common Word
 
 ```java
+paragraph = "Bob hit a ball, the hit BALL flew far after it was hit."
+banned = ["hit"]
+Output: "ball"
+Explanation: 
+"hit" occurs 3 times, but it is a banned word.
+"ball" occurs twice (and no other word does), 
+so it is the most frequent non-banned word in the paragraph. 
+
 class Solution {
     public String mostCommonWord(String paragraph, String[] banned) {
         if (paragraph.length()==0) {
@@ -673,7 +681,8 @@ class Solution {
         }
         String result = "";
         HashMap<String, Integer> map = new HashMap<>();
-        String[] words = paragraph.replaceAll("\\W+" , " ").toLowerCase().split("\\s+");
+        String[] words = paragraph.replaceAll("\\W+" , " ")
+                         .toLowerCase().split("\\s+");
         for (String word : words) {
             if (map.containsKey(word)){
                 map.put(word,map.get(word) + 1);
