@@ -130,6 +130,8 @@ class Solution {
         : (result > Integer.MAX_VALUE ? Integer.MAX_VALUE : (int) result);
     }
 }
+// https://leetcode.com/problems/divide-two-integers/discuss/13467
+// /Very-detailed-step-by-step-explanation-(Java-solution)
 
 ```
 
@@ -168,7 +170,6 @@ class SparseVector {
 ```java
 
 public class Solution {
-
     int[] nums;
     Random rnd;
 
