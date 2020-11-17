@@ -1724,6 +1724,58 @@ class Solution {
 }
 ```
 
+## 708 Insert into a Sorted Circular Linked List
+
+```java
+Given a node from a Circular Linked List which is sorted in ascending order, 
+write a function to insert a value insertVal into the list such that it 
+remains a sorted circular list. The given node can be a reference to 
+any single node in the list, and may not be necessarily the smallest 
+value in the circular list.
+
+We could also use 2 pass traverse where in the 1st pass try to find max the
+ tipping point node, then break the cycle into ordinary list, 
+ then insert x, then reconnect newTail and head to be a cycle.
+I think the following solution is correct. but the judging system go 
+against with this one caseinsert(1->3->5->{loopback} , 1).
+This solution returns 1->3->5->1->{loopback} vs what 's 
+expected by the judging system 1->1->3->5->{loopback}, 
+since it's already mentioned in the problems
+If there are multiple suitable places for insertion, 
+you may choose any place to insert the new value. After the insertion,
+ the cyclic list should remain sorted. I think 1->3->5->1->{loopback} 
+ could also be considered correct. Let me know if you have any insight into this.
+
+class Solution {
+    public Node insert(Node start, int x) {
+        // if start is null, create a node pointing to itself and return
+        if (start == null) {
+            Node node = new Node(x, null);
+            node.next = node;
+            return node;
+        }
+        // if start is not null, try to insert it into correct position
+        // 1st pass to find max node
+        Node cur = start;
+        while (cur.val <= cur.next.val && cur.next != start) 
+            cur = cur.next;
+        // 2nd pass to insert the node in to correct position
+        Node max = cur;
+        Node dummy = new Node(0, max.next); 
+        // use a dummy head to make insertion process simpler
+        max.next = null; // break the cycle
+        cur = dummy;
+        while (cur.next != null && cur.next.val < x) {
+            cur = cur.next;
+        }
+        cur.next = new Node(x, cur.next); // insert
+        Node newMax = max.next == null ? max : max.next; // reconnect to cycle
+        newMax.next = dummy.next;
+        return start;
+    }
+}
+```
+
 ## 
 
 ## 
