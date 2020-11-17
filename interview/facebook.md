@@ -4,6 +4,45 @@ description: FaceBook
 
 # FaceBook Frequency 40-80
 
+## 20 Divide Two Integers
+
+```java
+Given two integers dividend and divisor, 
+divide two integers without using multiplication, division, 
+and mod operator.
+Input: dividend = 10, divisor = 3
+Output: 3
+Explanation: 10/3 = truncate(3.33333..) = 3.
+
+Return the quotient after dividing dividend by divisor.
+We know that division is actually the backward of multiplication, 
+for example , 20 / 5 = 4 can be seen as 4 * 5 = 20. 
+Here what we are going to do is to find the multiplication.
+ We set tmp as divisor (5) and set count to 1. 
+ As long as the tmp is less than or equal to dividend (20), 
+ we left shift << which is same as multiply 2 but without using multiplication.
+ 
+class Solution {
+    public int divide(int dividend, int divisor) {
+        boolean isNegative = (dividend < 0 && divisor > 0) || (dividend > 0 && divisor < 0) ? true : false;
+        long absDividend = Math.abs((long) dividend);
+        long absDivisor = Math.abs((long) divisor);
+        long result = 0;
+        while (absDividend >= absDivisor) {
+            long temp = absDivisor, count = 1;
+            while (temp <= absDividend) {
+                temp <<= 1;
+                count <<= 1;
+            }
+            result += count >> 1;
+            absDividend -= temp >> 1;
+        }
+        return isNegative ? (int) ~result + 1 : (result > Integer.MAX_VALUE ? Integer.MAX_VALUE : (int) result);
+    }
+}
+
+```
+
 ## 1570  Dot Product of Two Sparse Vectors
 
 ```java
