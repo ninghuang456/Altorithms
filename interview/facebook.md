@@ -2,7 +2,7 @@
 description: FaceBook
 ---
 
-# FaceBook Frequency 40-80
+# FaceBook Frequency 50-100
 
 ## 20 Divide Two Integers
 
