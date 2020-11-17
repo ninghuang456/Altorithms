@@ -24,7 +24,8 @@ Here what we are going to do is to find the multiplication.
  
 class Solution {
     public int divide(int dividend, int divisor) {
-        boolean isNegative = (dividend < 0 && divisor > 0) || (dividend > 0 && divisor < 0) ? true : false;
+        boolean isNegative = (dividend < 0 && divisor > 0) 
+        || (dividend > 0 && divisor < 0) ? true : false;
         long absDividend = Math.abs((long) dividend);
         long absDivisor = Math.abs((long) divisor);
         long result = 0;
@@ -37,7 +38,8 @@ class Solution {
             result += count >> 1;
             absDividend -= temp >> 1;
         }
-        return isNegative ? (int) ~result + 1 : (result > Integer.MAX_VALUE ? Integer.MAX_VALUE : (int) result);
+        return isNegative ? (int) ~result + 1 
+        : (result > Integer.MAX_VALUE ? Integer.MAX_VALUE : (int) result);
     }
 }
 
