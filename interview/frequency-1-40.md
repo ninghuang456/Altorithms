@@ -7,8 +7,10 @@ description: Facebook
 ## 953 - Verifying an Alien Dictionary
 
 ```java
-//Input: words = ["hello","leetcode"], order = "hlabcdefgijkmnopqrstuvwxyz" Output: true
-//Explanation: As 'h' comes before 'l' in this language, then the sequence is sorted.
+//Input: words = ["hello","leetcode"], order = "hlabcdefgijkmnopqrstuvwxyz" 
+Output: true
+//Explanation: As 'h' comes before 'l' in this language, then the sequence 
+is sorted.
 class Solution {
       int[] dic = new int[26]; // 26 not order.length()
     public boolean isAlienSorted(String[] words, String order) {
@@ -80,7 +82,8 @@ class Solution {
             if(containsOne(r, mid, binaryMatrix)){
                 right = mid - 1;
                 res = mid; // record mid since it may have no such condition.
-                // To find left most we reduce right side once it satisfied condition.
+                // To find left most we reduce right side once it 
+                //satisfied condition.
             } else {
                 left = mid + 1;
             }
@@ -219,10 +222,15 @@ class Solution {
         return helper(num);  
     }
     public String helper(int num ) {
-        String[] words = new String[] {"", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten",
-                                      "Eleven", "Twelve", "Thirteen", "Fourteen", "Fifteen", "Sixteen", "Seventeen",
-                                       "Eighteen", "Nineteen"}; // Fifteen, Twelve Forty Nineteen Ninety Hundred
-        String[] words1 = new String[]{"","","Twenty ", "Thirty ", "Forty ", "Fifty ", "Sixty ",  "Seventy ", "Eighty ", "Ninety "};
+        String[] words = new String[] 
+        {"", "One", "Two", "Three", "Four", "Five", "Six", "Seven",
+         "Eight", "Nine", "Ten", "Eleven", "Twelve", "Thirteen", 
+         "Fourteen", "Fifteen", "Sixteen", "Seventeen",
+       "Eighteen", "Nineteen"}; // Fifteen, Twelve Forty Nineteen Ninety Hundred
+        String[] words1 = 
+        new String[]{"","","Twenty ", "Thirty ", "Forty ", 
+        "Fifty ", "Sixty ",  "Seventy ", "Eighty ", "Ninety "};
+        
        StringBuilder sb = new StringBuilder();
         if (num >= 1000000000) {
             sb.append(helper(num/1000000000)).append(" Billion ");
@@ -798,7 +806,8 @@ class Solution {
     int prevTime = 0;
     for (String log : logs) {
         String[] parts = log.split(":");
-   if (!stack.isEmpty()) res[stack.peek()] += Integer.valueOf(parts[2]) - prevTime; 
+   if (!stack.isEmpty()) res[stack.peek()] += 
+       Integer.valueOf(parts[2]) - prevTime; 
         prevTime = Integer.valueOf(parts[2]);
         if (parts[1].equals("start")) stack.push(Integer.valueOf(parts[0]));
         else {
@@ -1029,7 +1038,8 @@ class Solution {
 
 ```java
 class MedianFinder {
-   private Queue<Integer> small = new PriorityQueue<>((o1,o2) -> (o2 - o1)); // need <>
+   private Queue<Integer> small = 
+   new PriorityQueue<>((o1,o2) -> (o2 - o1)); // need <>
    private Queue<Integer> large = new PriorityQueue();
     // Adds a number into the data structure.
     public void addNum(int num) {
@@ -1800,7 +1810,8 @@ public class Solution {
         if (i == s.length) { return null; }  
         // extract number
         StringBuilder num = new StringBuilder();
-        while (i < s.length && s[i] != '(' && s[i] != ')') { num.append(s[i]); i++; }
+        while (i < s.length && s[i] != '(' && s[i] != ')') 
+        { num.append(s[i]); i++; }
         // create new node
         TreeNode n = null;
         if (num.length() != 0)
