@@ -1898,6 +1898,43 @@ class Solution {
 }
 ```
 
+## 71 Simplify Path
+
+```java
+Given an absolute path for a file (Unix-style), simplify it. 
+Or in other words, convert it to the canonical path.
+In a UNIX-style file system, a period '.' refers to the current 
+directory. Furthermore, a double period '..' moves the directory up a level.
+
+Note that the returned canonical path must always begin 
+with a slash '/', and there must be only a single slash
+ '/' between two directory names. The last directory name 
+ (if it exists) must not end with a trailing '/'. Also, the 
+ canonical path must be the shortest string representing the absolute path.
+ 
+ Input: path = "/home//foo/"
+Output: "/home/foo"
+Explanation: In the canonical path, multiple 
+consecutive slashes are replaced by a single one.
+
+一句话解释: 栈解决,把当前目录压入栈中,遇到..弹出栈顶,最后返回栈中元素.
+
+class Solution {
+    public String simplifyPath(String path) {
+        Deque<String> stack = new LinkedList<>();
+        for (String item : path.split("/")) {
+            if (item.equals("..")) {
+                if (!stack.isEmpty()) stack.pop();
+            } else if (!item.isEmpty() && !item.equals(".")) stack.push(item);
+        }
+        String res = "";
+        for (String d : stack) res = "/" + d + res;
+        return res.isEmpty() ? "/" : res;  
+    }
+}
+
+```
+
 ## 
 
 ## 
