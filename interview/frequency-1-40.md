@@ -1935,6 +1935,77 @@ class Solution {
 
 ```
 
+## 987 Vertical Order Traversal of a Binary Tree
+
+```java
+Given a binary tree, return the vertical order traversal of its nodes values.
+For each node at position (X, Y), its left and right children respectively 
+will be at positions (X-1, Y-1) and (X+1, Y-1).
+Running a vertical line from X = -infinity to X = +infinity, 
+whenever the vertical line touches some nodes, we report the 
+values of the nodes in order from top to bottom (decreasing Y coordinates).
+If two nodes have the same position, then the value of the node 
+that is reported first is the value that is smaller.
+Return an list of non-empty reports in order of X coordinate. 
+ Every report will have a list of values of nodes.
+ 
+ //解释
+ "If two nodes have the same position, then the value of the node
+  that is reported first is the value that is smaller."
+This statment is ambiguous which make people think just order
+ from small to large for each position.
+From test case, the real requirement is:
+If two nodes have the same position,
+check the layer, the node on higher level(close to root) goes first
+if they also in the same level, order from small to large
+
+class Solution {
+    int min=0, max=0;
+    Map<Integer, List<Integer>> map = new HashMap();
+    public List<List<Integer>> verticalTraversal(TreeNode root) {
+        List<List<Integer>> res = new ArrayList();
+        if(root==null) return res;
+        Queue<TreeNode> qt = new LinkedList();
+        Queue<Integer> qi = new LinkedList();
+        qt.add(root);
+        qi.add(0);//not root.val
+        while(!qt.isEmpty()){
+            int size = qt.size();
+            Map<Integer,List<Integer>> tmp = new HashMap();
+            for(int i=0;i<size;i++){
+                TreeNode cur = qt.poll();
+                int idx = qi.poll();
+                if(!tmp.containsKey(idx)) tmp.put(idx, new ArrayList<Integer>());
+                tmp.get(idx).add(cur.val);
+                if(idx<min)  min = idx;
+                if(idx>max)  max = idx;
+                if(cur.left!=null){
+                    qt.add(cur.left);
+                    qi.add(idx-1);
+                }
+                if(cur.right!=null){
+                    qt.add(cur.right);
+                    qi.add(idx+1);
+                } 
+            }
+            for(int key : tmp.keySet()){
+                if(!map.containsKey(key)) map.put(key, new ArrayList<Integer>());
+                List<Integer> list = tmp.get(key);
+                Collections.sort(list);
+                map.get(key).addAll(list);
+            }
+            
+        }
+        for (int i=min; i<=max; i++){
+            List<Integer> list = map.get(i);
+            res.add(list);
+        }
+        return res;
+    }
+}
+ 
+```
+
 ## 
 
 ## 
