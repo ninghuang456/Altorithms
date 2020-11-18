@@ -2,7 +2,7 @@
 description: Facebook
 ---
 
-# Farebook Frequency 1-50
+# Facebook Frequency 1-50
 
 ## 953 - Verifying an Alien Dictionary
 
@@ -1773,6 +1773,128 @@ class Solution {
         newMax.next = dummy.next;
         return start;
     }
+}
+```
+
+## 536 Construct Binary Tree from String
+
+```java
+Input: s = "4(2(3)(1))(6(5))"
+Output: [4,2,6,3,1,5]
+
+ just scan the string from left to right, every time we meet '(' ,
+ create left child node, then if we meet '(' again from the same parent
+  node, we create right child node.
+If every time we meet ')', just return to parent node.
+
+public class Solution {
+    int i = 0;
+    public TreeNode str2tree(String s) 
+    {
+        if (s == null || s.length() == 0) { return null; }
+        return helper(s.toCharArray());
+    }   
+    private TreeNode helper(char[] s)
+    {
+        // done
+        if (i == s.length) { return null; }  
+        // extract number
+        StringBuilder num = new StringBuilder();
+        while (i < s.length && s[i] != '(' && s[i] != ')') { num.append(s[i]); i++; }
+        // create new node
+        TreeNode n = null;
+        if (num.length() != 0)
+        {
+            n = new TreeNode(Integer.parseInt(num.toString()));
+        }
+        // check parenthesis type
+        if (i < s.length && s[i] == '(')
+        {
+            // create left child node
+            i++;
+            n.left = helper(s);
+            i++;
+            
+            if (i < s.length && s[i] == '(')
+            {
+                // create right child node
+                i++;
+                n.right = helper(s);
+                i++;
+            }
+        }
+        // if meets ')', return to parent node
+        return n;
+    }
+}
+```
+
+## 163  Missing Ranges
+
+```java
+Input: nums = [0,1,3,50,75], lower = 0, upper = 99
+Output: ["2","4->49","51->74","76->99"]
+Explanation: The ranges are:
+[2,2] --> "2"
+[4,49] --> "4->49"
+[51,74] --> "51->74"
+[76,99] --> "76->99"
+
+public class Solution {
+    public List<String> findMissingRanges(int[] nums, int lower, int upper) {
+        List<String> res = new ArrayList<>();
+        for(int i : nums) {
+            if(i > lower) res.add(lower+((i-1 > lower)?"->"+(i-1):""));
+            if(i == upper) return res; // Avoid overflow
+            lower = i+1;
+        }
+        if(lower <= upper) res.add(lower + ((upper > lower)?"->"+(upper):""));
+        return res;
+    }
+}
+```
+
+## 129 Sum Root to Leaf Numbers
+
+```java
+Input: [1,2,3]
+    1
+   / \
+  2   3
+Output: 25
+Explanation:
+The root-to-leaf path 1->2 represents the number 12.
+The root-to-leaf path 1->3 represents the number 13.
+Therefore, sum = 12 + 13 = 25.
+
+class Solution {
+    
+    public int sumNumbers(TreeNode root) {
+        List<Integer> tempList = new ArrayList<>();
+        int res = 0;
+        if(root == null) return res;
+        sumNumbersHelper(root, root.val, tempList);
+        for(int i = 0; i < tempList.size(); i ++){
+            res += tempList.get(i);
+        }
+        return res;  
+    }
+    
+    public void sumNumbersHelper(TreeNode root, int val, List<Integer> tempList){
+        if(root.left == null && root.right == null) { 
+        // 注意返回条件
+           tempList.add(val);
+           return;
+        }
+        if(root.left != null){
+             sumNumbersHelper(root.left, val* 10 + root.left.val, tempList);
+        }
+        if(root.right != null){
+              sumNumbersHelper(root.right, val* 10 + root.right.val, tempList); 
+        }
+      
+    }
+    
 }
 ```
 
