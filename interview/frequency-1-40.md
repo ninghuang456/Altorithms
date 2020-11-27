@@ -31,6 +31,7 @@ class Solution {
         int m = w1.length(); int n = w2.length();
         for (int i = 0; i < m && i < n; i ++) {
             if (w1.charAt(i)!= w2.charAt(i)){
+//wrong answer c1 != c2 && dic[c1 - 'a'] > dic[c2 -'a']{return false}
                 return dic[w1.charAt(i) - 'a'] > dic[w2.charAt(i) - 'a'];
                 //need return in this time.
             }
