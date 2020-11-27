@@ -50,6 +50,7 @@ class Solution {
 class Solution {
   public String minRemoveToMakeValid(String s) { // 子问题不独立 所以不用DP
       StringBuilder sb = new StringBuilder(s); 
+      // char[] chars = s.toCharArray();
       Stack<Integer> st = new Stack<>();
       // 用stack 判断是否当前的括号需要换掉
       for (int i = 0; i < sb.length(); ++i) {
