@@ -149,8 +149,7 @@ class Solution {
         return true;
     }
     
-    public boolean extendPalindrome(String s, int left, int right){
-        int l = left; int r = right;
+    public boolean extendPalindrome(String s, int l, int r){
         while (l < r){
             if (s.charAt(l) != s.charAt(r)) return false;
             l++;
@@ -177,7 +176,7 @@ p2[0] * p2[0] + p2[1] * p2[1] - p1[0] * p1[0] - p1[1] * p1[1]);
     }
     int[][] res = new int[K][2];
                                                     
-    for (int i = K - 1; i >= 0; i --){
+    for (int i = K - 1; i >= 0; i --){ // it is K - 1 not K;
         res[i] = pq.poll();
     }
      return res;                                               
@@ -2017,6 +2016,45 @@ class Solution {
     }
 }
  
+```
+
+## 616 - Add Bold Tag in String
+
+```java
+Input: 
+s = "abcxyz123"
+dict = ["abc","123"]
+Output:
+"<b>abc</b>xyz<b>123</b>"
+public class Solution {
+    public String addBoldTag(String s, String[] dict) {
+        boolean[] bold = new boolean[s.length()];
+        for(String substr : dict) {
+            int start=0;
+            while(start >= 0) {
+                start = s.indexOf(substr,start);
+                if(start<0) break;
+                int end = start+substr.length();
+                for(int i=start; i<end; i++) {
+                    bold[i]=true;
+                }
+                start++; // Just start from next index, instead of iterating through entire string
+            }
+        }
+        StringBuilder sb = new StringBuilder();
+        for(int i=0; i<s.length(); i++) { 
+            if(bold[i] && (i-1<0 || !bold[i-1])) {
+                sb.append("<b>");
+            }
+            sb.append(s.charAt(i)); // Just go character by character rather than cutting up the string
+            if(bold[i] && (i+1==s.length() || !bold[i+1])) {
+                sb.append("</b>");
+            }
+        }
+        return sb.toString();
+    }
+}
+
 ```
 
 ## 
