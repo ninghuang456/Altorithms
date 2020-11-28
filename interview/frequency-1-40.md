@@ -280,6 +280,7 @@ class Solution {
             i--; j--;
         }
         if(carry == 1) res.append(1);
+        //别忘记CARRY == 1的情况
         return res.reverse().toString();
     }
 }
