@@ -1230,6 +1230,7 @@ class LRUCache {
         }
         Node node = map.get(key);
         put(key, node.value);
+        //直接调用PUT 不要多余的其他方法
         return node.value;
         
     }
