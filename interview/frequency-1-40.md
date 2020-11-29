@@ -608,7 +608,7 @@ once we find a mod that has been seen, say modk, we have:
 current one: sum_i = m*k + modk
 previous one: sum_j = n*k + modk
 Thus,
-sum_i - sum_j = (m - n) *k
+sum_i - sum_j = (m - n) * k
 
 class Solution {
   public boolean checkSubarraySum(int[] nums, int k) {
@@ -619,7 +619,8 @@ class Solution {
         if (k != 0) runningSum %= k; 
         Integer prev = map.get(runningSum);
         if (prev != null) {
-            if (i - prev > 1) return true;
+            if (i - prev > 1) return true; 
+            // 因为最少最少两个元素 
         }
         else map.put(runningSum, i);
     }
