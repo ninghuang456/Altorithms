@@ -602,6 +602,14 @@ Input: [23, 2, 6, 4, 7],  k=6 Output: True
 Explanation: Because [23, 2, 6, 4, 7] is an continuous subarray of 
 size 5 and sums up to 42.
 
+A proof sketch:
+Suppose sum_i represents the running sum starting from index 0 and ending at i,
+once we find a mod that has been seen, say modk, we have:
+current one: sum_i = m*k + modk
+previous one: sum_j = n*k + modk
+Thus,
+sum_i - sum_j = (m - n) *k
+
 class Solution {
   public boolean checkSubarraySum(int[] nums, int k) {
     Map<Integer, Integer> map = new HashMap<Integer, Integer>(){{put(0,-1);}};;
