@@ -369,6 +369,7 @@ public String alienOrder(String[] words) {
         sb.append(c);
         for (Character next : adjList.get(c)) {
             counts.put(next, counts.get(next) - 1);
+            //need minus one first.
             if (counts.get(next).equals(0)) {
                 queue.add(next);
             }
