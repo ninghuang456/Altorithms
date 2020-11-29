@@ -1631,40 +1631,6 @@ class Solution {
 }
 ```
 
-## 173- Binary Search Tree Iterator
-
-```java
-
-class BSTIterator {
-    Stack<TreeNode> stack;
-    TreeNode cur;
-    
-    public BSTIterator(TreeNode root) {
-        stack = new Stack<>();
-        cur = root;
-    }
-    
-    public int next() {
-        int val = 0;
-        while (!stack.isEmpty() || cur != null) {
-            while (cur != null) {
-                stack.push(cur);
-                cur = cur.left;
-            }
-            TreeNode node = stack.pop();
-            val = node.val;
-            cur = node.right;
-            break;
-        }
-        return val;
-    }
-    
-    public boolean hasNext() {
-        return !stack.isEmpty() || cur != null;
-    }
-}
-```
-
 ## 34-Find First and Last Position of Element in Sorted Array
 
 ```java
