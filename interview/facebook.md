@@ -138,30 +138,51 @@ class Solution {
 ## 1570  Dot Product of Two Sparse Vectors
 
 ```java
+Given two sparse vectors, compute their dot product.
+Implement class SparseVector:
+SparseVector(nums) Initializes the object with the vector nums
+dotProduct(vec) Compute the dot product between the instance of 
+SparseVector and vec
+A sparse vector is a vector that has mostly zero values,
+ you should store the sparse vector efficiently and compute the 
+ dot product between two SparseVector.
+Follow up: What if only one of the vectors is sparse?
+
 class SparseVector {
-  Map<Integer, Integer> indexMap = new HashMap<>();
-  int n = 0;
-  SparseVector(int[] nums) {
-    for (int i = 0; i < nums.length; i++)
-      if (nums[i] != 0)
-        indexMap.put(i, nums[i]);
-    n = nums.length;
-  }
-  
-	// Return the dotProduct of two sparse vectors
-  public int dotProduct(SparseVector vec) {
-    if (indexMap.size() == 0 || vec.indexMap.size() == 0) return 0;
-    if (indexMap.size() > vec.indexMap.size())
-      return vec.dotProduct(this);
-    int productSum = 0;
-    for (Map.Entry<Integer, Integer> entry : indexMap.entrySet()) {
-      int index = entry.getKey();
-      Integer vecValue = vec.indexMap.get(index);
-      if (vecValue == null) continue; 
-      productSum += (entry.getValue() * vecValue);
+
+    public static void main(String[] args) {
+        int[] nums1 = new int[]{1,0,0,2,3};
+        int[] nums2 = new int[]{0,3,0,4,0};
+        SparseVector v1 = new SparseVector(nums1);
+        SparseVector v2 = new SparseVector(nums2);
+        System.out.println(v1.dotProduct(v2)); // 8
     }
-    return productSum;
-  }
+    
+     Map<Integer, Integer> indexMap = new HashMap<>();
+     int n;
+     SparseVector(int[] nums) {
+         n = nums.length;
+        for (int i = 0; i < nums.length; i++) {
+            if (nums[i] != 0)
+                indexMap.put(i, nums[i]);
+        }
+    }
+
+    // Return the dotProduct of two sparse vectors
+    public int dotProduct(SparseVector vec) {
+        if (indexMap.size() == 0 || vec.indexMap.size() == 0) return 0;
+        if (indexMap.size() > vec.indexMap.size())
+            return vec.dotProduct(this);  
+            // 如果是一疏一密 就把疏的那个作为探测ENTRYSET 然后在密的当中找KEY
+        int productSum = 0;
+        for (Map.Entry<Integer, Integer> entry : indexMap.entrySet()) {
+            int index = entry.getKey();
+            if(vec.indexMap.containsKey(index)){
+                productSum += (entry.getValue() * vec.indexMap.get(index));
+            }
+        }
+        return productSum;
+    }
 }
 ```
 
