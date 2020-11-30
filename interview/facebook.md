@@ -110,26 +110,25 @@ Here what we are going to do is to find the multiplication.
  As long as the tmp is less than or equal to dividend (20), 
  we left shift << which is same as multiply 2 but without using multiplication.
  
-class Solution {
-    public int divide(int dividend, int divisor) {
-        boolean isNegative = (dividend < 0 && divisor > 0) 
-        || (dividend > 0 && divisor < 0) ? true : false;
-        long absDividend = Math.abs((long) dividend);
-        long absDivisor = Math.abs((long) divisor);
-        long result = 0;
-        while (absDividend >= absDivisor) {
-            long temp = absDivisor, count = 1;
-            while (temp <= absDividend) {
-                temp <<= 1;
-                count <<= 1;
-            }
-            result += count >> 1;
-            absDividend -= temp >> 1;
-        }
-        return isNegative ? (int) ~result + 1 
-        : (result > Integer.MAX_VALUE ? Integer.MAX_VALUE : (int) result);
+ public int divide(int dividend, int divisor) {
+        if (dividend == 0 || divisor == 0) return 0;
+        long d1 = dividend, d2 = divisor;
+        long result = divideLong(Math.abs(d1), Math.abs(d2));
+        result = d1 * d2 < 0 ? -result : result;
+        if (result > Integer.MAX_VALUE || result < Integer.MIN_VALUE) return Integer.MAX_VALUE;
+        return (int) result;
     }
-}
+    
+    private long divideLong(long dividend, long divisor) {
+        if (dividend < divisor) return 0;
+        long sum = divisor, divideTimes = 1;
+        while (sum + sum <= dividend) {
+            sum += sum;
+            divideTimes += divideTimes;
+        }
+        // use recursion
+        return divideTimes + divideLong(dividend - sum, divisor);
+    }
 // https://leetcode.com/problems/divide-two-integers/discuss/13467
 // /Very-detailed-step-by-step-explanation-(Java-solution)
 
