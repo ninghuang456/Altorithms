@@ -1480,21 +1480,37 @@ k = 8,
 
 return 13.
 
-public class Solution {
+class Solution {
     public int kthSmallest(int[][] matrix, int k) {
-        int lo = matrix[0][0], hi = 
-        matrix[matrix.length - 1][matrix[0].length - 1] + 1;//[lo, hi)
-        while(lo < hi) {
-            int mid = lo + (hi - lo) / 2;
-            int count = 0,  j = matrix[0].length - 1;
-            for(int i = 0; i < matrix.length; i++) {
-                while(j >= 0 && matrix[i][j] > mid) j--;
-                count += (j + 1);
+        int n = matrix.length;
+        int left = matrix[0][0];
+        int right = matrix[n - 1][n - 1];
+        int res = -1;
+        while (left <= right) {
+            int mid = left + (right - left) /2;
+            if (check(matrix, mid, k, n)) {
+                right = mid - 1;
+                res = mid;
+            } else {
+                left = mid + 1;
             }
-            if(count < k) lo = mid + 1;
-            else hi = mid;
         }
-        return lo;
+        return res;
+    }
+
+    public boolean check(int[][] matrix, int mid, int k, int n) {
+        int i = n - 1;
+        int j = 0;
+        int num = 0;
+        while (i >= 0 && j < n) {
+            if (matrix[i][j] <= mid) {
+                num += i + 1;
+                j++;
+            } else {
+                i--;
+            }
+        }
+        return num >= k;
     }
 }
 ```
