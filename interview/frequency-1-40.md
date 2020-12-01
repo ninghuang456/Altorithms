@@ -469,7 +469,6 @@ public class Solution extends Reader4 {
                 size = 0;
             }     
         }
-        
         return index;
     }
 }
