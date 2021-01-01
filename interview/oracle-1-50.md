@@ -326,6 +326,172 @@ public TreeNode inorderPredecessors(TreeNode root, TreeNode p) {
 
 ```
 
+## 1190 - Reverse Substrings Between Each Pair of Parentheses
+
+```java
+You are given a string s that consists of lower case English letters and brackets. 
+Reverse the strings in each pair of matching parentheses, starting from the 
+innermost one.Your result should not contain any brackets.
+Example 1:
+Input: s = "(abcd)"
+Output: "dcba"
+
+Example 2:
+Input: s = "(u(love)i)"
+Output: "iloveu"
+Explanation: The substring "love" is reversed first, 
+then the whole string is reversed.
+
+class Solution {
+    public String reverseParentheses(String s) {
+        int n = s.length();
+        Stack<Integer> stack = new Stack<>();
+        int[] pair = new int[n];
+
+        //先去找匹配的括号
+        for (int i = 0; i < n; i++) {
+            if (s.charAt(i) == '(') {
+                stack.push(i);
+            } else if (s.charAt(i) == ')') {
+                int j = stack.pop();
+                pair[i] = j;
+                pair[j] = i;
+            }
+        }
+
+        StringBuilder res = new StringBuilder();
+        // i是当前位置 | d是方向,1就是向右穿
+        for (int i = 0, d = 1; i < n; i+=d) {
+            if (s.charAt(i) == '(' || s.charAt(i) == ')') {
+                // 如果碰到括号，那么去他对应的括号，并且将方向置反
+                i = pair[i];
+                d = -d;
+            } else {
+                res.append(s.charAt(i));
+            }
+        }
+        return res.toString();
+    }
+}
+```
+
+## 200 - Number of Islands
+
+```java
+class Solution {
+    
+    public int numIslands(char[][] grid) {
+        int[][] directions = {{-1, 0}, {0, -1}, {1, 0}, {0, 1}};
+        int r = grid.length;
+        int c = grid[0].length;
+        boolean[] marked = new boolean[r * c];
+        int count = 0;
+        for (int i = 0; i < r; i ++) {
+            for (int j = 0; j < c; j ++) {
+             if (!marked[i * c + j] && grid[i][j] == '1') {
+                 count++;
+                 int index = i * c + j;
+                 LinkedList<Integer> queue = new LinkedList<>();
+                 queue.offer(index);
+                 marked[i * c + j] = true;
+                 while (!queue.isEmpty()) {
+                     int cur = queue.poll();
+                     int curX = cur / c;
+                     int curY = cur % c;
+                     for (int k = 0; k < 4; k ++) {
+                        int nextX = curX + directions[k][0];
+                        int  nextY = curY + directions[k][1];
+                         if (inArea(r,c,nextX, nextY) && grid[nextX][nextY] == '1' && !marked[nextX * c + nextY]){
+                             queue.offer(nextX * c + nextY);
+                             marked[nextX * c + nextY] = true;
+                         }
+                     }
+                  }   
+               } 
+            }
+        }
+        
+        return count;
+        
+    }
+    
+    public boolean inArea(int r, int c, int i, int j) {
+        return i >= 0 && i < r && j >= 0 && j < c;
+    }
+}
+
+//dfs
+class Solution {
+    int[][] dis = new int[][]{{-1, 0}, {0, -1}, {0, 1}, {1, 0}};
+    public int numIslands(char[][] grid) {
+        if (grid == null || grid.length == 0) return 0;
+        int total = 0;
+        for (int r = 0; r < grid.length; r ++) {
+            for (int c = 0; c < grid[0].length; c++) {
+                if (grid[r][c] == '1') {
+                    searchArea(grid, r , c);
+                    total ++;
+                }
+            }
+        }
+        return total;
+    }
+    
+    private void searchArea(char[][] grid, int r, int c){
+        if(!inArea(grid,r,c)){
+            return;
+        }
+        if(grid[r][c] != '1'){
+            return;
+        }
+        grid[r][c] = '2';
+        for (int i = 0; i < 4; i ++){
+            int nextR = r + dis[i][0];
+            int nextC = c + dis[i][1];
+            searchArea(grid, nextR, nextC);
+        }
+            
+        
+    }
+    
+    private boolean inArea(char[][] grid, int r, int c){
+        return r >= 0 && r < grid.length && c >= 0 && c < grid[0].length;
+    }
+}
+```
+
+## 158: Read N Characters Given Read4 II - Call multiple times
+
+```java
+public class Solution extends Reader4 {
+     int i = 0;
+     int size = 0;
+     char[] buf4 = new char[4];
+    public int read(char[] buf, int n) {
+        int index = 0;
+        while (index < n){
+            if(size == 0){
+                size = read4(buf4);
+                if(size == 0)
+                    break;
+            }
+            while (index < n && i < size){
+               buf[index ++] = buf4[i++];
+            }
+            if (i == size){
+                i = 0;
+                size = 0;
+            }
+            
+            
+        }
+        return index;
+    }
+}
+```
+
+## 
+
 ## 
 
 
