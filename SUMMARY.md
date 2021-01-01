@@ -23,5 +23,5 @@
 * [Facebook Frequency 1-50](interview/frequency-1-40.md)
 * [FaceBook Frequency 50-100](interview/facebook.md)
 * [Amazon Frequency 1~ 30](interview/amazon-frequency-1-30.md)
-* [Oracle 1 ~ 50](interview/oracle-1-50.md)
+* [Oracle 1 ~ 60](interview/oracle-1-50.md)
 
