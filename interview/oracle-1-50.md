@@ -490,6 +490,232 @@ public class Solution extends Reader4 {
 }
 ```
 
+## 146- LRU Cache
+
+```java
+ class Node {
+    int key; int value;
+    Node next; Node pre;
+    Node (int key, int value){
+        this.key = key;
+        this.value = value;
+    }
+}
+
+ class DoubleList {
+    Node head;
+    Node tail;
+    int size;
+    public DoubleList(int size){
+        this.size = size;
+        head = new Node(-1,-1);
+        tail = new Node(-1,-1);
+        head.next = tail;
+        tail.pre = head; 
+    }
+     
+     public void remove(Node node) {
+        node.pre.next = node.next;
+        node.next.pre = node.pre;
+        size --;
+    }
+    
+    public void addFirst(Node node){
+        node.next = head.next;
+        node.pre = head;
+        head.next.pre = node;
+        head.next = node;
+        size ++;
+    }
+    
+
+    
+    public Node removeLast() {
+        if (tail.pre == head){
+            return null;
+        }
+        Node node = tail.pre;
+        remove(node);
+        return node;
+    }
+    
+    public int getSize(){
+        return this.size;
+    } 
+}
+
+
+class LRUCache {
+    HashMap<Integer, Node> map;
+    DoubleList cache;
+    int capacity;
+
+    public LRUCache(int capacity) {
+        this.capacity = capacity;
+        map = new HashMap<>();
+        cache = new DoubleList(0);
+    }
+    
+    public int get(int key) {
+        if (!map.containsKey(key)) {return -1;}
+        Node node = map.get(key);
+        int value = node.value;
+        put(key, value);
+        return value;
+    }
+    
+    public void put(int key, int value) {
+        if(map.containsKey(key)){
+            Node node = map.get(key);
+            cache.remove(node);
+            node.value = value;
+            map.put(key, node);
+            cache.addFirst(node);
+            return;
+        }
+        if (cache.getSize() == capacity){
+            Node node = cache.removeLast();
+            map.remove(node.key);
+        }
+        Node nodeAdd = new Node(key, value);
+        map.put(key, nodeAdd);
+        cache.addFirst(nodeAdd);   
+    }
+}
+
+```
+
+## 150- Evaluate Reverse Polish Notation
+
+```java
+Evaluate the value of an arithmetic expression in Reverse Polish Notation.
+Valid operators are +, -, *, /. Each operand may be an integer or another expression.
+
+Example 1:
+Input: ["2", "1", "+", "3", "*"]
+Output: 9
+Explanation: ((2 + 1) * 3) = 9
+
+
+class Solution {
+   public  int evalRPN(String[] tokens) {
+        Stack<Integer> st = new Stack<>();
+        for (int i = 0; i < tokens.length; i ++) {
+            if("+-*/".contains(tokens[i])){
+         //   if(tokens[i].equals("+")  || tokens[i].equals("-")...不能是 “==”){
+                int num2 = st.pop();
+                int num1 = st.pop();
+                int cur = getNum(num1, num2, tokens[i]);
+                st.push(cur);
+            } else {
+                st.push(Integer.parseInt(tokens[i]));
+            }
+        }
+        return st.pop();
+    }
+
+    public  int getNum(int num1, int num2, String operator){
+        switch(operator){
+            case "+":
+                return num1 + num2;
+            case "-":
+                return num1 - num2;
+            case "*":
+                return num1 * num2;
+            case "/":
+                return num1 / num2;
+            default :
+                return 0;
+        }
+    }
+}
+```
+
+## 706：Design HashMap
+
+```java
+class MyHashMap {
+        final ListNode[] nodes = new ListNode[10000];
+
+        public void put(int key, int value) {
+            int i = idx(key);
+            if (nodes[i] == null)
+                nodes[i] = new ListNode(-1, -1);
+            ListNode prev = find(nodes[i], key);
+            if (prev.next == null)
+                prev.next = new ListNode(key, value);
+            else prev.next.val = value;
+        }
+
+        public int get(int key) {
+            int i = idx(key);
+            if (nodes[i] == null)
+                return -1;
+            ListNode node = find(nodes[i], key);
+            return node.next == null ? -1 : node.next.val; 
+        }
+
+        public void remove(int key) {
+            int i = idx(key);
+            if (nodes[i] == null) return;
+            ListNode prev = find(nodes[i], key);
+            if (prev.next == null) return;
+            prev.next = prev.next.next;
+        }
+
+        int idx(int key) { return key % nodes.length;}
+
+        ListNode find(ListNode bucket, int key) {
+            ListNode node = bucket, prev = null;
+            while (node != null && node.key != key) {
+                prev = node;
+                node = node.next;
+            }
+            return prev;
+        }
+
+        class ListNode {
+            int key, val;
+            ListNode next;
+
+            ListNode(int key, int val) {
+                this.key = key;
+                this.val = val;
+            }
+        }
+    }
+```
+
+## 347 - Top K Frequent Elements
+
+```java
+Given a non-empty array of integers, return the k most frequent elements.
+Example 1:
+Input: nums = [1,1,1,2,2,3], k = 2
+Output: [1,2]
+class Solution {
+    public int[] topKFrequent(int[] nums, int k) {
+        HashMap<Integer, Integer> map = new HashMap<>();
+        for(int num: nums){
+            map.put(num, map.getOrDefault(num, 0) + 1);
+        }
+        PriorityQueue<Map.Entry<Integer,Integer>> pq = 
+                   new PriorityQueue<>((a, b) -> a.getValue() - b.getValue());
+        for(Map.Entry<Integer,Integer> entry : map.entrySet()){
+            pq.offer(entry);
+            if(pq.size() > k){
+                pq.poll();
+            }
+        }
+        int[] res = new int[k];
+        for(int i = 0; i < res.length; i ++){
+            res[i] = pq.poll().getKey(); // getKey() in here not getValue();
+        }
+        return res;
+    }
+}
+```
+
 ## 
 
 ## 
