@@ -743,6 +743,32 @@ public String removeDuplicates(String S) {
     
 ```
 
+## 253 - Meeting Rooms II
+
+```java
+Given an array of meeting time intervals consisting of start and 
+end times [[s1,e1],[s2,e2],...] (si < ei), find the minimum number of 
+conference rooms required. 是不是最后一个输入的时候 当前需要多少房间。
+Example
+Input: [[0, 30],[5, 10],[15, 20]]
+Output: 2
+
+class Solution {
+    public int minMeetingRooms(int[][] intervals) {
+        Arrays.sort(intervals, (a,b) -> a[0] - b[0]);
+        PriorityQueue<int[]> pq = new PriorityQueue<>((a,b) -> a[1] - b[1]);
+        for(int i = 0; i < intervals.length; i ++) {
+            int[] top = pq.peek();
+            if(!pq.isEmpty() && intervals[i][0] >= top[1]){
+                pq.poll();
+            }
+            pq.offer(intervals[i]);
+        }
+        return pq.size();
+    }
+}
+```
+
 ## 
 
 ## 
