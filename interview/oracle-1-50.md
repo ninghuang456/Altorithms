@@ -717,6 +717,32 @@ class Solution {
 }
 ```
 
+## 1047：Remove All Adjacent Duplicates In String
+
+```java
+Input: "abbaca"
+Output: "ca"
+Explanation: 
+For example, in "abbaca" we could remove "bb" since the letters are adjacent 
+and equal, and this is the only possible move.  The result of this move is 
+that the string is "aaca", of which only "aa" is possible, so the 
+final string is "ca".
+//往回看的经常要用到STACK 类似括号这样
+public String removeDuplicates(String S) {
+        Stack<Character> stack = new Stack<>();
+        for(char s : S.toCharArray()){
+            if(!stack.isEmpty() && stack.peek() == s)
+                stack.pop();
+            else
+                stack.push(s);
+        }
+        StringBuilder sb = new StringBuilder();
+        for(char s : stack) sb.append(s);
+        return sb.toString();
+  }
+    
+```
+
 ## 
 
 ## 
