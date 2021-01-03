@@ -701,7 +701,8 @@ class Solution {
         }
         PriorityQueue<Map.Entry<Integer,Integer>> pq = 
                    new PriorityQueue<>((a, b) -> a.getValue() - b.getValue());
-        for(Map.Entry<Integer,Integer> entry : map.entrySet()){
+                   // 求最大的K个元素用小顶堆因为要把最小的不断从堆顶去掉
+        for(Map.Entry<Integer,Integer> entry : map.entrySet()){ //not map.EntrySet
             pq.offer(entry);
             if(pq.size() > k){
                 pq.poll();
