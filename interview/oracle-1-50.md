@@ -753,6 +753,7 @@ Example
 Input: [[0, 30],[5, 10],[15, 20]]
 Output: 2
 
+//优先队列
 class Solution {
     public int minMeetingRooms(int[][] intervals) {
         Arrays.sort(intervals, (a,b) -> a[0] - b[0]);
@@ -767,6 +768,10 @@ class Solution {
         return pq.size();
     }
 }
+// 扫描线 
+//在会议开始和结束的地方会改变状态
+
+
 ```
 
 ## 
