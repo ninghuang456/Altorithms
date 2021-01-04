@@ -106,6 +106,117 @@ class Solution {
 
 ```
 
+## 402 - Remove K Digits
+
+```java
+Given a non-negative integer num represented as a string, 
+remove k digits from the number so that the new number is the smallest possible.
+Example 1:
+Input: num = "1432219", k = 3
+Output: "1219"
+Explanation: Remove the three digits 4, 3, and 2 to form the
+ new number 1219 which is the smallest.
+ 
+class Solution {
+    public String removeKdigits(String num, int k) {
+        //特殊情况全部删除
+        if(num.length() == k){
+            return "0";
+        }
+        char[] s = num.toCharArray();
+        Stack<Character> stack = new Stack<>();
+        //遍历数组
+        for(Character i : s){
+          //移除元素的情况，k--
+            while(!stack.isEmpty() && i < stack.peek() && k > 0){
+                   stack.pop();
+                   k--;
+            }
+            //栈为空，且当前位为0时，我们不需要将其入栈
+            if(stack.isEmpty() && i == '0'){
+                continue;
+            }
+            stack.push(i);
+        }
+        while(k > 0){
+            stack.pop();
+            k--;
+        }
+        //这个是最后栈为空时，删除一位，比如我们的10，删除一位为0，
+        //按上面逻辑我们会返回""，所以我们让其返回"0"
+         if(stack.isEmpty()){
+             return "0";
+         }
+         //反转并返回字符串
+         StringBuilder str = new StringBuilder();
+         while(!stack.isEmpty()){
+             str.append(stack.pop());
+         }
+         return str.reverse().toString();
+    }
+}
+//链接：https://leetcode-cn.com/problems/remove-k-digits/solution/dong-tu-shuo-suan-fa-zhi-yi-diao-kwei-shu-zi-by-yu/
+
+```
+
+## 75-Sort Colors
+
+```java
+Input: nums = [2,0,2,1,1,0]
+Output: [0,0,1,1,2,2]
+
+public class Solution {
+
+    public void sortColors(int[] nums) {
+        int len = nums.length;
+        if (len < 2) {
+            return;
+        }
+
+        // all in [0, zero) = 0
+        // all in [zero, i) = 1
+        // all in [two, len - 1] = 2
+        
+        // 循环终止条件是 i == two，那么循环可以继续的条件是 i < two
+        // 为了保证初始化的时候 [0, zero) 为空，设置 zero = 0，
+        // 所以下面遍历到 0 的时候，先交换，再加
+        int zero = 0;
+
+        // 为了保证初始化的时候 [two, len - 1] 为空，设置 two = len
+        // 所以下面遍历到 2 的时候，先减，再交换
+        int two = len;// 
+        int i = 0;
+        // 当 i == two 上面的三个子区间正好覆盖了全部数组
+        // 因此，循环可以继续的条件是 i < two
+        while (i < two) {
+            if (nums[i] == 0) {
+                swap(nums, i, zero);
+                zero++;
+                i++;
+            } else if (nums[i] == 1) {
+                i++;
+            } else {
+                two--;// 要明白为什么这个时候i不动
+                swap(nums, i, two);
+            }
+        }
+    }
+
+    private void swap(int[] nums, int index1, int index2) {
+        int temp = nums[index1];
+        nums[index1] = nums[index2];
+        nums[index2] = temp;
+    }
+}
+```
+
+## 79- Word Search
+
+```java
+Given an m x n board and a word, find if the word exists in the grid.
+
+```
+
 ## 
 
 
