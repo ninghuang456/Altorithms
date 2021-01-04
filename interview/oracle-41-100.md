@@ -214,8 +214,252 @@ public class Solution {
 
 ```java
 Given an m x n board and a word, find if the word exists in the grid.
+Input: board = [["A","B","C","E"],["S","F","C","S"],["A","D","E","E"]], 
+word = "ABCCED"
+Output: true
 
+class Solution {
+    public boolean exist(char[][] board, String word) {
+        if (board == null || board.length == 0 || board[0].length == 0) 
+        return false;
+        int r = board.length;
+        int c = board[0].length;
+        boolean[][] visited = new boolean[r][c];
+        for (int i = 0; i < r; i ++) {
+            for (int j = 0; j < c; j ++) {
+                if (board[i][j] == word.charAt(0) && 
+                findWord(board, i, j, word, 0, visited)){
+                    return true;
+                }
+                
+            }
+        }
+        return false;
+    }
+    
+    public boolean findWord(char[][] board, int r, int c, String word, 
+                          int index, boolean[][] visited) {
+        if (index == word.length()) return true;
+        if(!inArea(r,c,board) || visited[r][c] || 
+        board[r][c] != word.charAt(index)) return false;
+        
+        visited[r][c] = true;
+        boolean res = findWord(board, r + 1, c, word, index + 1, visited) ||
+                      findWord(board, r - 1, c, word, index + 1, visited) ||
+                      findWord(board, r, c + 1, word, index + 1, visited) ||
+                       findWord(board, r, c - 1, word, index + 1, visited);
+        
+        visited[r][c] = false;
+        return res;
+        
+    }
+    
+    public boolean inArea(int r, int c, char[][] board) {
+        return r >= 0 && r < board.length && c >= 0 && c < board[0].length;
+    }
+}
 ```
+
+## 295 Find Median from Data Stream
+
+```java
+class MedianFinder {
+   private Queue<Integer> small = new PriorityQueue<>((o1,o2) -> (o2 - o1)); 
+                                              // need <>
+   private Queue<Integer> large = new PriorityQueue();
+    // Adds a number into the data structure.
+    public void addNum(int num) {
+        large.add(num);
+        small.add(large.poll());
+        if (large.size() < small.size())
+            large.add(small.poll());
+    }
+
+    // Returns the median of current data stream
+    public double findMedian() {
+        return large.size() > small.size()
+               ? large.peek()
+               : (large.peek() + small.peek()) / 2.0;
+    }
+}
+/**
+```
+
+## 15-3Sum
+
+```java
+class Solution {
+    public List<List<Integer>> threeSum(int[] nums) {
+        List<List<Integer>> res = new ArrayList<>();
+        if (nums == null || nums.length < 3) return res;
+        Arrays.sort(nums);
+        Set<List<Integer>> set = new HashSet<>();
+        for (int left = 0; left < nums.length - 2; left ++){
+            int mid = left + 1;
+            int right = nums.length - 1;
+            while (mid < right){
+                int sum = nums[left] + nums[mid] + nums[right];
+                if (sum == 0){
+                    ArrayList<Integer> ls = new ArrayList<>();
+                    ls.add(nums[left]);
+                    ls.add(nums[mid]);
+                    ls.add(nums[right]);
+                    if(!set.contains(ls)){
+                        res.add(ls);
+                        set.add(ls);
+                    }
+                    mid ++;
+                    right --; //容易忘记
+                } else if (sum > 0){
+                    right --;
+                } else {
+                    mid ++;
+                }
+                
+            }
+        }
+        return res;
+    }
+}
+```
+
+## 56-Merge Intervals
+
+```java
+class Solution {
+    public int[][] merge(int[][] intervals) {
+        Arrays.sort(intervals, (a,b) -> a[0] - b[0]); // -> not =>
+        int k = 0;
+        int i = 0;
+        while (i < intervals.length) {
+            int start = intervals[i][0];
+            int end = intervals[i][1];
+            while (i < intervals.length - 1 && end >= intervals[i + 1][0]){ // test overlap need to first check end with next start
+                i ++;
+                end = Math.max(intervals[i][1], end);
+            }
+            intervals[k][0] = start;
+            intervals[k][1] = end;
+            k ++;
+            i ++; 
+        }
+        return Arrays.copyOf(intervals, k);
+    }
+}
+```
+
+## 167-Two Sum II - Input array is sorted
+
+```java
+class Solution {
+    public int[] twoSum(int[] numbers, int target) {
+        int[] result = new int[2];
+        
+        int left = 0, right = numbers.length - 1;
+        while (left < right) {
+            if (numbers[left] + numbers[right] < target) {
+                left++;
+            } else if (numbers[left] + numbers[right] > target) {
+                right--;
+            } else {
+                break;//遇到合适的pair直接break，省点时间，有唯一解的情况
+            }
+        }
+        
+        //因为两个indices不是zero-based，所以+1，从1开始数
+        result[0] = left + 1;
+        result[1] = right + 1;
+        
+        return result;
+    }
+}
+```
+
+## 341-Flatten Nested List Iterator
+
+```java
+Given a nested list of integers, implement an iterator to flatten it.
+Each element is either an integer, or a list -- 
+whose elements may also be integers or other lists.
+Example 1:
+Input: [[1,1],2,[1,1]]
+Output: [1,1,2,1,1]
+Explanation: By calling next repeatedly until hasNext returns false, 
+             the order of elements returned by next should be: [1,1,2,1,1].
+             
+ public class NestedIterator implements Iterator<Integer> {
+    private List<Integer> listIterator;
+    private int index;
+
+    public NestedIterator(List<NestedInteger> nestedList) {
+        listIterator = getListIterator(nestedList);
+        index = 0;
+    }
+
+    @Override
+    public Integer next() {
+        if (hasNext()){
+            Integer val = listIterator.get(index ++);
+            return val;
+        }
+        return null;
+    }
+
+    @Override
+    public boolean hasNext() {
+        return index  < listIterator.size();
+        
+        
+    }
+    
+    public static List<Integer> getListIterator(List<NestedInteger> nestedList) {
+        ArrayList<Integer> res = new ArrayList<>();
+        for (NestedInteger val : nestedList) {
+            if (val.isInteger()) {
+                res.add(val.getInteger());
+            } else {
+                res.addAll(getListIterator(val.getList()));
+            }
+        }
+        return res;
+    }
+    
+}            
+```
+
+## 154- Find Minimum in Rotated Sorted Array II
+
+```java
+Suppose an array sorted in ascending order is rotated at some pivot 
+unknown to you beforehand.
+(i.e.,  [0,1,2,4,5,6,7] might become  [4,5,6,7,0,1,2]).
+Find the minimum element.
+The array may contain duplicates.
+Example 1:
+Input: [1,3,5]
+Output: 1
+class Solution {
+    public int findMin(int[] nums) {
+         int l = 0, r = nums.length-1;
+	 while (l < r) {
+		 int mid = (l + r) / 2;
+		 if (nums[mid] < nums[r]) {
+			 r = mid;
+		 } else if (nums[mid] > nums[r]){
+			 l = mid + 1;
+		 } else {  
+			 r--;  
+		 }
+	 }
+	 return nums[l];
+        
+    }
+}
+```
+
+## 
+
+## 
 
 ## 
 
