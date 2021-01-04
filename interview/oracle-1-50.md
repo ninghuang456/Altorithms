@@ -1,4 +1,4 @@
-# Oracle 1 ~ 60
+# Oracle 1 ~ 40
 
 ## 99 - Recover Binary Search Tree
 
