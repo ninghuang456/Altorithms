@@ -774,6 +774,155 @@ class Solution {
 
 ```
 
+## 23- Merge k Sorted Lists
+
+```java
+class Solution {
+    public ListNode mergeKLists(ListNode[] lists) {
+        
+       // if(lists == null || lists.length == 0) return null;
+        PriorityQueue<ListNode> pq = new PriorityQueue<>((l1,l2)-> l1.val - l2.val);
+        ListNode head = new ListNode(-1);
+        ListNode cur = head;
+        for(int i = 0; i < lists.length; i ++){
+            if(lists[i] != null){
+             pq.offer(lists[i]);   
+            }
+        }
+        while(!pq.isEmpty()){
+            ListNode temp = pq.poll();
+            cur.next = temp;
+            cur = cur.next;
+            if(temp.next != null){
+                pq.offer(temp.next);
+            }
+        }
+        return head.next;
+    }
+}
+```
+
+## 73-Set Matrix Zeroes
+
+```java
+Given an m x n matrix. If an element is 0, set its entire row and column to 0. 
+Do it in-place.
+Follow up:
+A straight forward solution using O(mn) space is probably a bad idea.
+A simple improvement uses O(m + n) space, but still not the best solution.
+Could you devise a constant space solution?
+
+思路:
+思路一: 用 O(m+n)额外空间
+两遍扫matrix,第一遍用集合记录哪些行,哪些列有0;第二遍置0
+思路二: 用O(1)空间
+关键思想: 用matrix第一行和第一列记录该行该列是否有0,作为标志位
+但是对于第一行,和第一列要设置一个标志位,为了防止自己这一行(一列)也有0的情况
+
+class Solution {
+    public void setZeroes(int[][] matrix) {
+        int row = matrix.length;
+        int col = matrix[0].length;
+        boolean row0_flag = false;
+        boolean col0_flag = false;
+        // 第一行是否有零
+        for (int j = 0; j < col; j++) {
+            if (matrix[0][j] == 0) {
+                row0_flag = true;
+                break;
+            }
+        }
+        // 第一列是否有零
+        for (int i = 0; i < row; i++) {
+            if (matrix[i][0] == 0) {
+                col0_flag = true;
+                break;
+            }
+        }
+        // 把第一行第一列作为标志位
+        for (int i = 1; i < row; i++) {
+            for (int j = 1; j < col; j++) {
+                if (matrix[i][j] == 0) {
+                    matrix[i][0] = matrix[0][j] = 0;
+                }
+            }
+        }
+        // 置0
+        for (int i = 1; i < row; i++) {
+            for (int j = 1; j < col; j++) {
+                if (matrix[i][0] == 0 || matrix[0][j] == 0) {
+                    matrix[i][j] = 0;
+                }
+            }
+        }
+        if (row0_flag) {
+            for (int j = 0; j < col; j++) {
+                matrix[0][j] = 0;
+            }
+        }
+        if (col0_flag) {
+            for (int i = 0; i < row; i++) {
+                matrix[i][0] = 0;
+            }
+        } 
+    }
+}
+
+//简化版
+class Solution {
+    public void setZeroes(int[][] matrix) {
+        boolean col0_flag = false;
+        int row = matrix.length;
+        int col = matrix[0].length;
+        for (int i = 0; i < row; i++) {
+            if (matrix[i][0] == 0) col0_flag = true;
+            for (int j = 1; j < col; j++) {
+                if (matrix[i][j] == 0) {
+                    matrix[i][0] = matrix[0][j] = 0;
+                }
+            }
+        }
+        for (int i = row - 1; i >= 0; i--) {
+            for (int j = col - 1; j >= 1; j--) {
+                if (matrix[i][0] == 0 || matrix[0][j] == 0) {
+                    matrix[i][j] = 0;
+                }
+            }
+            if (col0_flag) matrix[i][0] = 0;
+        }
+    }
+}
+
+
+```
+
+## 1242- Web Crawler Multithreaded
+
+```java
+
+```
+
+## 236-Lowest Common Ancestor of a Binary Tree
+
+```java
+class Solution {
+   public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
+        if( root == p || root == q || root == null)
+            return root;
+        TreeNode left = lowestCommonAncestor( root.left,  p,  q);
+        TreeNode right = lowestCommonAncestor( root.right,  p,  q);
+        if(left == null)
+            return right;
+        else if (right == null)
+            return left;
+        else
+            return root;
+    }
+}
+```
+
+## 
+
 ## 
 
 ## 
