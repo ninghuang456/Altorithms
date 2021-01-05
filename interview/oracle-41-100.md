@@ -905,6 +905,179 @@ class Solution {
 }
 ```
 
+## 350- Intersection of Two Arrays II
+
+```java
+Given two arrays, write a function to compute their intersection.
+Input: nums1 = [4,9,5], nums2 = [9,4,9,8,4]
+Output: [4,9]
+
+public class Solution {
+    public int[] intersect(int[] nums1, int[] nums2) {
+        HashMap<Integer, Integer> map = new HashMap<Integer, Integer>();
+        ArrayList<Integer> result = new ArrayList<Integer>();
+        for(int i = 0; i < nums1.length; i++)
+        {
+            if(map.containsKey(nums1[i])) map.put(nums1[i], map.get(nums1[i])+1);
+            else map.put(nums1[i], 1);
+        }
+    
+        for(int i = 0; i < nums2.length; i++)
+        {
+            if(map.containsKey(nums2[i]) && map.get(nums2[i]) > 0)
+            {
+                result.add(nums2[i]);
+                map.put(nums2[i], map.get(nums2[i])-1);
+            }
+        }
+    
+       int[] r = new int[result.size()];
+       for(int i = 0; i < result.size(); i++)
+       {
+           r[i] = result.get(i);
+       }
+    
+       return r;
+    }
+}
+```
+
+## 212- Word Search II
+
+```java
+Given an m x n board of characters and a list of strings words, 
+return all words on the board.
+Input: board = [["o","a","a","n"],["e","t","a","e"],["i","h","k","r"],["i","f","l","v"]], words = ["oath","pea","eat","rain"]
+Output: ["eat","oath"]
+
+class Solution {
+    public List<String> findWords(char[][] board, String[] words) {
+        //构建字典树
+        wordTrie myTrie=new wordTrie();
+        trieNode root= myTrie.root;
+        for(String s:words)
+            myTrie.insert(s);
+        //使用set防止重复
+        Set<String> result =new HashSet<>();
+        int m=board.length;
+        int n=board[0].length;
+        boolean [][]visited=new boolean[m][n];
+        //遍历整个二维数组
+        for(int i=0;i<board.length; i++){
+            for (int j = 0; j < board [0].length; j++){
+                find(board,visited,i,j,m,n,result,root);
+            }
+        }
+        System.out.print(result);
+        return new LinkedList<String>(result);
+    }
+    private void find(char [] [] board, boolean [][]visited,int i,int j,int m,int n,Set<String> result,trieNode cur){
+        //边界以及是否已经访问判断
+        if(i<0||i>=m||j<0||j>=n||visited[i][j])
+            return;
+        cur=cur.child[board[i][j]-'a'];
+        visited[i][j]=true;
+        if(cur==null)
+        {
+            //如果单词不匹配，回退
+            visited[i][j]=false;
+            return;
+        }
+        //找到单词加入
+        if(cur.isLeaf)
+        {
+            result.add(cur.val);
+            //找到单词后不能回退，因为可能是“ad” “addd”这样的单词得继续回溯
+//            visited[i][j]=false;
+//            return;
+        }
+        find(board,visited,i+1,j,m,n,result,cur);
+        find(board,visited,i,j+1,m,n,result,cur);
+        find(board,visited,i,j-1,m,n,result,cur);
+        find(board,visited,i-1,j,m,n,result,cur);
+        //最后要回退，因为下一个起点可能会用到上一个起点的字符
+        visited[i][j]=false;
+    }
+
+
+//字典树
+class wordTrie{
+    public trieNode root=new trieNode();
+    public void insert(String s){
+        trieNode cur=root;
+        for(char c:s.toCharArray()){
+            if(cur.child[c-'a']==null){ // like containsKey
+                cur.child [c-'a'] = new trieNode();
+            }
+            cur=cur.child [c-'a'];
+        }
+        cur.isLeaf=true;
+        cur.val=s;
+    }
+}
+//字典树结点
+class trieNode {
+    public String val;
+    public trieNode[] child=new trieNode[26];
+    public boolean isLeaf=false;
+    trieNode(){
+    }
+}
+
+
+}
+
+//慢的DFS
+class Solution {
+    public List<String> findWords(char[][] board, String[] words) {
+        List<String> res = new ArrayList<>();
+        for (String word : words) {
+            if (exist(board, word)) {
+                res.add(word);
+            }
+        }
+        return res;
+    }
+
+    public boolean exist(char[][] board, String word) {
+        int row = board.length;
+        int col = board[0].length;
+        boolean[][] visited = new boolean[row][col];
+        for (int i = 0; i < row; i ++) {
+            for (int j = 0; j < col; j ++){
+                if (board[i][j] == word.charAt(0) && findWord(board, word, i, j, 0, visited)) { // start from 0;
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+    
+    public boolean findWord(char[][] board, String word, int i, int j, int size,  boolean[][] visited){
+        if(size == word.length()){// it means last run's index reach last letter; similer like node == null;
+            return true;
+        }
+        
+        if (!inArea(board, i , j) || visited[i][j] || board[i][j] != word.charAt(size)){ // need check in area before visited[i][j]
+            return false;
+        }
+        visited[i][j] = true;
+        boolean res = findWord(board, word, i - 1, j, size + 1, visited) ||
+            findWord(board, word, i, j - 1, size + 1, visited) ||
+            findWord(board, word, i + 1, j, size + 1, visited) ||
+            findWord(board, word, i , j + 1, size + 1, visited);
+         visited[i][j] = false;   
+        return res;
+    }
+    
+    boolean inArea(char[][] board,int i, int j){
+        return i >= 0 && i < board.length && j >= 0 && j < board[0].length;
+    }
+}
+```
+
+## 
+
 ## 
 
 ## 
