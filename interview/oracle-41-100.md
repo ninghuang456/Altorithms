@@ -518,8 +518,10 @@ Output
 Explanation
 Solution solution = new Solution([1, 2, 3]);
 solution.shuffle(); // Shuffle the array [1,2,3] and return its result. 
-//Any permutation of [1,2,3] must be equally likely to be returned. Example: return [3, 1, 2]
-solution.reset(); // Resets the array back to its original configuration [1,2,3]. Return [1, 2, 3]
+//Any permutation of [1,2,3] must be equally likely to be returned. 
+//Example: return [3, 1, 2]
+solution.reset(); // Resets the array back to its original configuration [1,2,3].
+// Return [1, 2, 3]
 solution.shuffle();// Returns the random shuffling of array [1,2,3]. 
 //Example: return [1, 3, 2]
 
@@ -755,6 +757,155 @@ class Solution {
     
     }
 ```
+
+## 206 - Reverse Linked List
+
+```java
+class Solution {
+    public ListNode reverseList(ListNode head) {
+        if(head == null || head.next == null) return head;
+        ListNode pre = null;
+        ListNode cur = head;
+        while (cur != null) {
+            ListNode temp = cur.next;
+            cur.next = pre;
+            pre = cur;
+            cur = temp;
+        }
+        return pre;
+    }
+}
+
+class Solution {
+    public ListNode reverseList(ListNode head) {
+        if(head == null || head.next == null) return head;
+        ListNode res = reverseList(head.next);
+        head.next.next = head;
+        head.next = null;
+        return res;
+            
+        
+    }
+}
+```
+
+## 33 - Search in Rotated Sorted Array
+
+```java
+class Solution { 
+        public int search(int[] nums, int target) {
+        if (nums == null || nums.length == 0){return -1;}
+        int start = 0;
+        int end = nums.length - 1;
+        int mid;
+        while (start <= end) {
+             mid = start + (end - start) /2;
+            if (nums[mid] == target) {return mid;}
+            if (nums[start] <= nums[mid]){
+                if(target >= nums[start] && target < nums[mid]){
+                    end = mid - 1;
+                } else {
+                    start = mid + 1;
+                }
+            } else {
+                if(target <= nums[end] && nums[mid] < target ){
+                    start = mid + 1;
+                } else {
+                    end = mid - 1;
+                }
+            }
+        }
+        return -1;
+    }
+}
+```
+
+## 21- Merge Two Sorted Lists
+
+```java
+class Solution {
+    public ListNode mergeTwoLists(ListNode l1, ListNode l2) {
+        if (l1 == null) return l2;
+        if (l2 == null) return l1;
+        if (l1.val < l2.val){
+            l1.next = mergeTwoLists(l1.next, l2);
+            return l1;
+        }
+        l2.next = mergeTwoLists(l1, l2.next);
+        return l2;
+        }
+        
+    }
+    
+    class Solution {
+    public ListNode mergeTwoLists(ListNode l1, ListNode l2) {
+        if (l1 == null || l2 == null) {
+            return l1 == null ? l2 : l1;
+        }
+        ListNode dummy = new ListNode(-1);
+        ListNode cur = dummy;
+        while (l1 != null && l2 != null) {
+            if (l1.val <= l2.val) {
+                cur.next = l1;
+                cur = l1;
+                l1 = l1.next;
+                
+            } else {
+                cur.next = l2;
+                cur = l2;
+                l2 = l2.next;
+            }
+        }
+        cur.next = (l1 == null) ? l2 : l1;
+        
+        return dummy.next;
+        
+    }
+}
+```
+
+## 437 - Path Sum III
+
+```java
+root = [10,5,-3,3,2,null,11,3,-2,null,1], sum = 8
+      10
+     /  \
+    5   -3
+   / \    \
+  3   2   11
+ / \   \
+3  -2   1
+Return 3. The paths that sum to 8 are:
+1.  5 -> 3
+2.  5 -> 2 -> 1
+3. -3 -> 11
+
+class Solution {
+     public int pathSum(TreeNode root, int sum) {
+        HashMap<Integer, Integer> preSum = new HashMap();
+        preSum.put(0,1);
+        return helper(root, 0, sum, preSum);
+    }
+    
+    public int helper(TreeNode root, int currSum, int target, 
+                 HashMap<Integer, Integer> preSum) {
+        if (root == null) {
+            return 0;
+        }
+        
+        currSum += root.val;
+        int res = preSum.getOrDefault(currSum - target, 0);
+        preSum.put(currSum, preSum.getOrDefault(currSum, 0) + 1);
+        
+        res += helper(root.left, currSum, target, preSum) + 
+               helper(root.right, currSum, target, preSum);
+        preSum.put(currSum, preSum.get(currSum) - 1);
+        return res;
+    }
+}
+```
+
+## 
 
 ## 
 
