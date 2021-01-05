@@ -1289,6 +1289,241 @@ class Solution {
 }
 ```
 
+## 256- Paint House
+
+```java
+class Solution {
+    public int minCost(int[][] costs) {
+         if(costs==null||costs.length==0){
+        return 0;
+    }
+    for(int i=1; i<costs.length; i++){
+        costs[i][0] += Math.min(costs[i-1][1],costs[i-1][2]); 
+        // need add last costs it self
+        costs[i][1] += Math.min(costs[i-1][0],costs[i-1][2]);
+        costs[i][2] += Math.min(costs[i-1][1],costs[i-1][0]);
+    }
+    int n = costs.length-1;
+    return Math.min(Math.min(costs[n][0], costs[n][1]), costs[n][2]);
+        
+    }
+}
+```
+
+## 36-Valid Sudoku
+
+```java
+Determine if a 9 x 9 Sudoku board is valid. Only the filled cells 
+need to be validated according to the following rules:
+Each row must contain the digits 1-9 without repetition.
+Each column must contain the digits 1-9 without repetition.
+Each of the nine 3 x 3 sub-boxes of the grid must contain the 
+digits 1-9 without repetition.
+
+class Solution {
+    public boolean isValidSudoku(char[][] board) {
+       int[][] cols = new int[9][10];
+       int[][] rows = new int[9][10];
+       int[][] boxs = new int[9][10];
+       
+       for(int i = 0; i < board.length; i ++) {
+           for (int j = 0; j < board[0].length; j ++){
+               if (board[i][j]=='.'){
+                    continue;
+                }
+               int val = board[i][j] - '0';
+               int box = j/3 + (i/3) * 3;
+               if(cols[i][val] == 1) return false;
+               if(rows[j][val] == 1) return false;
+               if(boxs[box][val] == 1) return false;
+               cols[i][val] = 1;
+               rows[j][val] = 1;
+               boxs[box][val] = 1;
+           }
+       } 
+       return true; 
+    }
+}
+```
+
+## 210- Course Schedule II
+
+```java
+Input: numCourses = 2, prerequisites = [[1,0]]
+Output: [0,1]
+Explanation: There are a total of 2 courses to take. 
+To take course 1 you should have finished course 0. 
+So the correct course order is [0,1].
+
+class Solution {
+    public int[] findOrder(int numCourses, int[][] prerequisites) {
+        int[] indegrees = new int[numCourses];
+        List<ArrayList<Integer>> adjTable = new ArrayList<>();
+        ArrayList<Integer> res = new ArrayList<>();
+        for (int i = 0; i < numCourses; i ++) {
+            adjTable.add(new ArrayList<Integer>());
+        }
+        for (int[] pre : prerequisites){
+            indegrees[pre[0]] ++;
+            adjTable.get(pre[1]).add(pre[0]);
+        }
+        Queue<Integer> queue = new LinkedList<>();
+        for (int i = 0; i < indegrees.length; i ++) {
+            if(indegrees[i] == 0){
+                queue.offer(i);
+            }
+        }
+        while (!queue.isEmpty()) {
+            int cur = queue.poll();
+            numCourses --;
+            res.add(cur);
+            List<Integer> adj = adjTable.get(cur);
+            for (int next : adj) {
+                indegrees[next] --;
+                if (indegrees[next] == 0) {
+                    queue.offer(next);
+                }
+            }
+        }
+        if (numCourses != 0) return new int[0];
+        int[] finalRes = new int[res.size()];
+        for (int i = 0; i < res.size(); i ++){
+            finalRes[i] = res.get(i);
+        }
+        return finalRes;
+    }
+}
+```
+
+## 227-Basic Calculator II
+
+```java
+class Solution {
+    public int calculate(String s) {
+      Stack<Integer> stack = new Stack<Integer>();
+        char sign = '+';
+        int num = 0;
+        for (int i = 0; i < s.length(); i ++) {
+            char c = s.charAt(i);
+            if (Character.isDigit(c)){
+                num = num* 10 + (c - '0');
+            }
+            if(!Character.isDigit(c) && c != ' '|| i == s.length() - 1){
+                if (sign=='+'){
+                    stack.push(num);
+                }
+                if (sign == '-') stack.push(-num);
+                if (sign == '*') stack.push(stack.pop() * num);
+                if (sign == '/') stack.push(stack.pop() / num);
+                sign = c;
+                num = 0;
+            }
+        }
+            int res = 0;
+           for (int n: stack){
+               res += n;
+           }
+            return res;
+        }
+    }
+
+```
+
+## 348-Design Tic-Tac-Toe
+
+```java
+public class TicTacToe {
+    private int[] rows;
+    private int[] cols;
+    private int diagonal;
+    private int antiDiagonal;
+
+    /** Initialize your data structure here. */
+    public TicTacToe(int n) {
+        rows = new int[n];
+        cols = new int[n];
+    }
+
+    public int move(int row, int col, int player) {
+        int toAdd = player == 1 ? 1 : -1;
+        int size = rows.length;
+        rows[row] += toAdd;
+        cols[col] += toAdd;
+        if (row == col)
+        {
+            diagonal += toAdd;
+        }
+
+        if ((row+col == size-1))
+        {
+            antiDiagonal += toAdd;
+        }
+
+
+        if (Math.abs(rows[row]) == size ||
+                Math.abs(cols[col]) == size ||
+                Math.abs(diagonal) == size  ||
+                Math.abs(antiDiagonal) == size)
+        {
+            return player;
+        }
+
+        return 0;
+    }
+}
+```
+
+## 42-Trapping Rain Water
+
+```java
+class Solution {
+    public int trap(int[] height) {
+        if (height == null || height.length == 0) return 0;
+        int left = 0; int right = height.length - 1;
+        int leftMax = height[left];
+        int rightMax = height[right];
+        int sum = 0;
+        while (left <= right){
+           leftMax = Math.max(leftMax, height[left]);
+           rightMax = Math.max(rightMax, height[right]);
+           if (leftMax < rightMax){
+               sum += leftMax - height[left];
+               left ++;
+           } else {
+               sum += rightMax - height[right];
+               right --;
+           }
+            
+        }
+        return sum;
+    }
+}
+```
+
+## 138-Copy List with Random Pointer
+
+```java
+class Solution {
+    public Node copyRandomList(Node head) {
+        HashMap<Node, Node> map = new HashMap<>();
+        Node cur = head;
+        while (cur != null) {
+            map.put(cur, new Node(cur.val));
+            cur = cur.next; 
+        }
+        cur = head;
+        while (cur != null) {
+            map.get(cur).next = map.get(cur.next);
+            map.get(cur).random = map.get(cur.random);
+            cur = cur.next;
+        }
+       return map.get(head);
+    }
+}
+```
+
+## 
+
 ## 
 
 ## 
