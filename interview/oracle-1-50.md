@@ -1201,6 +1201,94 @@ class Solution {
 
 ```
 
+## 692- Top K Frequent Words
+
+```java
+Input: ["i", "love", "leetcode", "i", "love", "coding"], k = 2
+Output: ["i", "love"]
+Explanation: "i" and "love" are the two most frequent words.
+Note that "i" comes before "love" due to a lower alphabetical order.
+
+class Solution {
+    public List<String> topKFrequent(String[] words, int k) {
+        
+        List<String> result = new LinkedList<>();
+        Map<String, Integer> map = new HashMap<>();
+        for(int i=0; i<words.length; i++)
+        {
+            if(map.containsKey(words[i]))
+                map.put(words[i], map.get(words[i])+1);
+            else
+                map.put(words[i], 1);
+        }
+        
+        PriorityQueue<Map.Entry<String, Integer>> pq = new PriorityQueue<>(
+                 (a,b) -> a.getValue()==b.getValue() ?
+                  b.getKey().compareTo(a.getKey()) : a.getValue()-b.getValue()
+        );
+        
+        for(Map.Entry<String, Integer> entry: map.entrySet())
+        {
+            pq.offer(entry);
+            if(pq.size()>k)
+                pq.poll();
+        }
+
+        while(!pq.isEmpty())
+            result.add(0, pq.poll().getKey());
+        
+        return result;
+    }
+}
+```
+
+## 273-Integer to English Words
+
+```java
+Input: num = 123
+Output: "One Hundred Twenty Three"
+class Solution {
+    public String numberToWords(int num) {
+        if(num == 0) return "Zero";
+        return helper(num);  
+    }
+    
+    public String helper(int num ) {
+        String[] words = new String[] {"", "One", "Two", "Three", "Four", "Five",
+         "Six", "Seven", "Eight", "Nine", "Ten",
+   "Eleven", "Twelve", "Thirteen", "Fourteen", "Fifteen", "Sixteen", "Seventeen",
+        "Eighteen", "Nineteen"}; // Fifteen, Twelve Forty Nineteen Ninety Hundred
+        String[] words1 = new String[]{"","","Twenty ", "Thirty ", 
+        "Forty ", "Fifty ", "Sixty ",  "Seventy ", "Eighty ", "Ninety "};
+       StringBuilder sb = new StringBuilder();
+        if (num >= 1000000000) {
+            sb.append(helper(num/1000000000)).append(" Billion ");
+            num %= 1000000000; 
+        }
+        if (num >= 1000000) {
+            sb.append(helper(num/1000000)).append(" Million ");
+            num %= 1000000; 
+        }
+        if (num >= 1000) {
+            sb.append(helper(num/1000)).append(" Thousand ");
+            num %= 1000; 
+        }
+        if (num >= 100) {
+            sb.append(helper(num/100)).append(" Hundred ");
+            num %= 100; 
+        }
+        if (num >= 20) {
+             sb.append(words1[num/10]).append(words[num%10]);
+        } else {
+          sb.append(words[num]);  
+        }
+        
+        return sb.toString().trim();
+        
+    }
+}
+```
+
 ## 
 
 ## 
