@@ -1076,6 +1076,308 @@ class Solution {
 }
 ```
 
+## 994 - Rotting Oranges
+
+```java
+In a given grid, each cell can have one of three values:
+the value 0 representing an empty cell;
+the value 1 representing a fresh orange;
+the value 2 representing a rotten orange.
+Every minute, any fresh orange that is adjacent (4-directionally) to a rotten 
+orange becomes rotten.
+Return the minimum number of minutes that must elapse until no cell has a 
+fresh orange.  If this is impossible, return -1 instead.
+
+class Solution {
+    public int orangesRotting(int[][] grid) {
+    int M = grid.length;
+    int N = grid[0].length;
+    Queue<Integer> queue = new LinkedList<>();
+
+    int count = 0; // count 表示新鲜橘子的数量
+    for (int r = 0; r < M; r++) {
+        for (int c = 0; c < N; c++) {
+            if (grid[r][c] == 1) {
+                count++;
+            } else if (grid[r][c] == 2) {
+                queue.add(r*N + c);
+            }
+        }
+    }
+
+    int round = 0; // round 表示腐烂的轮数，或者分钟数
+    while (count > 0 && !queue.isEmpty()) {
+        round++;
+        int n = queue.size();
+        for (int i = 0; i < n; i++) {
+            int orange = queue.poll();
+            int r = orange/N;
+            int c = orange%N;
+            if (r-1 >= 0 && grid[r-1][c] == 1) {
+                grid[r-1][c] = 2;
+                count--;
+                queue.add((r-1)*N + c);
+            }
+            if (r+1 < M && grid[r+1][c] == 1) {
+                grid[r+1][c] = 2;
+                count--;
+                queue.add((r+1)*N + c);
+            }
+            if (c-1 >= 0 && grid[r][c-1] == 1) {
+                grid[r][c-1] = 2;
+                count--;
+                queue.add(r*N + c - 1);
+            }
+            if (c+1 < N && grid[r][c+1] == 1) {
+                grid[r][c+1] = 2;
+                count--;
+                queue.add(r*N + c + 1);
+            }
+        }
+    }
+
+    if (count > 0) {
+        return -1;
+    } else {
+        return round;
+    }
+}
+    
+}
+
+```
+
+## 211- Design Add and Search Words Data Structure
+
+```java
+class WordDictionary {
+    boolean isEnd;
+    WordDictionary[] next;
+    
+    public WordDictionary() {
+        isEnd = false;
+        next = new WordDictionary[26];
+        
+    }
+    
+    /** Adds a word into the data structure. */
+    public void addWord(String word) {
+        WordDictionary cur = this;
+        for (char c : word.toCharArray()){
+            if (cur.next[c - 'a'] == null){
+                WordDictionary wd = new WordDictionary();
+                cur.next[c - 'a'] = wd;
+            }
+            cur = cur.next[c - 'a'];
+        }
+        cur.isEnd = true;
+    }
+    
+    /** Returns if the word is in the data structure. A word could contain the dot character '.' to represent any one letter. */
+    public boolean search(String word) {
+        return searchHelper(word, 0, this);
+    
+    }
+    
+    public boolean searchHelper(String word, int level, WordDictionary node){
+        if (level == word.length()) return node.isEnd;
+        char c = word.charAt(level);
+        if (c != '.') {
+            return (node.next[c - 'a'] != null) && searchHelper(word, level + 1, node.next[c - 'a']);
+        } 
+            for (int i = 0; i < node.next.length; i ++){
+                if((node.next[i] != null) && searchHelper(word, level + 1, node.next[i])) { // 如果不满足没关系 因为有可能后面有满足的 所以不要返回false
+                    return true;
+                }
+            }
+        
+        return false;
+    }
+   
+}
+
+```
+
+## 91- Decode Ways
+
+```java
+Input: s = "226"
+Output: 3
+Explanation: "226" could be decoded as "BZ" (2 26), 
+"VF" (22 6), or "BBF" (2 2 6).
+
+class Solution {
+    public int numDecodings(String s) {
+        int len = s.length();
+        int[] dp = new int[len + 1];
+        dp[0] = 1;
+        dp[1] = s.charAt(0) == '0' ? 0: 1;
+        for (int i = 2; i <= len; i ++) {
+            int step1 = Integer.valueOf(s.substring(i-1, i));
+            int step2 = Integer.valueOf(s.substring(i-2,i));
+            if (step1 >= 1){
+                dp[i] += dp[i - 1];
+            }
+            if(step2 >= 10 && step2 <= 26){
+                dp[i] += dp[i - 2];
+            }
+            
+        }
+        return dp[len];
+    }
+}
+```
+
+## 139- Word Break
+
+```java
+Input: s = "leetcode", wordDict = ["leet", "code"]
+Output: true
+Explanation: Return true because "leetcode" can be segmented as "leet code".
+
+class Solution {
+    public boolean wordBreak(String s, List<String> wordDict) {
+        boolean[] dp = new boolean[s.length() + 1];
+        Set<String> set = new HashSet<>(wordDict);
+        dp[0] = true;
+        for (int i = 1; i <= s.length(); i++) {
+            for (int j = 0; j < i; j++) {
+                if (dp[j] && set.contains(s.substring(j, i))){
+                    dp[i] = true;
+                    break;
+                }
+            }
+        }
+        return dp[s.length()];
+    }
+}
+
+```
+
+## 695- Max Area of Island
+
+```java
+class Solution {
+    public int maxAreaOfIsland(int[][] grid) {
+        int row = grid.length;
+        int col = grid[0].length;
+        int max = 0;
+        for (int i = 0; i < row; i ++){
+            for (int j = 0; j < col; j ++){
+                if (grid[i][j] == 1){
+                    int area = getArea(grid, i , j);
+                    max = Math.max(area, max);
+                }
+            }
+        }
+        return max;
+    }
+    
+    public int getArea(int[][] grid, int i, int j){
+        if (!inArea(grid, i, j)){
+            return 0;
+        }
+        if (grid[i][j] != 1){
+            return 0;
+        }
+        grid[i][j] = 2;
+        int sum = 1 + getArea(grid, i - 1, j) + getArea(grid, i, j - 1) + getArea(grid, i + 1, j) + getArea(grid, i, j + 1);   
+        return sum; 
+    }
+    
+    public boolean inArea(int[][] grid, int i, int j){
+        return i >= 0 && i < grid.length && j >= 0 && j < grid[0].length;
+    }
+}
+```
+
+## 739-Daily Temperatures
+
+```java
+Given a list of daily temperatures T, return a list such that, for each day in the
+ input, tells you how many days you would have to wait until a warmer temperature.
+ If there is no future day for which this is possible, put 0 instead.
+For example, given the list of temperatures T = [73, 74, 75, 71, 69, 72, 76, 73], 
+your output should be [1, 1, 4, 2, 1, 1, 0, 0].
+Note: The length of temperatures will be in the range [1, 30000]. 
+Each temperature will be an integer in the range [30, 100].
+
+//单调栈
+class Solution {
+    public int[] dailyTemperatures(int[] T) {
+    int[] res = new int[T.length];
+    Stack<Integer> stack = new Stack<>();
+    for(int i = T.length - 1; i >= 0; i--){
+        while(!stack.isEmpty() && T[i] >= T[stack.peek()]){
+            stack.pop();
+        }
+        res[i] = stack.isEmpty() ? 0 : (stack.peek() - i); 
+        stack.push(i);
+    }
+    return res;
+ }
+}
+```
+
+## 92-Reverse Linked List II
+
+```java
+Reverse a linked list from position m to n. Do it in one-pass.
+Note: 1 ≤ m ≤ n ≤ length of list.
+
+class Solution {
+    public ListNode reverseBetween(ListNode head, int m, int n) {
+        if (head == null) {
+            return null;
+        }
+        ListNode dummy = new ListNode(-1);
+        dummy.next = head;
+        ListNode pre = dummy;
+        
+        for (int i = 1; i < m; i++) {
+            pre = pre.next;
+        }
+        ListNode first = pre.next;
+        ListNode second = pre.next.next;
+        for (int i = 0; i < n - m; i++) {
+            first.next = second.next;
+            second.next = pre.next;
+            pre.next = second;
+            second = first.next;
+        }
+        return dummy.next;
+    }
+}
+
+```
+
+## 242- Valid Anagram
+
+```java
+Given two strings s and t , write a function to determine if t is an anagram of s.
+Example 1:
+Input: s = "anagram", t = "nagaram"
+Output: true
+
+class Solution {
+    public boolean isAnagram(String s, String t) {
+        int[] table = new int[26];
+        for(char c : s.toCharArray()){
+            table[c - 'a'] ++;
+        }
+        for(char c : t.toCharArray()){
+            table[c - 'a']--;
+        }
+        for(int i = 0; i < 26; i ++){
+            if (table[i] != 0) return false;
+        }
+        return true;
+    }
+}
+```
+
+## 
+
 ## 
 
 ## 
