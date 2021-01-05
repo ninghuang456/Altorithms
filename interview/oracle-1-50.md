@@ -921,6 +921,196 @@ class Solution {
 }
 ```
 
+## 380-Insert Delete GetRandom O\(1\)
+
+```java
+public class RandomizedSet {
+    ArrayList<Integer> nums;
+    HashMap<Integer, Integer> locs;
+    java.util.Random rand = new java.util.Random();
+    /** Initialize your data structure here. */
+    public RandomizedSet() {
+        nums = new ArrayList<Integer>();
+        locs = new HashMap<Integer, Integer>();
+    }
+    
+    /** Inserts a value to the set. Returns true if the set did not already contain the specified element. */
+    public boolean insert(int val) {
+        boolean contain = locs.containsKey(val);
+        if ( contain ) return false;
+        locs.put( val, nums.size());
+        nums.add(val);
+        return true;
+    }
+    
+    /** Removes a value from the set. Returns true if the set contained the specified element. */
+    public boolean remove(int val) {
+        boolean contain = locs.containsKey(val);
+        if ( ! contain ) return false;
+        int loc = locs.get(val);
+        if (loc < nums.size() - 1 ) { // not the last one than swap the last one with this val
+            int lastone = nums.get(nums.size() - 1 );
+            nums.set( loc , lastone );
+            locs.put(lastone, loc);
+        }
+        locs.remove(val);
+        nums.remove(nums.size() - 1);
+        return true;
+    }
+    
+    /** Get a random element from the set. */
+    public int getRandom() {
+        return nums.get( rand.nextInt(nums.size()) );
+    }
+}
+```
+
+## 93-Restore IP Addresses
+
+```java
+Given a string s containing only digits, return all possible valid IP addresses 
+that can be obtained from s. You can return them in any order.
+A valid IP address consists of exactly four integers, each integer is between 0
+ and 255, separated by single dots and cannot have leading zeros. 
+ For example, "0.1.2.201" and "192.168.1.1" are valid IP addresses 
+ and "0.011.255.245", "192.168.1.312" and "192.168@1.1" are invalid IP addresses. 
+Example 1:
+Input: s = "25525511135"
+Output: ["255.255.11.135","255.255.111.35"]
+
+public List<String> restoreIpAddresses(String s) {
+        List<String> result = new ArrayList<>();
+        StringBuilder ip = new StringBuilder();
+
+        for (int a = 1; a < 4; a++) {
+            for (int b = 1; b < 4; b++) {
+                for (int c = 1; c < 4; c++) {
+                    for (int d = 1; d < 4; d++) {
+                        /*
+                         * 1、保障下面subString不会越界
+                         * 2、保障截取的字符串与输入字符串长度相同
+                         * //1、2比较好理解，3比较有意思
+                         * 3、不能保障截取的字符串转成int后与输入字符串长度相同
+                         * 如：字符串010010，a=1，b=1，c=1，d=3，对应字符串0，1，0，010
+                         * 转成int后seg1=0，seg2=1，seg3=0，seg4=10
+                         * //所以需要下面这处判断if (ip.length() == s.length() + 3)
+                         */
+            if (a + b + c + d == s.length()) {
+                int seg1 = Integer.parseInt(s.substring(0, a));
+                int seg2 = Integer.parseInt(s.substring(a, a + b));
+                int seg3 = Integer.parseInt(s.substring(a + b, a + b + c));
+                int seg4 = Integer.parseInt(s.substring(a + b + c, a + b + c + d));
+                // 四个段数值满足0~255
+                if (seg1 <= 255 && seg2 <= 255 && seg3 <= 255 && seg4 <= 255) {
+                        ip.append(seg1).append(".").append(seg2).append(".").
+                                append(seg3).append(".").append(seg4);
+                                // 保障截取的字符串转成int后与输入字符串长度相同
+                                if (ip.length() == s.length() + 3) {
+                                    result.add(ip.toString());
+                                }
+                                ip.delete(0, ip.length());
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return result;
+    }
+    
+    // DFS
+这道题也是一个用DFS找所有的可能性的问题。这样一串数字：25525511135
+我们可以对他进行切分，但是根据IP的性质，有些切分就是明显不可能的：
+比如011.11.11.11, 这个的问题是以0开头了，不合法，直接跳过。
+比如257.11.11.11, 257大于IP里的最大数 255了，不合法，直接跳过。
+然后我们把这一层切分后剩下的字符串传到下一层，继续去找。
+直到最后我们得到4个section为止，把这个结果存到我们的result list。
+
+public List<String> restoreIpAddresses(String s) {
+    List<String> list = new ArrayList();
+    if(s.length() > 12) return list;
+      
+    helper(s, list, 0, "", 0);  
+    return list;
+  }
+  
+  void helper(String s, List<String> list, int pos, String res, int sec){
+    if(sec == 4 && pos == s.length()) {
+      list.add(res);
+      return;
+    }  
+      
+    for(int i = 1; i <= 3; i++){
+      if(pos + i > s.length()) break;  
+      String section = s.substring(pos, pos + i);
+      if(section.length() > 1 && section.startsWith("0") ||
+       Integer.parseInt(section) >= 256)  break;
+      helper(s, list, pos + i, sec == 0 ? section : res + "." + section, sec + 1);
+    }  
+  }
+```
+
+## 362- Design Hit Counter
+
+```java
+Design a hit counter which counts the number of hits received in the past 5 minutes.
+Each function accepts a timestamp parameter (in seconds granularity) 
+and you may assume that calls are being made to the system in chronological 
+order (ie, the timestamp is monotonically increasing). You may assume that 
+the earliest timestamp starts at 1.
+It is possible that several hits arrive roughly at the same time.
+Example:
+HitCounter counter = new HitCounter();
+// hit at timestamp 1.
+counter.hit(1);
+// hit at timestamp 2.
+counter.hit(2);
+// hit at timestamp 3.
+counter.hit(3);
+// get hits at timestamp 4, should return 3.
+counter.getHits(4);
+// hit at timestamp 300.
+counter.hit(300);
+// get hits at timestamp 300, should return 4.
+counter.getHits(300);
+// get hits at timestamp 301, should return 3.
+counter.getHits(301); 
+
+public class HitCounter {
+    private int[] times;
+    private int[] hits;
+    /** Initialize your data structure here. */
+    public HitCounter() {
+        times = new int[300];
+        hits = new int[300];
+    }
+    
+    /** Record a hit.
+        @param timestamp - The current timestamp (in seconds granularity). */
+    public void hit(int timestamp) {
+        int index = timestamp % 300;
+        if (times[index] != timestamp) {
+            times[index] = timestamp;
+            hits[index] = 1;
+        } else {
+            hits[index]++;
+        }
+    }
+    
+    /** Return the number of hits in the past 5 minutes.
+        @param timestamp - The current timestamp (in seconds granularity). */
+    public int getHits(int timestamp) {
+        int total = 0;
+        for (int i = 0; i < 300; i++) {
+            if (timestamp - times[i] < 300) {
+                total += hits[i];
+            }
+        }
+        return total;
+    }
+}
+```
+
 ## 
 
 ## 
