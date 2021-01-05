@@ -457,6 +457,238 @@ class Solution {
 }
 ```
 
+## 450： Delete Node in a BST
+
+```java
+public TreeNode deleteNode(TreeNode root, int key) {
+    if(root == null){
+        return null;
+    }
+    if(key < root.val){
+        root.left = deleteNode(root.left, key);
+    }else if(key > root.val){
+        root.right = deleteNode(root.right, key);
+    }else{
+        if(root.left == null){
+            return root.right;
+        }else if(root.right == null){
+            return root.left;
+        }
+        
+        TreeNode minNode = findMin(root.right);
+        root.val = minNode.val;
+        root.right = deleteNode(root.right, root.val);
+    }
+    return root;
+}
+
+private TreeNode findMin(TreeNode node){
+    while(node.left != null){
+        node = node.left;
+    }
+    return node;
+}
+```
+
+## 384- Shuffle an Array
+
+```java
+Given an integer array nums, design an algorithm to randomly shuffle the array.
+Implement the Solution class:
+Solution(int[] nums) Initializes the object with the integer array nums.
+int[] reset() Resets the array to its original configuration and returns it.
+int[] shuffle() Returns a random shuffling of the array.
+Example 1:
+Input
+["Solution", "shuffle", "reset", "shuffle"]
+[[[1, 2, 3]], [], [], []]
+Output
+[null, [3, 1, 2], [1, 2, 3], [1, 3, 2]]
+Explanation
+Solution solution = new Solution([1, 2, 3]);
+solution.shuffle(); // Shuffle the array [1,2,3] and return its result. 
+//Any permutation of [1,2,3] must be equally likely to be returned. Example: return [3, 1, 2]
+solution.reset(); // Resets the array back to its original configuration [1,2,3]. Return [1, 2, 3]
+solution.shuffle();// Returns the random shuffling of array [1,2,3]. 
+//Example: return [1, 3, 2]
+
+public class Solution {
+    private int[] nums;
+    private Random random;
+
+    public Solution(int[] nums) {
+        this.nums = nums;
+        random = new Random();
+    }
+    
+    /** Resets the array to its original configuration and return it. */
+    public int[] reset() {
+        return nums;
+    }
+    
+    /** Returns a random shuffling of the array. */
+    public int[] shuffle() {
+        if(nums == null) return null;
+        int[] a = nums.clone();
+        for(int j = 1; j < a.length; j++) {
+            int i = random.nextInt(j + 1);
+            swap(a, i, j);
+        }
+        return a;
+    }
+    
+    private void swap(int[] a, int i, int j) {
+        int t = a[i];
+        a[i] = a[j];
+        a[j] = t;
+    }
+}
+
+```
+
+## 20-Valid Parentheses
+
+```java
+Input: s = "()[]{}"
+Output: true
+class Solution {
+    public boolean isValid(String s) {
+        if (s == null || s.length() == 0) return true;
+        Stack<Character> stack = new Stack<>();
+        for (char c : s.toCharArray()){
+            if (c == '(' || c == '{' || c == '['){
+                stack.push(c);
+            }
+            if (stack.isEmpty()) return false;
+            if ((c == ')' && stack.pop() != '(') ||
+                (c == '}' && stack.pop() != '{') ||
+                (c == ']' && stack.pop() != '[') ) {
+                return false;
+            }
+        }
+        if (!stack.isEmpty()) return false;
+        return true;
+        
+    }
+}
+```
+
+## 109- Convert Sorted List to Binary Search Tree
+
+```java
+Given the head of a singly linked list where elements are sorted in ascending order,
+convert it to a height balanced BST.
+
+public class Solution {
+public TreeNode sortedListToBST(ListNode head) {
+    if(head==null) return null;
+    return toBST(head,null);
+}
+public TreeNode toBST(ListNode head, ListNode tail){
+    ListNode slow = head;
+    ListNode fast = head;
+    if(head==tail) return null;
+    
+    while(fast!=tail&&fast.next!=tail){
+        fast = fast.next.next;
+        slow = slow.next;
+    }
+    TreeNode thead = new TreeNode(slow.val);
+    thead.left = toBST(head,slow);
+    thead.right = toBST(slow.next,tail);
+    return thead;
+}
+}
+```
+
+## 540-Single Element in a Sorted Array
+
+```java
+You are given a sorted array consisting of only integers where every element 
+appears exactly twice, except for one element which appears exactly once.
+Find this single element that appears only once.
+
+  public static int singleNonDuplicate(int[] nums) {
+        int start = 0, end = nums.length - 1;
+
+        while (start < end) {
+            // We want the first element of the middle pair,
+            // which should be at an even index if the left part is sorted.
+            // Example:
+            // Index: 0 1 2 3 4 5 6
+            // Array: 1 1 3 3 4 8 8
+            //            ^
+            int mid = (start + end) / 2;
+            if (mid % 2 == 1) mid--;
+
+            // We didn't find a pair. The single element must be on the left.
+            // (pipes mean start & end)
+            // Example: |0 1 1 3 3 6 6|
+            //               ^ ^
+            // Next:    |0 1 1|3 3 6 6
+            if (nums[mid] != nums[mid + 1]) end = mid;
+
+            // We found a pair. The single element must be on the right.
+            // Example: |1 1 3 3 5 6 6|
+            //               ^ ^
+            // Next:     1 1 3 3|5 6 6|
+            else start = mid + 2;
+        }
+
+        // 'start' should always be at the beginning of a pair.
+        // When 'start > end', start must be the single element.
+        return nums[start];
+    }
+    
+```
+
+## 297-Serialize and Deserialize Binary Tree
+
+```java
+public class Codec {
+
+    // Encodes a tree to a single string.
+    public String spliter = ",";
+    public String nulval = "null";
+    public String serialize(TreeNode root) {
+        StringBuilder sb = new StringBuilder();
+        if(root == null) return sb.append(nulval).toString();
+        serializeHelper(root,sb);
+        return sb.toString();
+    }
+    
+    public void serializeHelper(TreeNode node, StringBuilder sb) {
+        if(node == null) {
+            sb.append(nulval).append(spliter);
+            return;
+        }
+        sb.append(node.val).append(spliter);
+        serializeHelper(node.left, sb);
+        serializeHelper(node.right, sb);
+    }
+
+    // Decodes your encoded data to tree.
+    public TreeNode deserialize(String data) {
+        Queue<String> queue = new LinkedList<>();
+        queue.addAll(Arrays.asList(data.split(spliter)));
+        return deserializeHelper(queue);
+        
+    }
+    public TreeNode deserializeHelper(Queue<String> queue) {
+        String cur = queue.poll();
+        if (cur.equals(nulval)) {
+            return null;
+        } 
+        TreeNode node = new TreeNode(Integer.valueOf(cur));
+        node.left = deserializeHelper(queue);
+        node.right = deserializeHelper(queue);
+        return node; 
+    }
+}
+```
+
+## 
+
 ## 
 
 ## 
