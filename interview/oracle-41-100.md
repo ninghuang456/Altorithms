@@ -460,34 +460,45 @@ class Solution {
 ## 450： Delete Node in a BST
 
 ```java
-public TreeNode deleteNode(TreeNode root, int key) {
-    if(root == null){
-        return null;
-    }
-    if(key < root.val){
-        root.left = deleteNode(root.left, key);
-    }else if(key > root.val){
-        root.right = deleteNode(root.right, key);
-    }else{
-        if(root.left == null){
-            return root.right;
-        }else if(root.right == null){
-            return root.left;
+class Solution {
+    public TreeNode deleteNode(TreeNode root, int key) {
+        if(root == null){
+            return null;
         }
-        
-        TreeNode minNode = findMin(root.right);
-        root.val = minNode.val;
-        root.right = deleteNode(root.right, root.val);
+        //当前节点值比key小，则需要删除当前节点的左子树中key对应的值，并保证二叉搜索树的性质不变
+        if(key < root.val){
+            root.left = deleteNode(root.left,key);
+        }
+        //当前节点值比key大，则需要删除当前节点的右子树中key对应的值，并保证二叉搜索树的性质不变
+        else if(key > root.val){
+            root.right = deleteNode(root.right,key);
+        }
+        //当前节点等于key，则需要删除当前节点，并保证二叉搜索树的性质不变
+        else{
+            //当前节点没有左子树
+            if(root.left == null){
+                return root.right;
+            }
+            //当前节点没有右子树
+            else if(root.right == null){
+                return root.left;
+            }
+            //当前节点既有左子树又有右子树
+            else{
+                TreeNode node = root.right;
+                //找到当前节点右子树最左边的叶子结点
+                while(node.left != null){
+                    node = node.left;
+                }
+                //将root的左子树放到root的右子树的最下面的左叶子节点的左子树上
+                node.left = root.left;
+                return root.right;
+            }
+        }
+        return root;
     }
-    return root;
 }
 
-private TreeNode findMin(TreeNode node){
-    while(node.left != null){
-        node = node.left;
-    }
-    return node;
-}
 ```
 
 ## 384- Shuffle an Array
@@ -685,6 +696,64 @@ public class Codec {
         return node; 
     }
 }
+```
+
+## 83 - Remove Duplicates from Sorted List
+
+```java
+Given the head of a sorted linked list, delete all duplicates such that each element 
+appears only once. Return the linked list sorted as well.
+
+class Solution {
+    public ListNode deleteDuplicates(ListNode head) {
+        if (head == null || head.next == null) {
+            return head;
+        }
+        ListNode first = head;
+        ListNode second = head.next;
+        while (second != null) {
+            if (second.val == first.val){
+                first.next = second.next;
+            } else {
+                first = second;
+            } 
+            second = second.next;
+        }
+        return head;  
+    }
+}
+```
+
+## 105 - Construct Binary Tree from Preorder and Inorder Traversal
+
+```java
+class Solution {
+    public TreeNode buildTree(int[] preorder, int[] inorder) {
+        return buildTreeHelper(preorder, 0, preorder.length - 1, inorder, 0, 
+                             inorder.length - 1);
+    }   
+        
+     public TreeNode buildTreeHelper(int[] preorder, int pleft, int pright, 
+                                  int[] inorder, int ileft, int iright) {
+         if (pleft > pright || ileft > iright ) {
+             return null;
+         }
+         int rootIndex = 0;
+         for (int i = ileft; i <= iright; i ++) {
+             if (preorder[pleft] == inorder[i]){
+                 rootIndex = i;
+                 break;
+             }
+         }
+         TreeNode root = new TreeNode(preorder[pleft]);
+     root.left = buildTreeHelper(preorder, pleft + 1, 
+                    pleft + rootIndex - ileft, inorder, ileft, rootIndex - 1); 
+     root.right =  buildTreeHelper(preorder, pleft + rootIndex - ileft + 1, 
+                   pright,inorder, rootIndex + 1,iright ); 
+         return root;    
+     }
+    
+    }
 ```
 
 ## 
