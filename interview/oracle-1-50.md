@@ -254,7 +254,8 @@ class Solution {
         List<Integer> res = new ArrayList<>();
         TreeNode cur = null;
         while (res.size() < k) {
-            if (smaller.isEmpty() || (!larger.isEmpty() && larger.peek().val - target < target - smaller.peek().val)) {
+            if (smaller.isEmpty() || (!larger.isEmpty() 
+            && larger.peek().val - target < target - smaller.peek().val)) {
                 cur = larger.pop();
                 res.add(cur.val);
                 pushLarger(cur.right, target, larger);
@@ -401,7 +402,8 @@ class Solution {
                      for (int k = 0; k < 4; k ++) {
                         int nextX = curX + directions[k][0];
                         int  nextY = curY + directions[k][1];
-                         if (inArea(r,c,nextX, nextY) && grid[nextX][nextY] == '1' && !marked[nextX * c + nextY]){
+                         if (inArea(r,c,nextX, nextY) && 
+                         grid[nextX][nextY] == '1' && !marked[nextX * c + nextY]){
                              queue.offer(nextX * c + nextY);
                              marked[nextX * c + nextY] = true;
                          }
@@ -589,7 +591,7 @@ class LRUCache {
 
 ```java
 Evaluate the value of an arithmetic expression in Reverse Polish Notation.
-Valid operators are +, -, *, /. Each operand may be an integer or another expression.
+Valid operators are + - * /. Each operand may be an integer or another expression.
 
 Example 1:
 Input: ["2", "1", "+", "3", "*"]
@@ -934,7 +936,8 @@ public class RandomizedSet {
         locs = new HashMap<Integer, Integer>();
     }
     
-    /** Inserts a value to the set. Returns true if the set did not already contain the specified element. */
+    /** Inserts a value to the set. Returns true if the set did not 
+    already contain the specified element. */
     public boolean insert(int val) {
         boolean contain = locs.containsKey(val);
         if ( contain ) return false;
@@ -943,12 +946,14 @@ public class RandomizedSet {
         return true;
     }
     
-    /** Removes a value from the set. Returns true if the set contained the specified element. */
+    /** Removes a value from the set. Returns true if the set contained 
+    the specified element. */
     public boolean remove(int val) {
         boolean contain = locs.containsKey(val);
         if ( ! contain ) return false;
         int loc = locs.get(val);
-        if (loc < nums.size() - 1 ) { // not the last one than swap the last one with this val
+        if (loc < nums.size() - 1 ) { 
+        // not the last one than swap the last one with this val
             int lastone = nums.get(nums.size() - 1 );
             nums.set( loc , lastone );
             locs.put(lastone, loc);
@@ -1128,7 +1133,8 @@ public class Solution {
         StringBuilder sb = new StringBuilder();
         String num = "";
         for (int i = pos; i < s.length(); i++) {
-            if (s.charAt(i) != '[' && s.charAt(i) != ']' && !Character.isDigit(s.charAt(i))) {
+            if (s.charAt(i) != '[' && s.charAt(i) != ']' && 
+            !Character.isDigit(s.charAt(i))) {
                 sb.append(s.charAt(i));
             } else if (Character.isDigit(s.charAt(i))) {
                 num += s.charAt(i);
