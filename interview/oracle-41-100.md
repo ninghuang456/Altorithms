@@ -34,7 +34,7 @@ class Trie {
         
     }
     
-    /** Returns if there is any word in the trie that starts with the given prefix. */
+/** Returns if there is any word in the trie that starts with the given prefix. */
     public boolean startsWith(String prefix) {
         return startWithPrefix(prefix) != null;
     }
@@ -155,7 +155,8 @@ class Solution {
          return str.reverse().toString();
     }
 }
-//链接：https://leetcode-cn.com/problems/remove-k-digits/solution/dong-tu-shuo-suan-fa-zhi-yi-diao-kwei-shu-zi-by-yu/
+//链接：https://leetcode-cn.com/problems/remove-k-digits/
+//solution/dong-tu-shuo-suan-fa-zhi-yi-diao-kwei-shu-zi-by-yu/
 
 ```
 
@@ -334,7 +335,9 @@ class Solution {
         while (i < intervals.length) {
             int start = intervals[i][0];
             int end = intervals[i][1];
-            while (i < intervals.length - 1 && end >= intervals[i + 1][0]){ // test overlap need to first check end with next start
+            while (i < intervals.length - 1 && end >= 
+            intervals[i + 1][0]){ 
+            // test overlap need to first check end with next start
                 i ++;
                 end = Math.max(intervals[i][1], end);
             }
@@ -703,7 +706,8 @@ public class Codec {
 ## 83 - Remove Duplicates from Sorted List
 
 ```java
-Given the head of a sorted linked list, delete all duplicates such that each element 
+Given the head of a sorted linked list, delete all duplicates such that 
+each element 
 appears only once. Return the linked list sorted as well.
 
 class Solution {
@@ -947,7 +951,8 @@ public class Solution {
 ```java
 Given an m x n board of characters and a list of strings words, 
 return all words on the board.
-Input: board = [["o","a","a","n"],["e","t","a","e"],["i","h","k","r"],["i","f","l","v"]], words = ["oath","pea","eat","rain"]
+Input: board = [["o","a","a","n"],["e","t","a","e"],
+["i","h","k","r"],["i","f","l","v"]], words = ["oath","pea","eat","rain"]
 Output: ["eat","oath"]
 
 class Solution {
@@ -971,7 +976,8 @@ class Solution {
         System.out.print(result);
         return new LinkedList<String>(result);
     }
-    private void find(char [] [] board, boolean [][]visited,int i,int j,int m,int n,Set<String> result,trieNode cur){
+    private void find(char [] [] board, boolean [][]visited,int i,
+    int j,int m,int n,Set<String> result,trieNode cur){
         //边界以及是否已经访问判断
         if(i<0||i>=m||j<0||j>=n||visited[i][j])
             return;
@@ -1045,7 +1051,8 @@ class Solution {
         boolean[][] visited = new boolean[row][col];
         for (int i = 0; i < row; i ++) {
             for (int j = 0; j < col; j ++){
-                if (board[i][j] == word.charAt(0) && findWord(board, word, i, j, 0, visited)) { // start from 0;
+                if (board[i][j] == word.charAt(0) && 
+                findWord(board, word, i, j, 0, visited)) { // start from 0;
                     return true;
                 }
             }
@@ -1053,12 +1060,16 @@ class Solution {
         return false;
     }
     
-    public boolean findWord(char[][] board, String word, int i, int j, int size,  boolean[][] visited){
-        if(size == word.length()){// it means last run's index reach last letter; similer like node == null;
+    public boolean findWord(char[][] board, String word, int i, int j, 
+    int size,  boolean[][] visited){
+        if(size == word.length()){
+        // it means last run's index reach last letter; similer like node == null;
             return true;
         }
         
-        if (!inArea(board, i , j) || visited[i][j] || board[i][j] != word.charAt(size)){ // need check in area before visited[i][j]
+        if (!inArea(board, i , j) || visited[i][j] || 
+        board[i][j] != word.charAt(size)){ 
+        // need check in area before visited[i][j]
             return false;
         }
         visited[i][j] = true;
@@ -1173,7 +1184,8 @@ class WordDictionary {
         cur.isEnd = true;
     }
     
-    /** Returns if the word is in the data structure. A word could contain the dot character '.' to represent any one letter. */
+    /** Returns if the word is in the data structure. 
+    A word could contain the dot character '.' to represent any one letter. */
     public boolean search(String word) {
         return searchHelper(word, 0, this);
     
@@ -1183,10 +1195,13 @@ class WordDictionary {
         if (level == word.length()) return node.isEnd;
         char c = word.charAt(level);
         if (c != '.') {
-            return (node.next[c - 'a'] != null) && searchHelper(word, level + 1, node.next[c - 'a']);
+            return (node.next[c - 'a'] != null) && 
+            searchHelper(word, level + 1, node.next[c - 'a']);
         } 
             for (int i = 0; i < node.next.length; i ++){
-                if((node.next[i] != null) && searchHelper(word, level + 1, node.next[i])) { // 如果不满足没关系 因为有可能后面有满足的 所以不要返回false
+                if((node.next[i] != null) &&
+                 searchHelper(word, level + 1, node.next[i])) { 
+                 // 如果不满足没关系 因为有可能后面有满足的 所以不要返回false
                     return true;
                 }
             }
@@ -1281,7 +1296,8 @@ class Solution {
             return 0;
         }
         grid[i][j] = 2;
-        int sum = 1 + getArea(grid, i - 1, j) + getArea(grid, i, j - 1) + getArea(grid, i + 1, j) + getArea(grid, i, j + 1);   
+        int sum = 1 + getArea(grid, i - 1, j) + getArea(grid, i, j - 1) 
+        + getArea(grid, i + 1, j) + getArea(grid, i, j + 1);   
         return sum; 
     }
     
