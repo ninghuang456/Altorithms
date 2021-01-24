@@ -26,3 +26,7 @@
 * [Oracle 1 ~ 40](interview/oracle-1-50.md)
 * [Oracle 41-100](interview/oracle-41-100.md)
 
+---
+
+* [Karat](karat.md)
+
