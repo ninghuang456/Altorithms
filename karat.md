@@ -545,8 +545,6 @@ function isNumeric(c) {
 }
 ```
 
-### Word wrap & word processor
-
 ## Word wrap & word processor
 
 ```python
