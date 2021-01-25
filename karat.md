@@ -643,5 +643,66 @@ function isValidMatrix(matrix) {
   }
   return true;
 }
+
+function isValidNonogram(matrix, rows, cols) {
+  if (!matrix || !rows || !cols) {
+    return false;
+  }
+  const n = matrix.length;
+  const m = matrix[0].length;
+  if (n === 0 || n !== rows.length || m !== cols.length) {
+    return false;
+  }
+  return (
+    isNonogramRowsValid(matrix, rows, n, m) &&
+    isNonogramColsValid(matrix, cols, n, m)
+  );
+}
+
+function isNonogramRowsValid(matrix, rows, n, m) {
+  for (let i = 0; i < n; i++) {
+    let rowIndex = 0;
+    for (let j = 0; j < m; j++) {
+      if (matrix[i][j] === 0) {
+        if (rows[i].length === 0) {
+          return false;
+        }
+        for (let k = 0; k < rows[rowIndex]; k++) {
+          if (j + k >= m || matrix[i][j + k] !== 0) {
+            return false;
+          }
+        }
+        j += rows[i][rowIndex++];
+      }
+    }
+    if (rowIndex !== rows[i].length) {
+      return false;
+    }
+  }
+  return true;
+}
+
+function isNonogramColsValid(matrix, cols, n, m) {
+  for (let i = 0; i < m; i++) {
+    let colIndex = 0;
+    for (let j = 0; j < n; j++) {
+      if (matrix[j][i] === 0) {
+        if (cols[i].length === 0) {
+          return false;
+        }
+        for (let k = 0; k < cols[colIndex]; k++) {
+          if (j + k >= n || matrix[j + k][i] !== 0) {
+            return false;
+          }
+        }
+        j += cols[i][colIndex++];
+      }
+    }
+    if (colIndex !== cols[i].length) {
+      return false;
+    }
+  }
+  return true;
+}
 ```
 
