@@ -587,11 +587,13 @@ function reflowAndJustify(lines, maxLen) {
     }
     const line = words.slice(i - count, i);
 
-    // after splitting into lines, calculate the required dashes between each word
+    // after splitting into lines, calculate the required dashes 
+    between each word
     const n = line.reduce((n, word) => n + word.length, 0);
     let reflowed = ''; // line result with padded dashes
     const baseDash = '-'.repeat(parseInt((maxLen - n) / (line.length - 1)));
-    let extra = (maxLen - n) % (line.length - 1); // some dashes at the beginning has one extra dash
+    let extra = (maxLen - n) % (line.length - 1); //
+    // some dashes at the beginning has one extra dash
     for (let j = 0; j < line.length; j++) {
       if (j === line.length - 1) {
         reflowed += line[j];
@@ -606,5 +608,40 @@ function reflowAndJustify(lines, maxLen) {
 }
 ```
 
-## 
+## Is valid matrix
+
+```python
+function isValidMatrix(matrix) {
+  if (!matrix || matrix.length === 0 || matrix[0].length === 0) {
+    return false;
+  }
+  const n = matrix.length;
+  for (let i = 0; i < n; i++) {
+    const rowSet = new Set();
+    const colSet = new Set();
+    let rowMin = Number.POSITIVE_INFINITY, rowMax = Number.NEGATIVE_INFINITY;
+    let colMin = rowMin, colMax = rowMax;
+    for (let j = 0; j < n; j++) {
+      if (!rowSet.has(matrix[i][j])) {
+        rowSet.add(matrix[i][j]);
+        rowMin = Math.min(rowMin, matrix[i][j]);
+        rowMax = Math.max(rowMax, matrix[i][j]);
+      } else {
+        return false;
+      }
+      if (!colSet.has(matrix[j][i])) {
+        colSet.add(matrix[j][i]);
+        colMin = Math.min(colMin, matrix[j][i]);
+        colMax = Math.max(colMax, matrix[j][i]);
+      } else {
+        return false;
+      }
+    }
+    if (rowMin !== 1 || colMin !== 1 || rowMax !== n || colMax !== n) {
+      return false;
+    }
+  }
+  return true;
+}
+```
 
