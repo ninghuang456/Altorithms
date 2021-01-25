@@ -547,6 +547,8 @@ function isNumeric(c) {
 
 ### Word wrap & word processor
 
+## Word wrap & word processor
+
 ```python
 function wordWrap(words, maxLen) {
   if (!words || words.length === 0) {
