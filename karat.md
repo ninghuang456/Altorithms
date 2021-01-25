@@ -831,3 +831,412 @@ function earliestAncestor(parentChildPairs, x) {
 
 ```
 
+## Entering gate without badge
+
+```python
+function invalidBadgeRecords(records) {
+  if (!records || records.length === 0) {
+    return [];
+  }
+  const result = [[], []];
+  // 0 for exited, 1 for entered
+  const state = new Map();
+  const invalidEnter = new Set();
+  const invalidExit = new Set();
+  for (const [name, action] of records) {
+    !state.has(name) && state.set(name, 0);
+    if (action === 'enter') {
+      if (state.get(name) === 0) {
+        state.set(name, 1);
+      } else {
+        invalidEnter.add(name);
+      }
+    } else {
+      if (state.get(name) === 1) {
+        state.set(name, 0);
+      } else {
+        invalidExit.add(name);
+      }
+    }
+  }
+  for (const [name, s] of state) {
+    if (s === 1) {
+      invalidEnter.add(name);
+    }
+  }
+  for (const name of invalidEnter) {
+    result[0].push(name);
+  }
+  for (const name of invalidExit) {
+    result[1].push(name);
+  }
+  return result;
+}
+
+//question 2
+function frequentAccess(records) {
+  if (!records || records.length === 0) {
+    return [];
+  }
+  const result = [];
+  const times = new Map();
+  for (const [name, timestamp] of records) {
+    if (times.has(name)) {
+      times.get(name).push(timestamp);
+    } else {
+      times.set(name, [timestamp]);
+    }
+  }
+  for (const [name, timestamps] of times) {
+    timestamps.sort(timeDifference);
+    let i = 0;
+    let timewindow = [timestamps[i]];
+    for (let j = 1; j < timestamps.length; j++) {
+      if (timeDifference(timestamps[i], timestamps[j]) < 60) {
+        timewindow.push(timestamps[j]);
+      } else {
+        timewindow = [timestamps[j]];
+        i = j;
+      }
+    }
+    if (timewindow.length >= 3) {
+      result.push([name, timewindow]);
+    }
+  }
+  return result;
+}
+
+function timeDifference(a, b) {
+  const aHour = Math.floor(a / 100);
+  const bHour = Math.floor(b / 100);
+  const aMinute = a % 100;
+  const bMinute = b % 100;
+  return aHour * 60 + aMinute - (bHour * 60 + bMinute);
+}
+```
+
+## meeting room sparse time
+
+```python
+function canSchedule(meetings, start, end) {
+  for (const meeting of meetings) {
+    if (
+      (start >= meeting[0] && start < meeting[1]) ||
+      (end > meeting[0] && end <= meeting[1]) ||
+      (start < meeting[0] && end > meeting[1])
+    ) {
+      return false;
+    }
+  }
+  return true;
+}
+
+
+function spareTime(meetings) {
+  if (!meetings || meetings.length === 0) {
+    return [];
+  }
+  meetings = mergeMeetings(meetings);
+  const result = [];
+  let start = 0;
+  for (let i = 0; i < meetings.length; i++) {
+    result.push([start, meetings[i][0]]);
+    start = meetings[i][1];
+  }
+  return result;
+}
+
+function mergeMeetings(meetings) {
+  const result = [];
+  meetings.sort((a, b) => a[0] - b[0]);
+  let [start, end] = meetings[0];
+  for (const meeting of meetings) {
+    if (start < meeting[1]) {
+      end = Math.max(end, meeting[1]);
+    } else {
+      result.push(start, end);
+      start = meeting[0];
+      end = meeting[0];
+    }
+  }
+  return result;
+}
+```
+
+## Sparse vector
+
+```python
+class IndexOutOfRangeError extends Error {
+  constructor(message) {
+    super(message);
+  }
+}
+
+function Node(val, next, index) {
+  this.val = val;
+  this.next = next;
+  this.index = index;
+}
+
+function SparseVector(n) {
+  this.length = n;
+  this.head = null;
+}
+
+SparseVector.prototype.set = function SparseVectorSet(index, val) {
+  if (index >= this.length) {
+    throw new IndexOutOfRangeError(
+      `Index out of range: ${index} of ${this.length}`
+    );
+  }
+  let curr = this.head;
+  if (!curr) {
+    const node = new Node(val, null, index);
+    this.head = node;
+    return;
+  }
+  let prev = new Node();
+  prev.next = curr;
+  while (curr && curr.index < index) {
+    prev = curr;
+    curr = curr.next;
+  }
+  if (curr) {
+    if (curr.index === index) {
+      curr.val = val;
+    } else {
+      const node = new Node(val, curr, index);
+      prev.next = node;
+    }
+  } else {
+    prev.next = new Node(val, null, index);
+  }
+};
+
+SparseVector.prototype.get = function SparseVectorGet(index) {
+  if (index >= this.length) {
+    throw new IndexOutOfRangeError(
+      `Index out of range: ${index} of ${this.length}`
+    );
+  }
+  let curr = this.head;
+  while (curr && curr.index !== index) {
+    curr = curr.next;
+  }
+  return curr ? curr.val : 0;
+};
+
+SparseVector.prototype.toString = function SparseVectorToString() {
+  const result = [];
+  let curr = this.head;
+  for (let i = 0; i < this.length; i++) {
+    if (!curr || i < curr.index) {
+      result.push(0);
+    } else if (i === curr.index) {
+      result.push(curr.val);
+    } else {
+      curr = curr.next;
+      i--;
+    }
+  }
+  return '[' + result.toString() + ']';
+};
+
+//add doc cos
+
+SparseVector.prototype.add = function SparseVectorAdd(v2) {
+  if (this.length !== v2.length) {
+    throw new Error('length mismatch');
+  }
+  const result = [];
+  for (let i = 0; i < this.length; i++) {
+    result.push(this.get(i) + v2.get(i));
+  }
+  return result;
+};
+
+SparseVector.prototype.dot = function SparseVectorDot(v2) {
+  if (this.length !== v2.length) {
+    throw new Error('length mismatch');
+  }
+  let result = 0;
+  for (let i = 0; i < this.length; i++) {
+    result += this.get(i) * v2.get(i);
+  }
+  return result;
+};
+
+SparseVector.prototype.norm = function SparseVectorNorm() {
+  let sum = 0;
+  for (let i = 0; i < this.length; i++) {
+    const val = this.get(i);
+    sum += val * val;
+  }
+  return Math.sqrt(sum);
+};
+
+SparseVector.prototype.cos = function SparseVectorCos(v2) {
+  return this.dot(b) / (this.norm() * v2.norm());
+};
+
+class SparseVector {
+     Map<Integer, Integer> indexMap = new HashMap<>();
+     int n;
+    // int sizeZ;
+     SparseVector(int[] nums) {
+         n = nums.length;
+        for (int i = 0; i < nums.length; i++) {
+            if (nums[i] != 0){
+             indexMap.put(i, nums[i]);
+         //    sizeZ ++;
+            }
+                
+        }
+    }  
+   
+    // Return the dotProduct of two sparse vectors
+    public int dotProduct(SparseVector vec) {
+        if (indexMap.size() == 0 || vec.indexMap.size() == 0) return 0;
+        if (indexMap.size() > vec.indexMap.size())
+            return vec.dotProduct(this);
+        int productSum = 0;
+        for (Map.Entry<Integer, Integer> entry : indexMap.entrySet()) {
+            int index = entry.getKey();
+            if(vec.indexMap.containsKey(index)){
+                productSum += (entry.getValue() * vec.indexMap.get(index));
+            }
+        }
+        return productSum;
+    }
+}
+
+```
+
+## Find treasure
+
+```python
+class Solution {
+    int[][] dis = new int[][]{{-1, 0}, {0, -1}, {0, 1}, {1, 0}};
+    public int numIslands(char[][] grid) {
+        if (grid == null || grid.length == 0) return 0;
+        int total = 0;
+        for (int r = 0; r < grid.length; r ++) {
+            for (int c = 0; c < grid[0].length; c++) {
+                if (grid[r][c] == '1') {
+                    searchArea(grid, r , c);
+                    total ++;
+                }
+            }
+        }
+        return total;
+    }
+    
+    private void searchArea(char[][] grid, int r, int c){
+        if(!inArea(grid,r,c)){
+            return;
+        }
+        if(grid[r][c] != '1'){
+            return;
+        }
+        grid[r][c] = '2';
+        for (int i = 0; i < 4; i ++){
+            int nextR = r + dis[i][0];
+            int nextC = c + dis[i][1];
+            searchArea(grid, nextR, nextC);
+        }
+            
+        
+    }
+    
+    private boolean inArea(char[][] grid, int r, int c){
+        return r >= 0 && r < grid.length && c >= 0 && c < grid[0].length;
+    }
+}
+
+function findLegalMoves(matrix, i, j) {
+  if (!matrix || matrix.length === 0) {
+    return false;
+  }
+  const visited = Array.from({ length: matrix.length }, () =>
+    Array.from({ length: matrix[0].length }, () => false)
+  );
+  const floodFillDFS = (x, y) => {
+    if (x < 0 || x >= matrix.length || y < 0 || y >= matrix[0].length || matrix[x][y] === -1 || visited[x][y]) {
+      return;
+    } 
+    visited[x][y] = true;
+    floodFillDFS(x - 1, y);
+    floodFillDFS(x + 1, y);
+    floodFillDFS(x, y - 1);
+    floodFillDFS(x, y + 1);
+  };
+  floodFillDFS(i, j);
+  for (let i = 0; i < matrix.length; i++) {
+    for (let j = 0; j < matrix[0].length; j++) {
+      if (!visited[i][j] && matrix[i][j] === 0) {
+        return false;
+      }
+    }
+  }
+  return true;
+}
+
+function findAllTreasures(board, start, end) {
+  if (!board) {
+    return [];
+  }
+  let numTreasures = 0;
+  for (let i = 0; i < board.length; i++) {
+    for (let j = 0; j < board[0].length; j++) {
+      if (board[i][j] === 1) {
+        numTreasures++;
+      }
+    }
+  }
+  const paths = [];
+  const dfs = (x, y, path, remainTreasure) => {
+    if (
+      x < 0 ||
+      x >= board.length ||
+      y < 0 ||
+      y >= board[0].length ||
+      board[x][y] === -1 ||
+      board[x][y] === 2
+    ) {
+      return;
+    }
+    path.push([x, y]);
+    const temp = board[x][y];
+    if (temp === 1) {
+      remainTreasure--;
+    }
+    if (x === end[0] && y === end[1] && remainTreasure === 0) {
+      paths.push([...path]);
+      path.pop();
+      board[x][y] = temp;
+      return;
+    }
+    board[x][y] = 2;
+    dfs(x + 1, y, path, remainTreasure);
+    dfs(x - 1, y, path, remainTreasure);
+    dfs(x, y + 1, path, remainTreasure);
+    dfs(x, y - 1, path, remainTreasure);
+    board[x][y] = temp;
+    path.pop();
+  };
+  dfs(start[0], start[1], [], numTreasures);
+  if (paths.length === 0) {
+    return [];
+  }
+  let minPaths = paths[0].length;
+  for (let i = 0; i < paths.length; i++) {
+    minPaths = Math.min(minPaths, paths[i].length);
+  }
+  return paths.filter((path) => path.length === minPaths);
+}
+```
+
+## 
+
+## 
+
