@@ -706,3 +706,128 @@ function isNonogramColsValid(matrix, cols, n, m) {
 }
 ```
 
+## Node ancestor
+
+```python
+function findNodesWithZeroOrOneParent(edges) {
+  if (!edges || edges.length === 0) {
+    return [];
+  }
+  const result = [];
+  const map = new Map();
+  for (const [parent, child] of edges) {
+    if (map.has(child)) {
+      map.get(child).add(parent);
+    } else {
+      map.set(child, new Set([parent]));
+    }
+  }
+  for (const [child, parentSet] of map) {
+    if (parentSet.length === 0 || parentSet.length === 1) {
+      result.push(child);
+    }
+  }
+  return result;
+}
+
+function hasCommonAncestor(edges, x, y) {
+  if (!edges || edges.length === 0) {
+    return false;
+  }
+  const directParents = new Map();
+  for (const [parent, child] of edges) {
+    if (directParents.has(child)) {
+      directParents.get(child).add(parent);
+    } else {
+      directParents.set(child, new Set([parent]));
+    }
+  }
+  const findAllParents = (e) => {
+    const result = new Set();
+    const stack = [];
+    stack.push(e);
+    while (stack.length !== 0) {
+      const curr = stack.pop();
+      const parents = directParents.get(curr);
+      if (!parents) {
+        continue;
+      }
+      for (const parent of parents) {
+        if (result.has(parent)) {
+          continue;
+        }
+        result.add(parent);
+        stack.push(parent);
+      }
+    }
+    return result;
+  };
+  const parentsOfX = findAllParents(x);
+  const parentsOfY = findAllParents(y);
+  for (const parentOfX of parentsOfX) {
+    if (parentsOfY.has(parentOfX)) {
+      return true;
+    }
+  }
+  return false;
+}
+
+// earliestAncestor
+function Queue() {
+  this.firstStack = [];
+  this.secondStack = []; 
+  this.length = 0;
+}
+
+Queue.prototype.push = function(x) {
+  this.firstStack.push(x);
+  this.length++;
+};
+
+Queue.prototype.pop = function() {
+  if (this.secondStack.length === 0) {
+    while (this.firstStack.length !== 0) {
+      this.secondStack.push(this.firstStack.pop());
+    }
+  }
+  this.length--;
+  return this.secondStack.pop();
+};
+
+function earliestAncestor(parentChildPairs, x) {
+  const directParents = new Map();
+  for (const [parent, child] of parentChildPairs) {
+    if (directParents.has(child)) {
+      directParents.get(child).add(parent);
+    } else {
+      directParents.set(child, new Set([parent]));
+    }
+  }
+  let currlayer = new Queue();
+  let prevlayer;
+  const visited = new Set();
+  currlayer.push(x);
+  while (currlayer.length !== 0) {
+    prevlayer = new Queue();
+    let size = currlayer.length;
+    while (size--) {
+      const curr = currlayer.pop();
+      prevlayer.push(curr);
+      const parents = directParents.get(curr);
+      if (!parents) {
+        continue;
+      }
+      for (const parent of parents) {
+        if (visited.has(parent)) {
+          continue;
+        }    
+        currlayer.push(parent);
+        visited.add(parent);
+      }
+    }
+  }
+  return prevlayer.pop();
+}
+
+```
+
