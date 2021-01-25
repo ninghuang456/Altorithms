@@ -1,7 +1,5 @@
 # Karat
 
-
-
 ## Sub Domain visits
 
 ```java
