@@ -1,6 +1,8 @@
 # Karat
 
-**Sub domain Vistis**
+
+
+## Sub Domain visits
 
 ```java
 class Solution {
@@ -30,7 +32,7 @@ class Solution {
 
 ```
 
-**Longest common continues string array**
+## Longest common history
 
 ```java
 public static List<String> longestCommonContinuousHistory(String[] history1,
@@ -472,6 +474,135 @@ function findMultipleShapes(board) {
         result.push(shape);
       }
     }
+  }
+  return result;
+}
+```
+
+## calculator
+
+```python
+function basicCalculator(expression) {
+  if (!expression || expression.length === 0) {
+    return 0;
+  }
+  let result = 0;
+  let sign = 1;
+  for (let i = 0; i < expression.length; i++) {
+    if (isNumeric(expression[i])) {
+      let num = expression[i];
+      while (i + 1 < expression.length && isNumeric(expression[i + 1])) {
+        num += expression[++i];
+      }
+      num = parseInt(num);
+      result += num * sign;
+    } else if (expression[i] === '+') {
+      sign = 1;
+    } else if (expression[i] === '-') {
+      sign = -1;
+    }
+  }
+  return result;
+}
+
+function isNumeric(c) {
+  return c >= '0' && c <= '9';
+}
+
+function basicCalculator(expression) {
+  if (!expression || expression.length === 0) {
+    return 0;
+  }
+  let result = 0;
+  let sign = 1;
+  let stack = [];
+  for (let i = 0; i < expression.length; i++) {
+    if (isNumeric(expression[i])) {
+      let num = expression[i];
+      while (i + 1 < expression.length && isNumeric(expression[i + 1])) {
+        num += expression[++i];
+      }
+      num = parseInt(num);
+      result += num * sign;
+    } else if (expression[i] === '+') {
+      sign = 1;
+    } else if (expression[i] === '-') {
+      sign = -1;
+    } else if (expression[i] === '(') {
+      stack.push(result);
+      stack.push(sign);
+      result = 0;
+      sign = 1;
+    } else if (expression[i] === ')') {
+      result = result * stack.pop() + stack.pop();
+    }
+  }
+  return result;
+}
+
+function isNumeric(c) {
+  return c >= '0' && c <= '9';
+}
+```
+
+### Word wrap & word processor
+
+```python
+function wordWrap(words, maxLen) {
+  if (!words || words.length === 0) {
+    return [];
+  }
+  const result = [];
+  let i = 0;
+  while (i < words.length) {
+    let remain = maxLen;
+    let count = 0;
+    while (i < words.length) {
+      if (remain - words[i].length < 0) {
+        break;
+      }
+      count++;
+      remain -= words[i++].length + 1;
+    }
+    result.push(words.slice(i - count, i).join('-'));
+  }
+  return result;
+}
+
+function reflowAndJustify(lines, maxLen) {
+  if (!lines || lines.length === 0) {
+    return [];
+  }
+  const words = lines.join(' ').split(' ');
+  const result = [];
+  let i = 0;
+  while (i < words.length) {
+    // split words into lines first
+    let remain = maxLen;
+    let count = 0;
+    while (i < words.length) {
+      if (remain - words[i].length < 0) {
+        break;
+      }
+      count++;
+      remain -= words[i++].length + 1;
+    }
+    const line = words.slice(i - count, i);
+
+    // after splitting into lines, calculate the required dashes between each word
+    const n = line.reduce((n, word) => n + word.length, 0);
+    let reflowed = ''; // line result with padded dashes
+    const baseDash = '-'.repeat(parseInt((maxLen - n) / (line.length - 1)));
+    let extra = (maxLen - n) % (line.length - 1); // some dashes at the beginning has one extra dash
+    for (let j = 0; j < line.length; j++) {
+      if (j === line.length - 1) {
+        reflowed += line[j];
+      } else {
+        reflowed +=
+          extra-- <= 0 ? line[j] + baseDash : line[j] + baseDash + '-';
+      }
+    }
+    result.push(reflowed);
   }
   return result;
 }
