@@ -1,6 +1,6 @@
 # Karat
 
-1- **Subdomain Visit Count**
+**Sub domain Vistis**
 
 ```java
 class Solution {
@@ -30,7 +30,7 @@ class Solution {
 
 ```
 
-**2- Longest Common Continuous Subarray**
+**Longest common continues string array**
 
 ```java
 public static List<String> longestCommonContinuousHistory(String[] history1,
@@ -343,6 +343,10 @@ function findAllOverlaps(studentCoursePairs) {
 ```
 
 ```python
+I used BFS to find ancestor of each node and compare if there's any common ones.
+   I just modified the code in 2 to return the last number in the queue from BFS as 
+  the earliest ancestor.
+  
 class Solution {
     public int[] findOrder(int numCourses, int[][] prerequisites) {
         int[] indegrees = new int[numCourses];
@@ -380,6 +384,96 @@ class Solution {
         }
         return finalRes;
     }
+}
+```
+
+## Find rectangle
+
+```python
+function findOneRectangle(board) {
+  if (!board || board.length === 0 || board[0].length === 0) {
+    return [];
+  }
+  const result = [];
+  for (let i = 0; i < board.length; i++) {
+    for (let j = 0; j < board[0].length; j++) {
+      if (board[i][j] === 0) {
+        result.push([i, j]);
+        let height = 1, width = 1;
+        while (i + height < board.length && board[i + height][j] === 0) {
+          height++;
+        }
+        while (j + width < board[0].length && board[i][j + width] === 0) {
+          width++;
+        }
+        result.push([i + height - 1, j + width - 1]);
+        break;
+      }
+      if (result.length !== 0) {
+        break;
+      }
+    }
+  }
+  return result;
+}
+
+function findMultipleRectangle(board) {
+  if (!board || board.length === 0 || board[0].length === 0) {
+    return [];    
+  }
+  const result = [];
+  for (let i = 0; i < board.length; i++) {
+    for (let j = 0; j < board[0].length; j++) {
+      if (board[i][j] === 0) {
+        const rectangle = [[i, j]];
+        board[i][j] = 1;
+        let height = 1, width = 1;
+        while (i + height < board.length && board[i + height][j] === 0) {
+          height++;
+        }
+        while (j + width < board[0].length && board[i][j + width] === 0) {
+          width++;
+        }
+        for (let h = 0; h < height; h++) {
+          for (let w = 0; w < width; w++) {
+            board[i + h][j + w] = 1;
+          }
+        }
+        rectangle.push([i + height - 1, j + width - 1]);
+        result.push(rectangle);
+      }
+    }
+  }
+  return result;
+}
+// dfs
+function findMultipleShapes(board) {
+  if (!board || board.length === 0 || board[0].length === 0) {
+    return [];    
+  }
+  const result = [];
+  const floodFillDFS = (x, y, shape) => {
+    if (x < 0 || x >= board.length || y < 0 || y >= board[0].length ||
+     board[x][y] === 1) {
+      return;
+    }
+    board[x][y] = 1;
+    shape.push([x, y]);
+    floodFillDFS(x + 1, y, shape);
+    floodFillDFS(x - 1, y, shape);
+    floodFillDFS(x, y - 1, shape);
+    floodFillDFS(x, y + 1, shape);
+  };
+  for (let i = 0; i < board.length; i++) {
+    for (let j = 0; j < board[0].length; j++) {
+      if (board[i][j] === 0) {
+        shape = [];
+        floodFillDFS(i, j, shape);
+        result.push(shape);
+      }
+    }
+  }
+  return result;
 }
 ```
 
