@@ -1647,8 +1647,9 @@ public class Normalized_Title {
 }
 ```
 
+## indeed16 : min cost root
+
 ```java
-package Pratice;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -1776,8 +1777,9 @@ public void dfsInGraph(List<Edge> res, List<Edge> temp, Node2 node, int curCost)
 }
 ```
 
+## indeed17 word distance
+
 ```java
-package Pratice;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -1844,6 +1846,8 @@ public class STWordDistance {
 }
 
 ```
+
+## indeed18: unrolled linked list
 
 ```java
 package Pratice;
@@ -1964,6 +1968,8 @@ class UnrolledLinkedList {
 
 
 ```
+
+## Indeed 19: validate python
 
 ```java
 package Pratice;
