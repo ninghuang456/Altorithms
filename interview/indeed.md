@@ -278,6 +278,8 @@ sb.append(nums[start]).append("-").append(nums[end]).append("/").append(gap);
 
 ```
 
+## indeed1: Auto complted
+
 ```java
 package Pratice;
 
@@ -377,6 +379,8 @@ public class Auto_CompleteOne {
 }
 
 ```
+
+## indeed2: BST TO ARRAY
 
 ```java
 package Pratice;
