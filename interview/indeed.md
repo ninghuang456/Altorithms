@@ -486,7 +486,10 @@ public class BT_to_Array {
 }
 ```
 
+## indeed3 Dice sum
+
 ```java
+
 package Pratice;
 
 public class Dice_Sum {
@@ -557,6 +560,8 @@ public class Dice_Sum {
 
 ```
 
+## Indeed4 excel to number
+
 ```java
 package Pratice;
 
@@ -593,6 +598,8 @@ public class ExcelAndNumber {
 }
 
 ```
+
+## indeed5 expired map
 
 ```java
 package Pratice;
@@ -681,6 +688,8 @@ public class ExpiringMap<K, V> extends TimerTask {
 }
 ```
 
+## Indeed 6 Find peak
+
 ```java
 package Pratice;
 
@@ -719,6 +728,8 @@ public class FindPeakElement {
 }
 
 ```
+
+## indeed7: git commit
 
 ```java
 package Pratice;
@@ -806,6 +817,8 @@ public class GitCommit {
     }
 }
 ```
+
+## indeed8: git version with parent node
 
 ```java
 package Pratice;
@@ -957,6 +970,8 @@ public class GitVersionWithParentNode {
 
 ```
 
+## indeed9 job storage
+
 ```java
 package Pratice;
 
@@ -1021,6 +1036,8 @@ class Job_Storage{
 
 }
 ```
+
+## indeed 10: knight move
 
 ```java
 package Pratice;
@@ -1103,6 +1120,8 @@ public class Knight {
 }
 
 ```
+
+## indeed11: MatchQuery
 
 ```java
 package Pratice;
@@ -1191,6 +1210,8 @@ public class MachQueryRecommendation {
 
 
 ```
+
+## indeed12: Merge K sorted Streams
 
 ```java
 package Pratice;
@@ -1304,6 +1325,8 @@ public class Merge_K_Sorted_Streams {
 
 }
 ```
+
+## indeed13 moving average
 
 ```java
 package Pratice;
@@ -1514,6 +1537,8 @@ class Event2{
 }
 
 ```
+
+## indeed14: normalizedTitle
 
 ```java
 package Pratice;
