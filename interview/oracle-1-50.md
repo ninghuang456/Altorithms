@@ -147,7 +147,7 @@ class TimeMap {
         if (nodes == null) return "";
         
         int left = 0, right = nodes.size() - 1;
-        while (left + 1 < right) {
+        while (left + 1 < right) { // can't use (left <= right)
             int mid = left + (right - left) / 2;
             Node node = nodes.get(mid);
             if (node.timestamp == timestamp) {
