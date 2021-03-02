@@ -1030,40 +1030,47 @@ import java.util.Queue;
 // If the heuristic function is admissible,
 // meaning that it never overestimates the actual cost to get to the goal,
 // A* is guaranteed to return a least-cost path from start to goal.
-public class Knight {
+class Solution {
     int[] dx = new int[]{-2, -1, 1, 2, 2, 1, -1, -2};
     int[] dy = new int[]{1, 2, 2, 1, -1, -2, -2, -1};
-    HashSet<String> visited = new HashSet<>();
     public int minKnightMoves(int x, int y) {
         // no need to work with negatives, sames # steps in any quadrant
-        int k = Math.abs(x);
-        int s = Math.abs(y);
+        x = Math.abs(x);
+        y = Math.abs(y);
+        
         // special case dips negative, return early
-        if (k == 1 && s == 1) return 2;
-
-
-        Queue<int[]> queue = new LinkedList();
+        if (x == 1 && y == 1) return 2;
+        
+        Queue<int[]> queue = new LinkedList<>();
+        boolean[][] visited = new boolean[x+3][y+3];
+        
         queue.add(new int[]{0, 0});
+
         int steps = 0;
         while (!queue.isEmpty()) {
             int size = queue.size();
+
             for (int i=0; i < size; i++) {
                 int[] pos = queue.remove();
                 int pX = pos[0];
-                int pY = pos[1];
-                String pr = pX + "," + pY;
+                int pY = pos[1];            
+                
                 if (pX == x && pY == y) return steps;
-                if (visited.contains(pr)) continue;
-                // need put in the outside of logic
-                visited.add(pr);
+                
+                // don't need to go beyond these points except for possible first move
+                if (pX < 0 || pY < 0 || pX > x+2 || pY > y+2 || visited[pX][pY]) continue;
+                visited[pX][pY] = true;
                 for (int d = 0; d < 8; d ++) {
-                    queue.add(new int[]{pX+ dx[d], pY + dy[d]});
+                     queue.add(new int[]{pX+ dx[d], pY + dy[d]});
                 }
+               
+
             }
             steps++;
         }
-        return steps;
+        return -1;
     }
+}
 
     public static void main(String[] args) {
       //  270, -21
