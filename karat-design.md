@@ -22,3 +22,5 @@ Least Connection load balancing is a dynamic load balancing algorithm where clie
 
  **Strong Consistency** offers up-to-date data but at the cost of high latency. While **Eventual consistency** offers low latency but may reply to read requests with stale data since all nodes of the database may not have the updated data
 
+## 
+
