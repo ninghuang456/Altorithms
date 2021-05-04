@@ -30,4 +30,5 @@
 ---
 
 * [Karat](karat.md)
+* [Karat Design](karat-design.md)
 
