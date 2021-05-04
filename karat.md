@@ -62,7 +62,7 @@ public static List<String> longestCommonContinuousHistory(String[] history1,
 }
 ```
 
-3: Ads Conversion Rate
+## Ads Conversion Rate
 
 ```python
 function adsConversionRate(completedPurchaseUserIds, adClicks, allUserIps) {
