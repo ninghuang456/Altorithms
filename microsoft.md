@@ -281,3 +281,114 @@ Time: step 1 is O(n), other steps are O(1) (sorting/checking 26 numbers)
 space: using array of size 26 - O(1)
 ```
 
+## 277 - Find the Celebrity
+
+Suppose you are at a party with `n` people \(labeled from `0` to `n - 1`\), and among them, there may exist one celebrity. The definition of a celebrity is that all the other `n - 1` people know him/her, but he/she does not know any of them.
+
+Now you want to find out who the celebrity is or verify that there is not one. The only thing you are allowed to do is to ask questions like: "Hi, A. Do you know B?" to get information about whether A knows B. You need to find out the celebrity \(or verify there is not one\) by asking as few questions as possible \(in the asymptotic sense\).
+
+You are given a helper function `bool knows(a, b)` which tells you whether A knows B. Implement a function `int findCelebrity(n)`. There will be exactly one celebrity if he/she is in the party. Return the celebrity's label if there is a celebrity in the party. If there is no celebrity, return `-1`.
+
+Input: graph = \[\[1,1,0\],\[0,1,0\],\[1,1,1\]\]  Output: 1 Explanation: There are three persons labeled with 0, 1 and 2. graph\[i\]\[j\] = 1 means person i knows person j, otherwise graph\[i\]\[j\] = 0 means person i does not know person j. The celebrity is the person labeled as 1 because both 0 and 2 know him but 1 does not know anybody.
+
+![](.gitbook/assets/277_example_1_bold.png)
+
+```java
+/* The knows API is defined in the parent class Relation.
+      boolean knows(int a, int b); */
+
+public class Solution extends Relation {
+    public int findCelebrity(int n) {
+        if (n < 0) {
+            return -1;
+        } 
+        
+        // 找到出度为0的人，也就是不认识任何别人的人
+        int candidate = 0;
+        for (int i = 0; i < n; i++) {
+            if (knows(candidate, i)) {
+                candidate = i;
+            }
+        }
+        
+        // 看看是不是所有人都认识他 和 是否他不认识所有人
+        for (int i = 0; i < n; i++) {
+            if (i != candidate) { // 自己不和自己比较
+                if (!knows(i, candidate)) { // 有人不认识他
+                    return -1;
+                }
+                if (knows(candidate, i)) {// 他认识某人
+                    return -1;
+                }
+            }
+        }
+        return candidate;
+    }
+}
+```
+
+## 151: Reverse Words in a String
+
+```java
+Input: s = "the sky is blue"
+Output: "blue is sky the"
+
+class Solution {
+    public String reverseWords(String s) {
+        if (s == null || s.length() == 0 || s.trim().isEmpty()) return "";
+        String[] strs = s.trim().split(" ");
+        int i = 0; int j = strs.length - 1;
+        while (i < j){
+            String temp = strs[i];
+            strs[i ++] = strs[j];
+            strs[j --] = temp;
+        }
+       StringBuilder sb = new StringBuilder();
+       for (String str: strs){
+           if(!str.trim().isEmpty()){
+               sb.append(str).append(" "); 
+           }
+       } 
+       return sb.toString().trim(); 
+    }
+}
+```
+
+## 1578: Minimum Deletion Cost to Avoid Repeating Letters
+
+```java
+Given a string s and an array of integers cost where cost[i] is the cost of 
+deleting the ith character in s.
+Return the minimum cost of deletions such that there are no two identical 
+letters next to each other.
+Notice that you will delete the chosen characters at the same time, 
+in other words, after deleting a character, the costs of deleting other
+ characters will not change.
+
+Input: s = "abaac", cost = [1,2,3,4,5]
+Output: 3
+Explanation: Delete the letter "a" with cost 3 to get "abac" 
+(String without two identical letters next to each other).
+
+Explanation
+For each group of continuous same characters,
+we need cost = sum_cost(group) - max_cost(group)
+Complexity
+Time O(N)
+Space O(1)
+
+    public int minCost(String s, int[] cost) {
+        int res = 0, max_cost = 0, sum_cost = 0, n = s.length();
+        for (int i = 0; i < n; ++i) {
+            if (i > 0 && s.charAt(i) != s.charAt(i - 1)) {
+                res += sum_cost - max_cost;
+                sum_cost = max_cost = 0;
+            }
+            sum_cost += cost[i];
+            max_cost = Math.max(max_cost, cost[i]);
+        }
+        res += sum_cost - max_cost;
+        return res;
+    }
+```
+
