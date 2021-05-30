@@ -392,3 +392,192 @@ Space O(1)
     }
 ```
 
+## 273 - Integer to English Words
+
+```java
+class Solution {
+    public String numberToWords(int num) {
+        if(num == 0) return "Zero";
+        return helper(num);  
+    }
+    
+    public String helper(int num ) {
+        String[] words = new String[] {"", "One", "Two", "Three", "Four", "Five",
+         "Six", "Seven", "Eight", "Nine", "Ten",
+   "Eleven", "Twelve", "Thirteen", "Fourteen", "Fifteen", "Sixteen", "Seventeen",
+     "Eighteen", "Nineteen"}; // Fifteen, Twelve Forty Nineteen Ninety Hundred
+     
+        String[] words1 = new String[]{"","","Twenty ", "Thirty ", "Forty ", 
+        "Fifty ", "Sixty ","Seventy ", "Eighty ", "Ninety "};
+       StringBuilder sb = new StringBuilder();
+        if (num >= 1000000000) {
+            sb.append(helper(num/1000000000)).append(" Billion ");
+            num %= 1000000000; 
+        }
+        if (num >= 1000000) {
+            sb.append(helper(num/1000000)).append(" Million ");
+            num %= 1000000; 
+        }
+        if (num >= 1000) {
+            sb.append(helper(num/1000)).append(" Thousand ");
+            num %= 1000; 
+        }
+        if (num >= 100) {
+            sb.append(helper(num/100)).append(" Hundred ");
+            num %= 100; 
+        }
+        if (num >= 20) {
+             sb.append(words1[num/10]).append(words[num%10]);
+        } else {
+          sb.append(words[num]);  
+        }
+        
+        return sb.toString().trim();
+        
+    }
+}
+```
+
+## 200- Number of island
+
+```java
+class Solution {
+    int[][] dis = new int[][]{{-1,0},{0,-1},{0,1},{1,0}};
+    int R = 0;
+    int C =  0;
+    boolean[][] visited ;
+    char[][] grid;
+    public int numIslands(char[][] grid) {
+      this.grid = grid;
+      R = grid.length;  
+      if(R == 0) return 0;
+      C = grid[0].length;
+      visited = new boolean[R][C];  
+      int result = 0;
+      for(int i = 0; i < R; i ++)
+         for(int j = 0; j < C; j ++) {
+            if(grid[i][j] == '1' && !visited[i][j]){
+               dfs(grid,i,j);
+               result ++;
+            }
+         }
+      return result;
+        
+    }
+     public void dfs(char[][] grid, int x, int y){
+      visited[x][y] = true;
+      for (int i = 0; i < 4; i ++){
+         int nextx = x + dis[i][0];
+         int nexty = y + dis[i][1]; // x , y 别弄混了
+         if(inArea(nextx,nexty) && 
+         grid[nextx][nexty] == '1' && !visited[nextx][nexty] ){
+            dfs(grid,nextx,nexty);
+         }
+      }
+   }
+   private boolean inArea(int x, int y){
+     return x >= 0 && x < R && y >=0 && y < C;
+   }
+}
+```
+
+## 1239 - Maximum Length of a Concatenated String with Unique Characters
+
+```java
+Given an array of strings arr. String s is a concatenation of a sub-sequence 
+of arr which have unique characters.
+Return the maximum possible length of s.
+
+Example 1:
+Input: arr = ["un","iq","ue"]
+Output: 4
+Explanation: All possible concatenations are "","un","iq","ue","uniq" and "ique".
+Maximum length is 4.
+Example 2:
+
+Input: arr = ["cha","r","act","ers"]
+Output: 6
+Explanation: Possible solutions are "chaers" and "acters".
+
+class Solution {
+    private boolean isUnique(String str) {
+        if (str.length() > 26) return false;
+        boolean[] used = new  boolean [26];
+        char[] arr = str.toCharArray();
+        for (char ch : arr) {
+            if (used[ch - 'a']){
+            return false; 
+            } else {
+            used[ch -'a'] = true;
+        }
+    }
+        return true;
+    }
+    public int maxLength(List<String> arr) {
+        List<String> res = new ArrayList<>();
+        res.add("");
+        for (String str : arr) {
+            if (!isUnique(str)) continue;
+            List<String> resList = new ArrayList<>();
+            for (String candidate : res) {
+                String temp = candidate + str;
+                if (isUnique(temp)) resList.add(temp);
+            }
+            res.addAll(resList);
+        }
+        int ans = 0;
+        for (String str : res) ans = Math.max(ans, str.length());
+        return ans;
+    }
+}
+```
+
+## 428 Serialize and Deserialize N-ary Tree
+
+```java
+class Codec {
+
+    // Encodes a tree to a single string.
+    public String serialize(Node root) {
+        List<String> list=new LinkedList<>();
+        serializeHelper(root,list);
+        return String.join(",",list);
+    }
+    
+    private void serializeHelper(Node root, List<String> list){
+        if(root==null){
+            return;
+        }else{
+            list.add(String.valueOf(root.val));
+            list.add(String.valueOf(root.children.size()));
+            for(Node child:root.children){
+                serializeHelper(child,list);
+            }
+        }
+    }
+
+    // Decodes your encoded data to tree.
+    public Node deserialize(String data) {
+        if(data.isEmpty())
+            return null;
+        
+        String[] ss=data.split(",");
+        Queue<String> q=new LinkedList<>(Arrays.asList(ss));
+        return deserializeHelper(q);
+    }
+    
+    private Node deserializeHelper(Queue<String> q){
+        Node root=new Node();
+        root.val=Integer.parseInt(q.poll());
+        int size=Integer.parseInt(q.poll());
+        root.children=new ArrayList<Node>(size);
+        for(int i=0;i<size;i++){
+            root.children.add(deserializeHelper(q));
+        }
+        return root;
+    }
+}
+```
+
+## 
+
