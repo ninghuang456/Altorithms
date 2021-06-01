@@ -579,5 +579,286 @@ class Codec {
 }
 ```
 
+## 642 Design Search Autocomplete System
+
+```java
+Input
+["AutocompleteSystem", "input", "input", "input", "input"]
+[[["i love you", "island", "iroman", "i love leetcode"], [5, 3, 2, 2]], ["i"], 
+[" "], ["a"], ["#"]]
+Output
+[null, ["i love you", "island", "i love leetcode"], 
+["i love you", "i love leetcode"], [], []]
+
+Explanation
+AutocompleteSystem obj = new AutocompleteSystem(["i love you", "island", "iroman",
+ "i love leetcode"], [5, 3, 2, 2]);
+obj.input("i"); // return ["i love you", "island", "i love leetcode"]. 
+//There are four sentences that have prefix "i". Among them, "ironman" 
+//and "i love leetcode" have same hot degree. Since ' ' has ASCII code 32 
+//and 'r' has ASCII code 114, "i love leetcode" should be in front of "ironman". 
+//Also we only need to output top 3 hot sentences, so "ironman" will be ignored.
+obj.input(" "); // return ["i love you", "i love leetcode"]. There are only two 
+//sentences that have prefix "i ".
+obj.input("a"); // return []. There are no sentences that have prefix "i a".
+obj.input("#"); // return []. The user finished the input, the sentence "i a"
+// should be saved as a historical sentence in system. And the following 
+//input will be counted as a new search.
+/**
+ 将整个句子都视作单词加入字典树。前缀匹配回溯较多，修改字典树结点结构，
+ 使得每个结点维护其后计数最大的三个字符串，加速匹配。
+ */
+class AutocompleteSystem {
+    // 构建Trie
+    class Trie {
+        // 确定路径上的某个字符是否是某个单词（句子）的结尾字符
+        boolean isEnding;
+
+        int count;
+        String s;
+
+        Trie[] children = new Trie[27]; // 26个字符加‘ ’
+
+        // 小顶堆保存最大的k个
+        int k;
+        PriorityQueue<Trie> queue;
+
+        Trie(int k) {
+            this.k = k;
+            // min Heap
+            this.queue = new PriorityQueue<>((a, b) -> 
+            a.count == b.count ? b.s.compareTo(a.s) : a.count - b.count);
+            // 字典树的一条路径的最后一位存空格
+            this.children = new Trie[27];
+
+        }
+
+        private void insert(String word, int val) {
+            if (word.isEmpty()) {
+                return;
+            }
+
+            Trie temp = this;
+            // 记录路径上的节点
+            List<Trie> path = new LinkedList<>();
+            for (char c : word.toCharArray()) {
+                int index = (c == ' ') ? 26 : (c - 'a');
+                if (temp.children[index] == null) {
+                    temp.children[index] = new Trie(k);
+                }
+
+                temp = temp.children[index];
+                path.add(temp);
+            }
+
+            // 结尾的字符特殊标记，并进行整个路径的计数更新
+            temp.isEnding = true;
+            temp.count += val;
+            temp.s = word;
+
+            // 关联终止节点到路径上的每个节点
+            for (Trie cur : path) {
+                // remove old value
+                if (cur.queue.contains(temp)) {
+                    cur.queue.remove(temp);
+                }
+                // update new value
+                cur.queue.add(temp);
+                // 大于k个，将最小的弹出
+                while (cur.queue.size() > k) {
+                    cur.queue.poll();
+                }
+            }
+        }
+
+        private void search(List<String> results) {
+            List<Trie> temp = new ArrayList<>();
+            // 加入堆中元素
+            while (!queue.isEmpty()) {
+                Trie trie = queue.poll();
+                temp.add(trie);
+                results.add(trie.s);
+            }
+            queue.addAll(temp);
+            Collections.reverse(results);
+        }
+    }
+
+    // 字典树
+    private final Trie root;
+    // 记录前一个节点
+    private Trie pre;
+    //记录历史字符串
+    private StringBuilder sb;
+
+    public AutocompleteSystem(String[] sentences, int[] times) {
+        this.root = new Trie(3); // 每条路径最多三个单词
+        this.pre = root;
+        sb = new StringBuilder();
+
+        for (int i = 0; i < sentences.length; i++) {
+            root.insert(sentences[i], times[i]);
+        }
+    }
+    
+    public List<String> input(char c) {
+        List<String> results = new LinkedList<>();
+        // 遇到‘#’终止
+        if (c == '#') {
+            // 更新历史记录
+            saveHistory(sb.toString());
+            // 清空状态
+            pre = root;
+            sb = new StringBuilder();
+            return results;
+        }
+
+        // 尚未终止
+        // 记录历史
+        sb.append(c);
+
+        // 更新节点
+        if (pre != null) {
+            pre = (c == ' ') ? pre.children[26] : pre.children[c - 'a'];
+        }
+        // 搜索其后的所有值
+        if (pre != null) {
+            pre.search(results);
+        }
+        return results;
+    }
+
+    private void saveHistory(String s) {
+        root.insert(s, 1);
+    }
+
+    
+}
+```
+
+## 706 Design Hashmap
+
+```java
+class MyHashMap {
+        final ListNode[] nodes = new ListNode[10000];
+
+        public void put(int key, int value) {
+            int i = idx(key);
+            if (nodes[i] == null)
+                nodes[i] = new ListNode(-1, -1);
+            ListNode prev = find(nodes[i], key);
+            if (prev.next == null)
+                prev.next = new ListNode(key, value);
+            else prev.next.val = value;
+        }
+
+        public int get(int key) {
+            int i = idx(key);
+            if (nodes[i] == null)
+                return -1;
+            ListNode node = find(nodes[i], key);
+            return node.next == null ? -1 : node.next.val; 
+        }
+
+        public void remove(int key) {
+            int i = idx(key);
+            if (nodes[i] == null) return;
+            ListNode prev = find(nodes[i], key);
+            if (prev.next == null) return;
+            prev.next = prev.next.next;
+        }
+
+        int idx(int key) { return key % nodes.length;}
+
+        ListNode find(ListNode bucket, int key) {
+            ListNode node = bucket, prev = null;
+            while (node != null && node.key != key) {
+                prev = node;
+                node = node.next;
+            }
+            return prev;
+        }
+
+        class ListNode {
+            int key, val;
+            ListNode next;
+
+            ListNode(int key, int val) {
+                this.key = key;
+                this.val = val;
+            }
+        }
+    }
+```
+
+## 157 Replace All ?'s to Avoid Consecutive Repeating Characters
+
+```java
+Input: s = "?zs"
+Output: "azs"
+Explanation: There are 25 solutions for this problem. From "azs" to "yzs", 
+all are valid. Only "z" is an invalid modification as the string will consist
+of consecutive repeating characters in "zzs".
+//for each char, just try ‘a’, ‘b’, ‘c’, and select the one not the same as 
+//neighbors.
+
+    public String modifyString(String s) {
+        char[] arr = s.toCharArray();
+        for (int i = 0; i < arr.length; i++) {
+            if (arr[i] == '?') {
+                for (int j = 0; j < 3; j++) {
+                    if (i > 0 && arr[i - 1] - 'a' == j) continue;
+                    if (i + 1 < arr.length && arr[i + 1] - 'a' == j) continue;
+                    arr[i] = (char) ('a' + j);
+                    break;
+                }
+            }
+        }
+        return String.valueOf(arr);
+    }
+```
+
+## 54 Spiral Matrix
+
+```java
+class Solution {
+      public List<Integer> spiralOrder(int[][] matrix) {
+
+        LinkedList<Integer> result = new LinkedList<>();
+        if(matrix==null||matrix.length==0) return result;
+        int left = 0;
+        int right = matrix[0].length - 1;
+        int top = 0;
+        int bottom = matrix.length - 1;
+        int numEle = matrix.length * matrix[0].length;
+        while (numEle >= 1) {
+            for (int i = left; i <= right && numEle >= 1; i++) {
+                result.add(matrix[top][i]);
+                numEle--;
+            }
+            top++;
+            for (int i = top; i <= bottom && numEle >= 1; i++) {
+                result.add(matrix[i][right]);
+                numEle--;
+            }
+            right--;
+            for (int i = right; i >= left && numEle >= 1; i--) {
+                result.add(matrix[bottom][i]);
+                numEle--;
+            }
+            bottom--;
+            for (int i = bottom; i >= top && numEle >= 1; i--) {
+                result.add(matrix[i][left]);
+                numEle--;
+            }
+            left++;
+        }
+        return result;
+    }
+}
+```
+
+## 
+
 ## 
 
