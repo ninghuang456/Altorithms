@@ -858,6 +858,522 @@ class Solution {
 }
 ```
 
+## 117 Populating Next Right Pointers in Each Node II
+
+![](.gitbook/assets/117_sample.png)
+
+```java
+Input: root = [1,2,3,4,5,null,7]
+Output: [1,#,2,3,#,4,5,7,#]
+Explanation: Given the above binary tree (Figure A), your function should populate
+ each next pointer to point to its next right node, just like in Figure B.
+  The serialized output is in level order as connected by the next pointers, 
+  with '#' signifying the end of each level.
+  
+  public void connect(TreeLinkNode root) {
+    TreeLinkNode dummyHead = new TreeLinkNode(0);
+    TreeLinkNode pre = dummyHead;
+    while (root != null) {
+	    if (root.left != null) {
+		    pre.next = root.left;
+		    pre = pre.next;
+	    }
+	    if (root.right != null) {
+		    pre.next = root.right;
+		    pre = pre.next;
+	    }
+	    root = root.next;
+	    if (root == null) {
+		    pre = dummyHead;
+		    root = dummyHead.next;
+		    dummyHead.next = null;
+	    }
+    }
+}
+```
+
+## 212 Word Search II
+
+```java
+Input:board=[["o","a","a","n"],["e","t","a","e"],["i","h","k","r"],
+            ["i","f","l","v"]], 
+words = ["oath","pea","eat","rain"]
+Output: ["eat","oath"]
+
+class Solution {
+    public List<String> findWords(char[][] board, String[] words) {
+        List<String> res = new ArrayList<>();
+        for (String word : words) {
+            if (exist(board, word)) {
+                res.add(word);
+            }
+        }
+        return res;
+    }
+
+    public boolean exist(char[][] board, String word) {
+        int row = board.length;
+        int col = board[0].length;
+        boolean[][] visited = new boolean[row][col];
+        for (int i = 0; i < row; i ++) {
+            for (int j = 0; j < col; j ++){
+                if (board[i][j] == word.charAt(0) && findWord(board, word, i, j, 0, visited)) { // start from 0;
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+    
+    public boolean findWord(char[][] board, String word, int i, int j, int size,  boolean[][] visited){
+        if(size == word.length()){// it means last run's index reach last letter; similer like node == null;
+            return true;
+        }
+        
+        if (!inArea(board, i , j) || visited[i][j] || board[i][j] != word.charAt(size)){ // need check in area before visited[i][j]
+            return false;
+        }
+        visited[i][j] = true;
+        boolean res = findWord(board, word, i - 1, j, size + 1, visited) ||
+            findWord(board, word, i, j - 1, size + 1, visited) ||
+            findWord(board, word, i + 1, j, size + 1, visited) ||
+            findWord(board, word, i , j + 1, size + 1, visited);
+         visited[i][j] = false;   
+        return res;
+    }
+    
+    boolean inArea(char[][] board,int i, int j){
+        return i >= 0 && i < board.length && j >= 0 && j < board[0].length;
+    }
+}
+
+// 
+
+class Solution {
+    public List<String> findWords(char[][] board, String[] words) {
+        //构建字典树
+        wordTrie myTrie=new wordTrie();
+        trieNode root= myTrie.root;
+        for(String s:words)
+            myTrie.insert(s);
+        //使用set防止重复
+        Set<String> result =new HashSet<>();
+        int m=board.length;
+        int n=board[0].length;
+        boolean [][]visited=new boolean[m][n];
+        //遍历整个二维数组
+        for(int i=0;i<board.length; i++){
+            for (int j = 0; j < board [0].length; j++){
+                find(board,visited,i,j,m,n,result,root);
+            }
+        }
+        System.out.print(result);
+        return new LinkedList<String>(result);
+    }
+    private void find(char [] [] board, boolean [][]visited,int i,int j,int m,int n,Set<String> result,trieNode cur){
+        //边界以及是否已经访问判断
+        if(i<0||i>=m||j<0||j>=n||visited[i][j])
+            return;
+        cur=cur.child[board[i][j]-'a'];
+        visited[i][j]=true;
+        if(cur==null)
+        {
+            //如果单词不匹配，回退
+            visited[i][j]=false;
+            return;
+        }
+        //找到单词加入
+        if(cur.isLeaf)
+        {
+            result.add(cur.val);
+            //找到单词后不能回退，因为可能是“ad” “addd”这样的单词得继续回溯
+//            visited[i][j]=false;
+//            return;
+        }
+        find(board,visited,i+1,j,m,n,result,cur);
+        find(board,visited,i,j+1,m,n,result,cur);
+        find(board,visited,i,j-1,m,n,result,cur);
+        find(board,visited,i-1,j,m,n,result,cur);
+        //最后要回退，因为下一个起点可能会用到上一个起点的字符
+        visited[i][j]=false;
+    }
+
+
+//字典树
+class wordTrie{
+    public trieNode root=new trieNode();
+    public void insert(String s){
+        trieNode cur=root;
+        for(char c:s.toCharArray()){
+            if(cur.child[c-'a']==null){ // like containsKey
+                cur.child [c-'a'] = new trieNode();
+            }
+            cur=cur.child [c-'a'];
+        }
+        cur.isLeaf=true;
+        cur.val=s;
+    }
+}
+//字典树结点
+class trieNode {
+    public String val;
+    public trieNode[] child=new trieNode[26];
+    public boolean isLeaf=false;
+    trieNode(){
+    }
+}
+
+
+}
+```
+
+## 297 Serialize and Deserialize Binary Tree
+
+```java
+public class Codec {
+
+    // Encodes a tree to a single string.
+    public String spliter = ",";
+    public String nulval = "null";
+    public String serialize(TreeNode root) {
+        StringBuilder sb = new StringBuilder();
+        if(root == null) return sb.append(nulval).toString();
+        serializeHelper(root,sb);
+        return sb.toString();
+    }
+    
+    public void serializeHelper(TreeNode node, StringBuilder sb) {
+        if(node == null) {
+            sb.append(nulval).append(spliter);
+            return;
+        }
+        sb.append(node.val).append(spliter);
+        serializeHelper(node.left, sb);
+        serializeHelper(node.right, sb);
+    }
+
+    // Decodes your encoded data to tree.
+    public TreeNode deserialize(String data) {
+        Queue<String> queue = new LinkedList<>();
+        queue.addAll(Arrays.asList(data.split(spliter)));
+        return deserializeHelper(queue);
+        
+    }
+    public TreeNode deserializeHelper(Queue<String> queue) {
+        String cur = queue.poll();
+        if (cur.equals(nulval)) {
+            return null;
+        } 
+        TreeNode node = new TreeNode(Integer.valueOf(cur));
+        node.left = deserializeHelper(queue);
+        node.right = deserializeHelper(queue);
+        return node; 
+    }
+}
+```
+
+## 23 Merge k Sorted Lists
+
+```java
+class Solution {
+    public ListNode mergeKLists(ListNode[] lists) {
+        
+       // if(lists == null || lists.length == 0) return null;
+        PriorityQueue<ListNode> pq = new PriorityQueue<>((l1,l2)-> l1.val - l2.val);
+        ListNode head = new ListNode(-1);
+        ListNode cur = head;
+        for(int i = 0; i < lists.length; i ++){
+            if(lists[i] != null){
+             pq.offer(lists[i]);   
+            }
+        }
+        while(!pq.isEmpty()){
+            ListNode temp = pq.poll();
+            cur.next = temp;
+            cur = cur.next;
+            if(temp.next != null){
+                pq.offer(temp.next);
+            }
+        }
+        return head.next;
+    }
+}
+```
+
+## 151 Reverse Words in a String
+
+```java
+class Solution {
+    public String reverseWords(String s) {
+        if (s == null || s.length() == 0 || s.trim().isEmpty()) return "";
+        String[] strs = s.trim().split(" ");
+        int i = 0; int j = strs.length - 1;
+        while (i < j){
+            String temp = strs[i];
+            strs[i ++] = strs[j];
+            strs[j --] = temp;
+        }
+       StringBuilder sb = new StringBuilder();
+       for (String str: strs){
+           if(!str.trim().isEmpty()){
+               sb.append(str).append(" "); 
+           }
+       } 
+       return sb.toString().trim(); 
+    }
+}
+```
+
+## 295 Find Median from Data Stream
+
+```java
+For example, for arr = [2,3,4], the median is 3.
+For example, for arr = [2,3], the median is (2 + 3) / 2 = 2.5.
+
+class MedianFinder {
+   private Queue<Integer> small = new PriorityQueue<>((o1,o2) -> (o2 - o1));
+   private Queue<Integer> large = new PriorityQueue();
+    // Adds a number into the data structure.
+    public void addNum(int num) {
+        large.add(num);
+        small.add(large.poll());
+        if (large.size() < small.size())
+            large.add(small.poll());
+    }
+
+    // Returns the median of current data stream
+    public double findMedian() {
+        return large.size() > small.size()
+               ? large.peek()
+               : (large.peek() + small.peek()) / 2.0;
+    }
+}
+```
+
+## 236 Lowest Common Ancestor of a Binary Tree
+
+```java
+class Solution {
+    public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
+        if(root == null || p == root || q == root) return root;
+        Map<TreeNode, TreeNode> parent = new HashMap<>();
+        Queue<TreeNode> queue = new LinkedList<>();
+        parent.put(root, null);//根节点没有父节点，所以为空
+        queue.add(root);
+        //直到两个节点都找到为止。
+        while (!parent.containsKey(p) || !parent.containsKey(q)) {
+           TreeNode cur = queue.poll();
+           if(cur.right != null){
+               parent.put(cur.right, cur);
+               queue.offer(cur.right);
+           }
+           if(cur.left != null){
+               parent.put(cur.left, cur);
+               queue.offer(cur.left);
+           } 
+        }
+        
+        HashSet<TreeNode> pParents = new HashSet<>();
+        while(p != null){
+            pParents.add(p);
+            p = parent.get(p);
+        }
+        while(q != null){
+            if(pParents.contains(q)){
+                return q;
+            }
+            q = parent.get(q);
+        }
+        return root;
+    }
+}
+
+// 
+class Solution {
+    public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
+        if(root == null) return root;
+        if(p == root || q == root) return root;
+        TreeNode left = lowestCommonAncestor(root.left, p, q);
+        TreeNode right = lowestCommonAncestor(root.right, p, q);
+        if(left != null && right != null) return root;
+        if(right == null) return left;
+        return right;
+    }
+}
+```
+
+## 224 Basic Calculator
+
+```java
+class Solution {
+    public int calculate(String s) {
+        Stack<Integer> stack = new Stack<Integer>();
+    int result = 0;
+    int number = 0;
+    int sign = 1;
+    for(int i = 0; i < s.length(); i++){
+        char c = s.charAt(i);
+        if(Character.isDigit(c)){
+            number = 10 * number + (int)(c - '0');
+        }else if(c == '+'){
+            result += sign * number;
+            number = 0;
+            sign = 1;
+        }else if(c == '-'){
+            result += sign * number;
+            number = 0;
+            sign = -1;
+        }else if(c == '('){
+            //we push the result first, then sign;
+            stack.push(result);
+            stack.push(sign);
+            //reset the sign and result for the value in the parenthesis
+            sign = 1;   
+            result = 0;
+        }else if(c == ')'){
+            result += sign * number;  
+            number = 0;
+            result *= stack.pop();    //stack.pop() is the sign before the parenthesis
+            result += stack.pop();   //stack.pop() now is the result calculated before the parenthesis
+            
+        }
+    }
+    if(number != 0) result += sign * number;
+    return result;
+        
+    }
+}
+```
+
+## 138 Copy List with Random Pointer
+
+```java
+class Solution {
+    public Node copyRandomList(Node head) {
+        HashMap<Node, Node> map = new HashMap<>();
+        Node cur = head;
+        while (cur != null) {
+            map.put(cur, new Node(cur.val));
+            cur = cur.next; 
+        }
+        cur = head;
+        while (cur != null) {
+            map.get(cur).next = map.get(cur.next);
+            map.get(cur).random = map.get(cur.random);
+            cur = cur.next;
+        }
+       return map.get(head);
+    }
+}
+```
+
+## 41 First Missing Positive
+
+```java
+Given an unsorted integer array nums, find the smallest missing positive integer.
+You must implement an algorithm that runs in O(n) time and uses constant extra 
+space.
+Example 1:
+Input: nums = [1,2,0]
+Output: 3
+Example 2:
+
+Input: nums = [3,4,-1,1]
+Output: 2
+
+class Solution {
+    public int firstMissingPositive(int[] nums) {
+        if (nums == null || nums.length == 0) return 1;
+        int n = nums.length;
+        for (int i = 0; i < n; i++) {
+            while (nums[i] > 0 && nums[i] <= n && nums[i] != nums[nums[i] - 1]) {
+                int temp = nums[nums[i] - 1];
+                nums[nums[i] - 1] = nums[i];
+                nums[i] = temp;
+            }
+        }
+        for (int i = 0; i < n; i++) {
+            if (nums[i] != i + 1) return i + 1;
+        }
+
+        //从1开始连续出现
+        return n + 1;
+    }
+}
+```
+
+## 17 Letter Combinations of a Phone Number
+
+```java
+class Solution {
+    public List<String> letterCombinations(String digits) {
+        List<String> res = new ArrayList<>();
+        String[] phone = new String[]{" ","","abc", "def", "ghi","jkl",
+         "mno","pqrs","tuv","wxyz"};
+        if(digits.length() != 0) {
+        lettterCombinHelper(digits, "", res, phone, 0);
+        }
+        return res;
+    }
+    
+    public void lettterCombinHelper(String digits, String temp, List<String> res, 
+                                   String[] phone, int start) {
+        if (temp.length() == digits.length()) {
+            res.add(temp);
+            return;
+        }
+        for (int i = start; i < digits.length(); i ++ ) {
+            String c = digits.substring(i, i + 1);
+            int index = Integer.valueOf(c);
+            String nums = phone[index];
+            for (int j = 0; j < nums.length(); j ++) {
+                char cur = nums.charAt(j);
+                lettterCombinHelper(digits, temp + cur, res, phone, i + 1);
+            }
+        }
+    }
+}
+```
+
+## 49 Group Anagrams
+
+```java
+class Solution {
+    public List<List<String>> groupAnagrams(String[] strs) {
+        List<List<String>> res = new ArrayList<>();
+        if(strs == null || strs.length == 0) return res;
+        HashMap<String, List<String>> map = new HashMap<>();
+        for (String str : strs) {
+            char[] chars = str.toCharArray();
+            int[] temp = new int[26];
+            for (char c : chars){
+                temp[c - 'a']++;
+            }
+            StringBuilder sb = new StringBuilder();
+           for(int i = 0; i < 26; i++){
+               if(temp[i] != 0){
+                   sb.append(temp[i]).append(i); 
+                   // it will like 197296: 97 is assii code position
+               }
+           }
+           String key = sb.toString(); 
+           if(map.containsKey(key)){
+               map.get(key).add(str);
+           } else {
+               ArrayList<String> ls = new ArrayList<>();
+               ls.add(str);
+               map.put(key,ls);
+           }
+            
+        }
+        for (String key : map.keySet()){
+            res.add(map.get(key));
+        }
+        return res;
+    }
+}
+```
+
 ## 
 
 ## 
