@@ -917,7 +917,8 @@ class Solution {
         boolean[][] visited = new boolean[row][col];
         for (int i = 0; i < row; i ++) {
             for (int j = 0; j < col; j ++){
-                if (board[i][j] == word.charAt(0) && findWord(board, word, i, j, 0, visited)) { // start from 0;
+                if (board[i][j] == word.charAt(0) &&
+                 findWord(board, word, i, j, 0, visited)) { // start from 0;
                     return true;
                 }
             }
@@ -925,12 +926,16 @@ class Solution {
         return false;
     }
     
-    public boolean findWord(char[][] board, String word, int i, int j, int size,  boolean[][] visited){
-        if(size == word.length()){// it means last run's index reach last letter; similer like node == null;
+    public boolean findWord(char[][] board, String word, int i, int j, int size, 
+                  boolean[][] visited){
+        if(size == word.length()){
+        // it means last run's index reach last letter; similer like node == null;
             return true;
         }
         
-        if (!inArea(board, i , j) || visited[i][j] || board[i][j] != word.charAt(size)){ // need check in area before visited[i][j]
+        if (!inArea(board, i , j) || visited[i][j] || 
+             board[i][j] != word.charAt(size)){ 
+             // need check in area before visited[i][j]
             return false;
         }
         visited[i][j] = true;
@@ -970,7 +975,8 @@ class Solution {
         System.out.print(result);
         return new LinkedList<String>(result);
     }
-    private void find(char [] [] board, boolean [][]visited,int i,int j,int m,int n,Set<String> result,trieNode cur){
+    private void find(char [] [] board, boolean [][]visited,
+                  int i,int j,int m,int n,Set<String> result,trieNode cur){
         //边界以及是否已经访问判断
         if(i<0||i>=m||j<0||j>=n||visited[i][j])
             return;
@@ -1079,7 +1085,7 @@ class Solution {
     public ListNode mergeKLists(ListNode[] lists) {
         
        // if(lists == null || lists.length == 0) return null;
-        PriorityQueue<ListNode> pq = new PriorityQueue<>((l1,l2)-> l1.val - l2.val);
+    PriorityQueue<ListNode> pq = new PriorityQueue<>((l1,l2)-> l1.val - l2.val);
         ListNode head = new ListNode(-1);
         ListNode cur = head;
         for(int i = 0; i < lists.length; i ++){
@@ -1233,8 +1239,10 @@ class Solution {
         }else if(c == ')'){
             result += sign * number;  
             number = 0;
-            result *= stack.pop();    //stack.pop() is the sign before the parenthesis
-            result += stack.pop();   //stack.pop() now is the result calculated before the parenthesis
+            result *= stack.pop();    
+            //stack.pop() is the sign before the parenthesis
+            result += stack.pop();   
+            //stack.pop() now is the result calculated before the parenthesis
             
         }
     }
@@ -1412,6 +1420,145 @@ class Solution {
         }
             
         return grid[m - 1][n - 1];
+    }
+}
+```
+
+## 560 Subarray Sum Equals K
+
+```java
+Given an array of integers nums and an integer k, return the total number of 
+continuous subarrays whose sum equals to k.
+
+Input: nums = [1,1,1], k = 2
+Output: 2
+
+class Solution {
+    public int subarraySum(int[] nums, int k) {
+        HashMap<Integer, Integer> map = new HashMap<>();
+        int sum = 0;
+        map.put(0, 1);
+         int res = 0;
+        for (int i = 0; i < nums.length; i ++) {
+            sum += nums[i];
+             if(map.containsKey(sum - k)) {
+                res += map.get(sum - k);
+            }
+            map.put(sum, map.getOrDefault(sum, 0) + 1);
+        }
+        return res;
+    }
+}
+```
+
+## 210 Course Schedule II
+
+```java
+There are a total of numCourses courses you have to take, labeled from 0 to 
+numCourses - 1. You are given an array prerequisites where prerequisites[i] = 
+[ai, bi] means you must take course bi first if you want to take course ai.
+
+For example, the pair [0, 1], indicates that to take course 0 you have to 
+first take course 1.
+Return the ordering of courses you should take to finish all courses.
+ If there are many valid answers, return any of them. If it is impossible 
+ to finish all courses, return an empty array.
+ 
+ class Solution {
+    public int[] findOrder(int numCourses, int[][] prerequisites) {
+        int[] indegrees = new int[numCourses];
+        List<ArrayList<Integer>> adjTable = new ArrayList<>();
+        ArrayList<Integer> res = new ArrayList<>();
+        for (int i = 0; i < numCourses; i ++) {
+            adjTable.add(new ArrayList<Integer>());
+        }
+        for (int[] pre : prerequisites){
+            indegrees[pre[0]] ++;
+            adjTable.get(pre[1]).add(pre[0]);
+        }
+        Queue<Integer> queue = new LinkedList<>();
+        for (int i = 0; i < indegrees.length; i ++) {
+            if(indegrees[i] == 0){
+                queue.offer(i);
+            }
+        }
+        while (!queue.isEmpty()) {
+            int cur = queue.poll();
+            numCourses --;
+            res.add(cur);
+            List<Integer> adj = adjTable.get(cur);
+            for (int next : adj) {
+                indegrees[next] --;
+                if (indegrees[next] == 0) {
+                    queue.offer(next);
+                }
+            }
+        }
+        if (numCourses != 0) return new int[0];
+        int[] finalRes = new int[res.size()];
+        for (int i = 0; i < res.size(); i ++){
+            finalRes[i] = res.get(i);
+        }
+        return finalRes;
+    }
+}
+ 
+```
+
+## 3 Longest Substring Without Repeating Characters
+
+```java
+class Solution {
+    public int lengthOfLongestSubstring(String s) {
+       if (s == null || s.length() == 0) return 0;
+       HashMap<Character, Integer> window = new HashMap<>(); 
+       int left = 0; int right = 0; int maxLen = 0;
+       while(right < s.length()){
+           char s1 = s.charAt(right);
+           right ++;
+           window.put(s1, window.getOrDefault(s1, 0) + 1);
+           while (window.get(s1) > 1){
+               char s2 = s.charAt(left);
+               left ++;
+               window.put(s2, window.getOrDefault(s2,0) - 1);
+           }
+          maxLen = Math.max(maxLen, right - left); 
+       } 
+      
+       return maxLen;   
+    }
+}
+```
+
+## 103 Binary Tree Zigzag Level Order Traversal
+
+```java
+class Solution {
+    public List<List<Integer>> zigzagLevelOrder(TreeNode root) {
+        List<List<Integer>> res = new ArrayList<>();
+        if (root == null) return res;
+        Queue<TreeNode> queue = new LinkedList<>();
+        queue.offer(root);
+        boolean isFromLeft = true;
+        while (!queue.isEmpty()){
+            int len = queue.size();
+            LinkedList<Integer> oneLevel = new LinkedList<>(); 
+            // if you want to use addFirst() don't use List<> = new LinkedList
+            for (int i = 0; i < len; i ++){
+                TreeNode curNode = queue.poll();
+                int value = curNode.val;
+                if (isFromLeft){
+                    oneLevel.add(value);
+                } else {
+                    oneLevel.addFirst(value);
+                }
+                if (curNode.left != null)   queue.offer(curNode.left);
+                if (curNode.right != null)  queue.offer(curNode.right);
+            }
+            res.add(oneLevel);
+            isFromLeft = !isFromLeft;
+        }
+        return res;
     }
 }
 ```
