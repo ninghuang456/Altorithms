@@ -112,15 +112,20 @@ class Solution {
         }
         
         // 先左边界，再叶子节点，最后右边界
-        leftTrunk(root.left, result); // 从root的左孩子开始判断左边界
-        addLeaves(root, result); // 从root开始判断叶子节点
-        rightTrunk(root.right, result); // 从root的右孩子开始判断右边界
+        leftTrunk(root.left, result);
+         // 从root的左孩子开始判断左边界
+        addLeaves(root, result); 
+        // 从root开始判断叶子节点
+        rightTrunk(root.right, result); 
+        // 从root的右孩子开始判断右边界
 
         return result;
     }
 
-    // 左边界，没有左孩子，需要有右孩子，等同于不是叶子节点的情况下，没有左孩子
-    private void leftTrunk(TreeNode root, List<Integer> result) {
+    // 左边界，没有左孩子，需要有右孩子，等同于不是叶子节点的情况下，
+    //没有左孩子
+    private void leftTrunk(TreeNode root, List<Integer>
+     result) {
         if (root == null) {
             return;
         }
@@ -134,8 +139,10 @@ class Solution {
         }
     }
 
-    // 右边界，没有右孩子，需要有左孩子，等同于不是叶子节点的情况下，没有右孩子
-    private void rightTrunk(TreeNode root, List<Integer> result) {
+    // 右边界，没有右孩子，需要有左孩子，等同于不是叶子节点的情况下，
+    //没有右孩子
+    private void rightTrunk(TreeNode root, List<Integer>
+     result) {
         if (root == null) {
             return;
         }
@@ -150,7 +157,8 @@ class Solution {
     }
 
     // 叶子节点，左右孩子都没有
-    private void addLeaves(TreeNode node, List<Integer> result) {
+    private void addLeaves(TreeNode node, List<Integer>
+     result) {
         if (node == null) {
             return;
         }
@@ -870,6 +878,26 @@ Explanation: Given the above binary tree (Figure A), your function should popula
   The serialized output is in level order as connected by the next pointers, 
   with '#' signifying the end of each level.
   
+  public class Solution {
+    public void connect(TreeLinkNode root) {
+        
+        while(root != null){
+            TreeLinkNode tempChild = new TreeLinkNode(0);
+            TreeLinkNode currentChild = tempChild;
+            while(root!=null){
+                if(root.left != null) { 
+                currentChild.next = root.left; 
+                currentChild = currentChild.next;}
+                if(root.right != null) { 
+                currentChild.next = root.right; 
+                currentChild = currentChild.next;}
+                root = root.next;
+            }
+            root = tempChild.next;
+        }
+    }
+}
+  
   public void connect(TreeLinkNode root) {
     TreeLinkNode dummyHead = new TreeLinkNode(0);
     TreeLinkNode pre = dummyHead;
@@ -1085,7 +1113,8 @@ class Solution {
     public ListNode mergeKLists(ListNode[] lists) {
         
        // if(lists == null || lists.length == 0) return null;
-    PriorityQueue<ListNode> pq = new PriorityQueue<>((l1,l2)-> l1.val - l2.val);
+    PriorityQueue<ListNode> pq = new PriorityQueue<>(
+    (l1,l2)-> l1.val - l2.val);
         ListNode head = new ListNode(-1);
         ListNode cur = head;
         for(int i = 0; i < lists.length; i ++){
@@ -1288,6 +1317,10 @@ Example 2:
 
 Input: nums = [3,4,-1,1]
 Output: 2
+1. for any array whose length is l, 
+the first missing positive must be in range [1,...,l+1],
+2: each time we encounter an valid integer, find its correct position and swap. 
+Otherwise we continue.
 
 class Solution {
     public int firstMissingPositive(int[] nums) {
