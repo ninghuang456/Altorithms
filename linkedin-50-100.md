@@ -276,3 +276,59 @@ class Solution {
     }
 }
 ```
+
+## 560 Subarray Sum Equals K
+
+```java
+iven an array of integers nums and an integer k, 
+return the total number of continuous subarrays whose sum equals to k.
+Input: nums = [1,1,1], k = 2
+Output: 2
+
+class Solution {
+    public int subarraySum(int[] nums, int k) {
+        HashMap<Integer, Integer> map = new HashMap<>();
+        int sum = 0;
+        map.put(0, 1);
+         int res = 0;
+        for (int i = 0; i < nums.length; i ++) {
+            sum += nums[i];
+             if(map.containsKey(sum - k)) {
+                res += map.get(sum - k);
+            }
+            map.put(sum, map.getOrDefault(sum, 0) + 1);
+        }
+        return res;
+    }
+}
+```
+
+## 744 Find Smallest Letter Greater Than Target
+
+```java
+Given a characters array letters that is sorted in non-decreasing order 
+and a character target, return the smallest character 
+in the array that is larger than target.
+Input: letters = ["c","f","j"], target = "a"
+Output: "c"
+
+ class Solution {
+    public char nextGreatestLetter(char[] a, char x) {
+        int n = a.length;
+
+        //hi starts at 'n' rather than the usual 'n - 1'. 
+        //It is because the terminal condition is 'lo < hi' and if hi starts from 'n - 1', 
+        //we can never consider value at index 'n - 1'
+        int lo = 0, hi = n;
+        //Terminal condition is 'lo < hi', to avoid infinite loop when target is smaller than the first element
+        while (lo < hi) {
+            int mid = lo + (hi - lo) / 2;
+            if (a[mid] > x)     hi = mid;
+            else    lo = mid + 1;                 //a[mid] <= x
+        }
+ 
+        //Because lo can end up pointing to index 'n', in which case we return the first element
+        return a[lo % n];
+    }
+   }
+```
