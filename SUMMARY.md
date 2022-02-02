@@ -22,14 +22,14 @@
 
 * [Facebook Frequency 1-50](interview/frequency-1-40.md)
 * [FaceBook Frequency 50-100](interview/facebook.md)
-* [Amazon Frequency 1~ 30](interview/amazon-frequency-1-30.md)
-* [Oracle 1 ~ 40](interview/oracle-1-50.md)
+* [Amazon Frequency 1\~ 30](interview/amazon-frequency-1-30.md)
+* [Oracle 1 \~ 40](interview/oracle-1-50.md)
 * [Oracle 41-100](interview/oracle-41-100.md)
 * [Indeed](interview/indeed.md)
 
----
+***
 
 * [Karat](karat.md)
 * [Karat Design](karat-design.md)
 * [MicroSoft](microsoft.md)
-
+* [Linkedin 50\~100](linkedin-50-100.md)
