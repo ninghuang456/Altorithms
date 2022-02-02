@@ -1,6 +1,6 @@
 # Linkedin 50\~100
 
-**5 : Longest Palindromic Substring**
+## **5 : Longest Palindromic Substring**
 
 ```java
 // Some code
@@ -164,5 +164,67 @@ class LRUCache {
         cache.remove(key);
         cache.put(key, val);
     }
-}java
+}
+```
+
+## 347 Top K Frequent Elements
+
+```
+Given an integer array nums and an integer k, return the k most frequent elements. 
+You may return the answer in any order.
+Input: nums = [1,1,1,2,2,3], k = 2
+Output: [1,2]
+
+class Solution {
+    public int[] topKFrequent(int[] nums, int k) {
+        HashMap<Integer, Integer> map = new HashMap<>();
+        for(int num: nums){
+            map.put(num, map.getOrDefault(num, 0) + 1);
+        }
+        PriorityQueue<Map.Entry<Integer,Integer>> pq = 
+        new PriorityQueue<>((a, b) -> a.getValue() - b.getValue());
+        for(Map.Entry<Integer,Integer> entry : map.entrySet()){
+            pq.offer(entry);
+            if(pq.size() > k){
+                pq.poll();
+            }
+        }
+        int[] res = new int[k];
+        for(int i = 0; i < res.length; i ++){
+            res[i] = pq.poll().getKey();
+        }
+        return res;
+    }
+}
+```
+
+## 88 Merge Sorted Array
+
+```
+Input: nums1 = [1,2,3,0,0,0], m = 3, nums2 = [2,5,6], n = 3
+Output: [1,2,2,3,5,6]
+Explanation: The arrays we are merging are [1,2,3] and [2,5,6].
+The result of the merge is [1,2,2,3,5,6] 
+with the underlined elements coming from nums1.
+
+
+class Solution {
+    public void merge(int[] nums1, int m, int[] nums2, int n) {
+        int last = m + n - 1;
+        int index1 = m - 1;
+        int index2 = n - 1;
+        while (index1 >= 0 && index2 >= 0){
+            if (nums1[index1] > nums2[index2]){
+                nums1[last--] = nums1[index1--];
+            } else {
+                nums1[last--] = nums2[index2--];
+            }
+        }
+        while (index2 >= 0){
+            nums1[last--] = nums2[index2--];
+        }
+        
+        
+    }
+}
 ```
