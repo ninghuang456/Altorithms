@@ -90,5 +90,79 @@ class Solution {
 }
 ```
 
+## 39 Combination Sum
 
+```java
+Input: candidates = [2,3,6,7], target = 7
+Output: [[2,2,3],[7]]
 
+class Solution {
+    public List<List<Integer>> combinationSum(int[] candidates, int target) {
+        List<List<Integer>> res = new LinkedList<>();
+        List<Integer> temp = new LinkedList<>();
+        combinationSumHelper(temp, res, candidates, target, 0);
+        return res;
+        
+    }
+    
+    public void combinationSumHelper(List<Integer> temp, List<List<Integer>> res, 
+                              int[] candidates, int target, int index ){
+        if (target < 0) return;
+        if (target == 0){
+            res.add(new LinkedList(temp));
+            return;
+        }
+        for (int i = index; i < candidates.length; i ++) {
+            temp.add(candidates[i]);
+        combinationSumHelper(temp, res, candidates, target - candidates[i],  i);
+            temp.remove(temp.size() - 1);
+        }
+    }  
+}
+```
+
+## 146 LRU cache
+
+```java
+class LRUCache {
+    int cap;
+    LinkedHashMap<Integer, Integer> cache = new LinkedHashMap<>();
+    public LRUCache(int capacity) { 
+        this.cap = capacity;
+    }
+    
+    public int get(int key) {
+        if (!cache.containsKey(key)) {
+            return -1;
+        }
+        // 将 key 变为最近使用
+        makeRecently(key);
+        return cache.get(key);
+    }
+    
+    public void put(int key, int val) {
+        if (cache.containsKey(key)) {
+            // 修改 key 的值
+            cache.put(key, val);
+            // 将 key 变为最近使用
+            makeRecently(key);
+            return;
+        }
+        
+        if (cache.size() >= this.cap) {
+            // 链表头部就是最久未使用的 key
+            int oldestKey = cache.keySet().iterator().next();
+            cache.remove(oldestKey);
+        }
+        // 将新的 key 添加链表尾部
+        cache.put(key, val);
+    }
+    
+    private void makeRecently(int key) {
+        int val = cache.get(key);
+        // 删除 key，重新插入到队尾
+        cache.remove(key);
+        cache.put(key, val);
+    }
+}java
+```
