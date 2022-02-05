@@ -161,8 +161,15 @@ class Solution {
 
 ```
 
+## 339 Nested List Weight Sum
+
+&#x20;
+
+**Example 1:**
+
+![](https://assets.leetcode.com/uploads/2021/01/14/nestedlistweightsumex1.png)
+
 ```java
-339. Nested List Weight Sum
 You are given a nested list of integers nestedList. 
 Each element is either an integer or a list
  whose elements may also be integers or other lists.
@@ -191,3 +198,60 @@ class Solution {
 
 ```
 
+## 156 Binary Tree Upside Down
+
+
+
+Given the `root` of a binary tree, turn the tree upside down and return _the new root_.
+
+You can turn a binary tree upside down with the following steps:
+
+1. The original left child becomes the new root.
+2. The original root becomes the new right child.
+3. The original right child becomes the new left child.
+
+![](https://assets.leetcode.com/uploads/2020/08/29/main.jpg)
+
+The mentioned steps are done level by level. It is **guaranteed** that every right node has a sibling (a left node with the same parent) and has no children.
+
+**Example 1:**
+
+![](https://assets.leetcode.com/uploads/2020/08/29/updown.jpg)
+
+```java
+Input: root = [1,2,3,4,5]
+Output: [4,5,2,null,null,3,1]
+// solution 1:
+public TreeNode upsideDownBinaryTree(TreeNode root) {
+    if(root == null || root.left == null) {
+        return root;
+    }
+    
+    TreeNode newRoot = upsideDownBinaryTree(root.left);
+    root.left.left = root.right;   // node 2 left children
+    root.left.right = root;         // node 2 right children
+    root.left = null;
+    root.right = null;
+    return newRoot;
+}
+
+// solution 2:
+public TreeNode upsideDownBinaryTree(TreeNode root) {
+    TreeNode curr = root;
+    TreeNode next = null;
+    TreeNode temp = null;
+    TreeNode prev = null;
+    
+    while(curr != null) {
+        next = curr.left;
+        // swapping nodes now, need temp to keep the previous right child
+        curr.left = temp;
+        temp = curr.right;
+        curr.right = prev;
+        prev = curr;
+        curr = next;
+    }
+    return prev;
+}  
+
+```
