@@ -255,3 +255,84 @@ public TreeNode upsideDownBinaryTree(TreeNode root) {
 }  
 
 ```
+
+## 360 Sort Transformed Array
+
+![](.gitbook/assets/image.png)
+
+```
+Given a sorted integer array nums and three integers a, b and c, 
+apply a quadratic function of the 
+form f(x) = ax2 + bx + c to each element nums[i] in the array, 
+and return the array in a sorted order.
+Example 1:
+Input: nums = [-4,-2,2,4], a = 1, b = 3, c = 5
+Output: [3,9,15,33]
+Example 2:
+Input: nums = [-4,-2,2,4], a = -1, b = 3, c = 5
+Output: [-23,-5,1,7]
+
+顶点： X = -b / 2a; Y = f(x);
+如果“a”(x2的系数)是正的，那么抛物线的开口就是朝上的，反之就是朝下的。 
+也就是把开口朝上的抛物线上下颠倒。
+
+
+public class Solution {
+    public int[] sortTransformedArray(int[] nums, int a, int b, int c) {
+        int n = nums.length;
+        int[] sorted = new int[n];
+        int i = 0, j = n - 1;
+        int index = a >= 0 ? n - 1 : 0;
+        while (i <= j) {
+            if (a >= 0) {
+                sorted[index--] = 
+                quad(nums[i], a, b, c) >= quad(nums[j], a, b, c) ? 
+                quad(nums[i++], a, b, c) : quad(nums[j--], a, b, c);
+            } else {
+                sorted[index++] = 
+                quad(nums[i], a, b, c) >= quad(nums[j], a, b, c) ? 
+                quad(nums[j--], a, b, c) : quad(nums[i++], a, b, c);
+            }
+        }
+        return sorted;
+    }
+    
+    private int quad(int x, int a, int b, int c) {
+        return a * x * x + b * x + c;
+    }
+}
+
+class Solution {
+    public int[] sortTransformedArray(int[] nums, int a, int b, int c) {
+        if (nums.length == 0 || nums == null)
+            return new int[0];
+        int n = nums.length;
+        int[] res = new int[n];
+        if (a == 0) {
+            for (int i = 0; i < n; i++) {
+                int cur = b >= 0 ? nums[i] : nums[n - 1 - i];
+                res[i] = b * cur + c;
+            }
+            return res;
+        }
+        //sort based on distance to pivot
+        double pivot = (double) -b / (2 * a);
+        int[] distSorted = new int[n];
+        int lo = 0, hi = n - 1, end = n - 1;
+        while (lo <= hi) { 
+            double d1 = pivot - nums[lo], d2 = nums[hi] - pivot;
+            if (d1 > d2) {
+                distSorted[end--] = nums[lo++];
+            } else {
+                distSorted[end--] = nums[hi--];
+            }
+        }
+        //populate res based on distSorted, and also a
+        for (int i = 0; i < n; i++) {
+            int cur = a > 0 ? distSorted[i] : distSorted[n - 1 - i];
+            res[i] = a * cur * cur + b * cur + c;
+        }
+        return res;
+    }
+}
+```

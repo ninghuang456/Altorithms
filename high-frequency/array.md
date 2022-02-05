@@ -28,11 +28,11 @@ class Solution {
 }
 ```
 
-### 
+###
 
 2.Median of Two Sorted Arrays
 
-```text
+```
 public double findMedianSortedArrays(int[] A, int[] B) {
 	    int m = A.length, n = B.length;
 	    int l = (m + n + 1) / 2;
@@ -62,7 +62,7 @@ Given _n_ non-negative integers representing an elevation map where the width of
 
 ![](https://assets.leetcode.com/uploads/2018/10/22/rainwatertrap.png)
 
-```text
+```
 class Solution {
     public int trap(int[] A) {
         int a=0;
@@ -90,7 +90,7 @@ class Solution {
 
 3 Sum
 
-```text
+```
 class Solution {
     public List<List<Integer>> threeSum(int[] nums) {
         List<List<Integer>> result = new ArrayList();
@@ -132,7 +132,7 @@ Given a collection of intervals, merge all overlapping intervals.
 
 **Example 1:**
 
-```text
+```
 Input: [[1,3],[2,6],[8,10],[15,18]]
 Output: [[1,6],[8,10],[15,18]]
 Explanation: Since intervals [1,3] and [2,6] overlaps, merge them into [1,6].
@@ -142,7 +142,7 @@ Output: [[1,5]]
 Explanation: Intervals [1,4] and [4,5] are considered overlapping.
 ```
 
-```text
+```
 /**
  * Definition for an interval.
  * public class Interval {
@@ -190,16 +190,16 @@ class Solution {
 
 6 Maximum Subarray
 
-Given an integer array `nums`, find the contiguous subarray \(containing at least one number\) which has the largest sum and return its sum.
+Given an integer array `nums`, find the contiguous subarray (containing at least one number) which has the largest sum and return its sum.
 
 **Example:**
 
-```text
+```
 Input: [-2,1,-3,4,-1,2,1,-5,4],
 Output: 6
 ```
 
-```text
+```
 class Solution {
     public int maxSubArray(int[] a) {
          int maxSum = 0, thisSum = 0, max=a[0];
@@ -220,9 +220,9 @@ class Solution {
 
 7 Best Time to Buy and Sell Stock
 
-If you were only permitted to complete at most one transaction \(i.e., buy one and sell one share of the stock\), design an algorithm to find the maximum profit.
+If you were only permitted to complete at most one transaction (i.e., buy one and sell one share of the stock), design an algorithm to find the maximum profit.
 
-```text
+```
 class Solution {
     public int maxProfit(int[] prices) {
          if (prices.length == 0) {
@@ -244,14 +244,14 @@ class Solution {
 
 8 Product of Array Except Self
 
- Given an array `nums` of _n_ integers where _n_ &gt; 1,  return an array `output` such that `output[i]` is equal to the product of all the elements of `nums` except `nums[i]`.
+&#x20;Given an array `nums` of _n_ integers where _n_ > 1,  return an array `output` such that `output[i]` is equal to the product of all the elements of `nums` except `nums[i]`.
 
-```text
+```
 Input:  [1,2,3,4]
 Output: [24,12,8,6]
 ```
 
-```text
+```
 class Solution {
     public int[] productExceptSelf(int[] nums) {
         int len = nums.length;
@@ -280,13 +280,13 @@ class Solution {
 
 9 Container With Most Water
 
-Given n non-negative integers a1, a2, ..., an , where each represents a point at coordinate \(i, ai\). nvertical lines are drawn such that the two endpoints of line i is at \(i, ai\) and \(i, 0\). Find two lines, which together with x-axis forms a container, such that the container contains the most water.
+Given n non-negative integers a1, a2, ..., an , where each represents a point at coordinate (i, ai). nvertical lines are drawn such that the two endpoints of line i is at (i, ai) and (i, 0). Find two lines, which together with x-axis forms a container, such that the container contains the most water.
 
 **Note:** You may not slant the container and n is at least 2.
 
-![](https://s3-lc-upload.s3.amazonaws.com/uploads/2018/07/17/question_11.jpg)
+![](https://s3-lc-upload.s3.amazonaws.com/uploads/2018/07/17/question\_11.jpg)
 
-```text
+```
 class Solution {
     public int maxArea(int[] height) {
         int result = 0, left = 0, right = height.length - 1;
@@ -310,13 +310,13 @@ class Solution {
 
 Suppose an array sorted in ascending order is rotated at some pivot unknown to you beforehand.
 
-\(i.e., `[0,1,2,4,5,6,7]` might become `[4,5,6,7,0,1,2]`\).
+(i.e., `[0,1,2,4,5,6,7]` might become `[4,5,6,7,0,1,2]`).
 
 You are given a target value to search. If found in the array return its index, otherwise return `-1`.
 
 You may assume no duplicate exists in the array.
 
-```text
+```
 class Solution {
     public int search(int[] nums, int target) {
  if (nums == null || nums.length == 0) {
@@ -350,25 +350,25 @@ class Solution {
 
 Implement **next permutation**, which rearranges numbers into the lexicographically next greater permutation of numbers.
 
-If such arrangement is not possible, it must rearrange it as the lowest possible order \(ie, sorted in ascending order\).
+If such arrangement is not possible, it must rearrange it as the lowest possible order (ie, sorted in ascending order).
 
-The replacement must be [**in-place**](http://en.wikipedia.org/wiki/In-place_algorithm) and use only constant extra memory.
+The replacement must be [**in-place**](http://en.wikipedia.org/wiki/In-place\_algorithm) and use only constant extra memory.
 
 Here are some examples. Inputs are in the left-hand column and its corresponding outputs are in the right-hand column.
 
-`1,2,3` → `1,3,2`  
-`3,2,1` → `1,2,3`  
+`1,2,3` → `1,3,2`\
+`3,2,1` → `1,2,3`\
 `1,1,5` → `1,5,1`
 
 排列Arrangement是从N个不同元素中取出M个元素，当N == M时，就是全排列Permutation。如果能够知道下一个排列Next Permutation是什么，也就知道了全排列是什么。全排列的问题在算法上没有特别的，但是要理清思路，还得刻意练习才行。
 
-假如排列是{2,3,6,5,4,1}，求下一个排列的基本步骤是这样：  
-1\) 先从后往前看，找到第一个不是依次增长的数，记录下位置p。比如现在的例子就应该是3，对应的位置是p==1；现在在p位置的数字跟从后向前的数字进行比较_，_找到第一个比p位置的数大的数，然后两个调换位置，比如例子中的4。把3和4调换位置后得到{2,4,6,5,3,1}。最后把p之后的所有数字倒序，得到{2,4,1,3,5,6}，即是要求的下一个排列；  
-2\) 如果从后向前看的时候，上面的数字都是依次增长的，那么说明这是最后一个排列，下一个就是第一个，把所有数字翻转过来即可\(比如{6,5,4,3,2,1}下一个是{1,2,3,4,5,6}\)；
+假如排列是{2,3,6,5,4,1}，求下一个排列的基本步骤是这样：\
+1\) 先从后往前看，找到第一个不是依次增长的数，记录下位置p。比如现在的例子就应该是3，对应的位置是p==1；现在在p位置的数字跟从后向前的数字进行比较_，_找到第一个比p位置的数大的数，然后两个调换位置，比如例子中的4。把3和4调换位置后得到{2,4,6,5,3,1}。最后把p之后的所有数字倒序，得到{2,4,1,3,5,6}，即是要求的下一个排列；\
+2\) 如果从后向前看的时候，上面的数字都是依次增长的，那么说明这是最后一个排列，下一个就是第一个，把所有数字翻转过来即可(比如{6,5,4,3,2,1}下一个是{1,2,3,4,5,6})；
 
-最坏情况需要扫描数组三次，所以时间复杂度是O\(3\*n\)=O\(n\)，空间复杂度是O\(1\)。
+最坏情况需要扫描数组三次，所以时间复杂度是O(3\*n)=O(n)，空间复杂度是O(1)。
 
-```text
+```
 class Solution {
     public void nextPermutation(int[] nums) {
          if (nums == null || nums.length == 0) return;
@@ -401,13 +401,13 @@ class Solution {
 }
 ```
 
-1. 如果活细胞周围八个位置的活细胞数少于两个，则该位置活细胞死亡
+1\. 如果活细胞周围八个位置的活细胞数少于两个，则该位置活细胞死亡
 
-2. 如果活细胞周围八个位置有两个或三个活细胞，则该位置活细胞仍然存活
+2\. 如果活细胞周围八个位置有两个或三个活细胞，则该位置活细胞仍然存活
 
-3. 如果活细胞周围八个位置有超过三个活细胞，则该位置活细胞死亡
+3\. 如果活细胞周围八个位置有超过三个活细胞，则该位置活细胞死亡
 
-4. 如果死细胞周围正好有三个活细胞，则该位置死细胞复活
+4\. 如果死细胞周围正好有三个活细胞，则该位置死细胞复活
 
 要求计算给定的二维数组的下一个状态，在in-place位置更新，所以就不能新建一个相同大小的数组，只能更新原有数组，但是题目中要求所有的位置必须被同时更新，不能分批更新，但是在循环程序中我们还是一个位置一个位置更新的，那么当一个位置更新了，这个位置成为其他位置的neighbor时，我们怎么知道其未更新的状态呢，我们可以使用状态机转换：
 
@@ -421,7 +421,7 @@ class Solution {
 
 对所有状态对2取余，那么状态0和2就变成死细胞，状态1和3就是活细胞。因此先对原数组进行逐个扫描，对于每一个位置，扫描其周围八个位置，如果遇到状态1或2，就计数器累加1，扫完8个邻居，如果少于两个活细胞或者大于三个活细胞，而且当前位置是活细胞的话，标记状态2，而如果有三个活细胞且当前是死细胞的话，标记状态3。完成一遍扫描后再对数据扫描一遍，对2取余。
 
-```text
+```
 class Solution {
 	public void gameOfLife(int[][] board) {
 		if (board == null || board.length == 0 || board[0].length == 0) {
@@ -465,25 +465,25 @@ class Solution {
 
 Given an array of integers and an integer **k**, you need to find the total number of continuous subarrays whose sum equals to **k**.
 
-**Example 1:**  
+**Example 1:**\
 
 
-```text
+```
 Input:nums = [1,1,1], k = 2
 Output: 2
 ```
 
-**Note:**  
+**Note:**\
 
 
-1. The length of the array is in range \[1, 20,000\].
-2. The range of numbers in the array is \[-1000, 1000\] and the range of the integer **k** is \[-1e7, 1e7\].
+1. The length of the array is in range \[1, 20,000].
+2. The range of numbers in the array is \[-1000, 1000] and the range of the integer **k** is \[-1e7, 1e7].
 
 ### 题意和分析
 
-这道题是找到所有的子序列的个数，这些子序列的元素的和等于给定的一个target。暴力解法就是两层循环，所有的子序列都计算一遍，找到所有sum\[i, j\] = k的子序列，O\(n^2\)。
+这道题是找到所有的子序列的个数，这些子序列的元素的和等于给定的一个target。暴力解法就是两层循环，所有的子序列都计算一遍，找到所有sum\[i, j] = k的子序列，O(n^2)。
 
-我们需要找到sum\[i, j\]，如果我们知道sum\[0, i-1\]和sum\[0, j\]，这样一减就知道sum\[i, j\]是否等于k，换句话说，sum\[j\] - sum\[i\]的话，nums\[i, j\]之间数字的和就是k，比如sum\[j\]跟sum\[i\]一样，那么nums\[i, j\]这段加起来就是0。result += map.get\(sum - k\)这句比较难懂，这个意思是如果sum - k多次等于一个值，那么前面每一个nums\[i\]位置到这里的subarray都算是一个可计入记过的subarray，相当于是需要记得之前有多少个相同的值。
+我们需要找到sum\[i, j]，如果我们知道sum\[0, i-1]和sum\[0, j]，这样一减就知道sum\[i, j]是否等于k，换句话说，sum\[j] - sum\[i]的话，nums\[i, j]之间数字的和就是k，比如sum\[j]跟sum\[i]一样，那么nums\[i, j]这段加起来就是0。result += map.get(sum - k)这句比较难懂，这个意思是如果sum - k多次等于一个值，那么前面每一个nums\[i]位置到这里的subarray都算是一个可计入记过的subarray，相当于是需要记得之前有多少个相同的值。
 
 做法就是遍历这个数组，计算current的sum并且把所有的sum都存到一个HashMap里面。举例说明：
 
@@ -498,15 +498,15 @@ Array = {3,4,7,2,-3,1,4,2}，k= 7，如果遇到二者相减（sum - k）等于7
 * 第六次循环遇到1，map - {{0,1}, {3,1}, {7,1}, {14,**2**}, {16,1}, {13,1}}；sum - 14；result - 3；sum - k = 7；
 * 第七次循环遇到4，map - {{0,1}, {3,1}, {7,1}, {14,2}, {16,1}, {13,1}, {18,1}}；sum - 18；result - 3； sum - k = 11；
 * 第八次循环遇到2，map - {{0,1}, {3,1}, {7,1}, {14,2}, {16,1}, **{13,1}**, {18,1}, {**20,1**}}，sum - 20；result - 4；sum - k = 13；
-* 循环结束
+*   循环结束
 
-  
+    &#x20;&#x20;
 
-Time：O\(n\)；Space：O\(n\)。
+Time：O(n)；Space：O(n)。
 
 ### 代码
 
-暴力解法O\(n^2\)
+暴力解法O(n^2)
 
 ```java
 class Solution {
@@ -528,7 +528,7 @@ class Solution {
 }
 ```
 
-优化成O\(n\)的解法
+优化成O(n)的解法
 
 ```java
 class Solution {
@@ -549,11 +549,11 @@ class Solution {
 
 ### **原题概述**
 
-Given a matrix of _m_ x _n_ elements \(_m_ rows, _n_ columns\), return all elements of the matrix in spiral order.
+Given a matrix of _m_ x _n_ elements (_m_ rows, _n_ columns), return all elements of the matrix in spiral order.
 
 **Example 1:**
 
-```text
+```
 Input:
 [
  [ 1, 2, 3 ],
@@ -565,7 +565,7 @@ Output: [1,2,3,6,9,8,7,4,5]
 
 **Example 2:**
 
-```text
+```
 Input:
 [
   [1, 2, 3, 4],
@@ -636,7 +636,7 @@ The word can be constructed from letters of sequentially adjacent cell, where "a
 
 **Example:**
 
-```text
+```
 board =
 [
   ['A','B','C','E'],
@@ -655,7 +655,7 @@ Given word = "ABCB", return false.
 
 递归，回溯和DFS的区别
 
-> 递归是一种算法结构，回溯是一种算法思想 
+> 递归是一种算法结构，回溯是一种算法思想&#x20;
 >
 > 一个递归就是在函数中调用函数本身来解决问题 回溯就是通过不同的尝试来生成问题的解，有点类似于穷举，但是和穷举不同的是回溯会“剪枝”，意思就是对已经知道错误的结果没必要再枚举接下来的答案了，比如一个有序数列1,2,3,4,5，我要找和为5的所有集合，从前往后搜索我选了1，然后2，然后选3 的时候发现和已经大于预期，那么4,5肯定也不行，这就是一种对搜索过程的优化。
 >
@@ -663,7 +663,7 @@ Given word = "ABCB", return false.
 >
 > 为了减少存储空间，在深度优先搜索中，用标志的方法记录访问过的状态，这种处理方法使得深度优先搜索法与回溯法没什么区别了。
 
-如同上面的比较，DFS有两种经典的做法，一是用跟原本二维数组同等大小的数组来记录是否visited过，其中元素为boolean， 如果二维数组board的当前字符和目标字符串word对应的字符相等，则对其上下左右四个邻字符分别调用DFS的递归函数，只要有一个返回true，那么就表示可以找到对应的字符串，否则就不能找到；第二是对第一种做法空间上的优化，每次用一个char来记录当前二维数组里面的char，在递归调用前用一个特殊的字符，比如‘\#’，来代替当前字符说明已经检查过了，然后再递归调用后再改回来方便下次检查。
+如同上面的比较，DFS有两种经典的做法，一是用跟原本二维数组同等大小的数组来记录是否visited过，其中元素为boolean， 如果二维数组board的当前字符和目标字符串word对应的字符相等，则对其上下左右四个邻字符分别调用DFS的递归函数，只要有一个返回true，那么就表示可以找到对应的字符串，否则就不能找到；第二是对第一种做法空间上的优化，每次用一个char来记录当前二维数组里面的char，在递归调用前用一个特殊的字符，比如‘#’，来代替当前字符说明已经检查过了，然后再递归调用后再改回来方便下次检查。
 
 ### **代码**
 
@@ -763,7 +763,7 @@ You need to return the **least** number of intervals the CPU will take to finish
 
 **Example 1:**
 
-```text
+```
 Input: tasks = ["A","A","A","B","B","B"], n = 2
 Output: 8
 Explanation: A -> B -> idle -> A -> B -> idle -> A -> B.
@@ -771,8 +771,8 @@ Explanation: A -> B -> idle -> A -> B -> idle -> A -> B.
 
 **Note:**
 
-1. The number of tasks is in the range \[1, 10000\].
-2. The integer n is in the range \[0, 100\].
+1. The number of tasks is in the range \[1, 10000].
+2. The integer n is in the range \[0, 100].
 
 #### 题意和分析
 
@@ -820,7 +820,7 @@ Given a 2D binary matrix filled with 0's and 1's, find the largest rectangle con
 
 **Example:**
 
-```text
+```
 Input:
 [
   ["1","0","1","0","0"],
@@ -833,17 +833,17 @@ Output: 6
 
 ### 题意和分析
 
-The DP solution proceeds row by row, starting from the first row. Let the maximal rectangle area at row i and column j be computed by \[right\(i,j\) - left\(i,j\)\]\*height\(i,j\).
+The DP solution proceeds row by row, starting from the first row. Let the maximal rectangle area at row i and column j be computed by \[right(i,j) - left(i,j)]\*height(i,j).
 
 All the 3 variables left, right, and height can be determined by the information from previous row, and also information from the current row. So it can be regarded as a DP solution. The transition equations are:
 
-> left\(i,j\) = max\(left\(i-1,j\), cur\_left\), cur\_left can be determined from the current row
+> left(i,j) = max(left(i-1,j), cur\_left), cur\_left can be determined from the current row
 
-> right\(i,j\) = min\(right\(i-1,j\), cur\_right\), cur\_right can be determined from the current row
+> right(i,j) = min(right(i-1,j), cur\_right), cur\_right can be determined from the current row
 
-> height\(i,j\) = height\(i-1,j\) + 1, if matrix\[i\]\[j\]=='1';
+> height(i,j) = height(i-1,j) + 1, if matrix\[i]\[j]=='1';
 
-> height\(i,j\) = 0, if matrix\[i\]\[j\]=='0'
+> height(i,j) = 0, if matrix\[i]\[j]=='0'
 
 ### 代码
 
@@ -890,32 +890,32 @@ Given an unsorted integer array, find the smallest missing positive integer.
 
 **Example 1:**
 
-```text
+```
 Input: [1,2,0]
 Output: 3
 ```
 
 **Example 2:**
 
-```text
+```
 Input: [3,4,-1,1]
 Output: 2
 ```
 
 **Example 3:**
 
-```text
+```
 Input: [7,8,9,11,12]
 Output: 1
 ```
 
 **Note:**
 
-Your algorithm should run in _O_\(_n_\) time and uses constant extra space.
+Your algorithm should run in _O_(_n_) time and uses constant extra space.
 
 ### **题意和分析**
 
-给一个数组，返回第一个缺失的正数，要求线性时间复杂度O\(n\)和常量空间O\(1\)，因此一般的排序方法是不能用的，另外用空间也有要求所以利用额外空间例如HashMap和HashSet也不能用了；只能in-place来做，遍历数组，把1放到nums\[0\]处，把2放到nums\[1\]处，如果nums\[i\] &gt; 0（**负数和0不用管**），同时nums\[i\]为整数且不大于n（**因为缺失的第一个正数值最大就是数组的长度n，不可能超过**），同时nums\[i\]不等于nums\[nums\[i\] - 1\]的话（**桶排序的思想，对应的数字应该放在对应的位置上**），则交换nums\[i\]和nums\[nums\[i\] - 1\]的位置；然后再遍历一遍，遇到nums\[i\] != i + 1即为第一个缺失的正数。
+给一个数组，返回第一个缺失的正数，要求线性时间复杂度O(n)和常量空间O(1)，因此一般的排序方法是不能用的，另外用空间也有要求所以利用额外空间例如HashMap和HashSet也不能用了；只能in-place来做，遍历数组，把1放到nums\[0]处，把2放到nums\[1]处，如果nums\[i] > 0（**负数和0不用管**），同时nums\[i]为整数且不大于n（**因为缺失的第一个正数值最大就是数组的长度n，不可能超过**），同时nums\[i]不等于nums\[nums\[i] - 1]的话（**桶排序的思想，对应的数字应该放在对应的位置上**），则交换nums\[i]和nums\[nums\[i] - 1]的位置；然后再遍历一遍，遇到nums\[i] != i + 1即为第一个缺失的正数。
 
 ### **代码**
 
@@ -948,11 +948,11 @@ Given two sorted integer arrays _nums1_ and _nums2_, merge _nums2_ into _nums1_ 
 **Note:**
 
 * The number of elements initialized in _nums1_ and _nums2_ are _m_ and _n_ respectively.
-* You may assume that _nums1_ has enough space \(size that is greater or equal to _m_ + _n_\) to hold additional elements from _nums2_.
+* You may assume that _nums1_ has enough space (size that is greater or equal to _m_ + _n_) to hold additional elements from _nums2_.
 
 **Example:**
 
-```text
+```
 Input:
 nums1 = [1,2,3,0,0,0], m = 3
 nums2 = [2,5,6],       n = 3
@@ -964,7 +964,7 @@ Output: [1,2,2,3,5,6]
 
 两个排序好的数组nums1和nums2，按照顺序全部元素都放到第一个数组当中，保证装得下所以不用担心nums1数组空间的问题。大致的思路就是在nums1中最后一个位置开始（通过原先两个数组的参数代表有效长度，相加得来），把大的数填在后面，这样就不会覆盖nums1前面的数字了，注意别越界就行。
 
-Time：O\(m + n\)；Space：O\(1\)；
+Time：O(m + n)；Space：O(1)；
 
 这道题很有可能和[Merge Two Sorted Lists](https://guilindev.gitbook.io/interview/leetcode/ji-chu-shu-ju-jie-gou-zai-suan-fa-zhong-de-ying-yong/linkedlist/he-bing-liang-ge-you-xu-lie-biao)一起问。
 
@@ -999,7 +999,7 @@ Given an array `nums`, write a function to move all `0`'s to the end of it while
 
 **Example:**
 
-```text
+```
 Input: [0,1,0,3,12]
 Output: [1,3,12,0,0]
 ```
@@ -1034,15 +1034,15 @@ class Solution {
 
 You are given an _n_ x _n_ 2D matrix representing an image.
 
-Rotate the image by 90 degrees \(clockwise\).
+Rotate the image by 90 degrees (clockwise).
 
 **Note:**
 
-You have to rotate the image [**in-place**](https://en.wikipedia.org/wiki/In-place_algorithm), which means you have to modify the input 2D matrix directly. **DO NOT** allocate another 2D matrix and do the rotation.
+You have to rotate the image [**in-place**](https://en.wikipedia.org/wiki/In-place\_algorithm), which means you have to modify the input 2D matrix directly. **DO NOT** allocate another 2D matrix and do the rotation.
 
 **Example 1:**
 
-```text
+```
 Given input matrix = 
 [
   [1,2,3],
@@ -1060,7 +1060,7 @@ rotate the input matrix in-place such that it becomes:
 
 **Example 2:**
 
-```text
+```
 Given input matrix =
 [
   [ 5, 1, 9,11],
@@ -1082,11 +1082,11 @@ rotate the input matrix in-place such that it becomes:
 
 计算机里图片的本质是矩阵，旋转矩阵即是旋转图片，有很多方法可以旋转矩阵，我自己比较好理解的两种办法是：
 
-1）首先对原数组取其转置矩阵（行列互换），然后把每行的数字翻转可得到结果，如下所示\(其中蓝色数字表示翻转轴\)：
+1）首先对原数组取其转置矩阵（行列互换），然后把每行的数字翻转可得到结果，如下所示(其中蓝色数字表示翻转轴)：
 
 1  2  3　　　 　　 1  4  7　　　　　  7  4  1
 
-4  5  6　　--&gt;　　 2  5  8　　 --&gt;  　  8  5  2　　
+4  5  6　　-->　　 2  5  8　　 -->  　  8  5  2　　
 
 7  8  9 　　　 　　3  6  9　　　　      9  6  3
 
@@ -1094,7 +1094,7 @@ rotate the input matrix in-place such that it becomes:
 
 1  2  3　　　 　　 9  6  3　　　　　  7  4  1
 
-4  5  6　　--&gt;　　 8  5  2　　 --&gt;   　 8  5  2　　
+4  5  6　　-->　　 8  5  2　　 -->   　 8  5  2　　
 
 7  8  9 　　　 　　7  4  1　　　　　  9  6  3
 
@@ -1102,7 +1102,7 @@ rotate the input matrix in-place such that it becomes:
 
 1  2  3                 7  2  1                  7  4  1
 
-4  5  6      --&gt;      4  5  6　　 --&gt;  　 8  5  2　　
+4  5  6      -->      4  5  6　　 -->  　 8  5  2　　
 
 7  8  9                 9  8  3　　　　　 9  6  3
 
@@ -1162,18 +1162,18 @@ class Solution {
 
 22 Combination Sum
 
-Given _a_ **set** of candidate numbers \(`candidates`\) **\(without duplicates\)** and a target number \(`target`\), find all unique combinations in `candidates` where the candidate numbers sums to `target`.
+Given _a_ **set** of candidate numbers (`candidates`) **(without duplicates)** and a target number (`target`), find all unique combinations in `candidates` where the candidate numbers sums to `target`.
 
 The **same** repeated number may be chosen from `candidates` unlimited number of times.
 
 **Note:**
 
-* All numbers \(including `target`\) will be positive integers.
+* All numbers (including `target`) will be positive integers.
 * The solution set must not contain duplicate combinations.
 
 **Example 1:**
 
-```text
+```
 Input: candidates = [2,3,6,7], target = 7,
 A solution set is:
 [
@@ -1184,7 +1184,7 @@ A solution set is:
 
 **Example 2:**
 
-```text
+```
 Input: candidates = [2,3,5], target = 8,
 A solution set is:
 [
@@ -1196,7 +1196,7 @@ A solution set is:
 
 ### **题意和分析**
 
-给一个没有重复元素的数组，找出里面的元素加起来等于target的所有组合，原数组的元素可以利用多次。这种求所有组合的情况通常都是另外写一个方法来做递归求得（[这里是这类型题的总结](https://leetcode.com/problems/combination-sum/discuss/16502/A-general-approach-to-backtracking-questions-in-Java-%28Subsets-Permutations-Combination-Sum-Palindrome-Partitioning%29)）。
+给一个没有重复元素的数组，找出里面的元素加起来等于target的所有组合，原数组的元素可以利用多次。这种求所有组合的情况通常都是另外写一个方法来做递归求得（[这里是这类型题的总结](https://leetcode.com/problems/combination-sum/discuss/16502/A-general-approach-to-backtracking-questions-in-Java-\(Subsets-Permutations-Combination-Sum-Palindrome-Partitioning\))）。
 
 ### **代码**
 
@@ -1231,13 +1231,13 @@ class Solution {
 
 23 Max Area of Island
 
-Given a non-empty 2D array `grid` of 0's and 1's, an **island** is a group of `1`'s \(representing land\) connected 4-directionally \(horizontal or vertical.\) You may assume all four edges of the grid are surrounded by water.
+Given a non-empty 2D array `grid` of 0's and 1's, an **island** is a group of `1`'s (representing land) connected 4-directionally (horizontal or vertical.) You may assume all four edges of the grid are surrounded by water.
 
-Find the maximum area of an island in the given 2D array. \(If there is no island, the maximum area is 0.\)
+Find the maximum area of an island in the given 2D array. (If there is no island, the maximum area is 0.)
 
 **Example 1:**
 
-```text
+```
 [[0,0,1,0,0,0,0,1,0,0,0,0,0],
  [0,0,0,0,0,0,0,1,1,1,0,0,0],
  [0,1,1,0,1,0,0,0,0,0,0,0,0],
@@ -1252,7 +1252,7 @@ Given the above grid, return `6`. Note the answer is not 11, because the island 
 
 **Example 2:**
 
-```text
+```
 [[0,0,0,0,0,0,0,0]]
 ```
 
@@ -1292,7 +1292,7 @@ class Solution {
 
 24 Word Ladder II
 
-Given two words \(_beginWord_ and _endWord_\), and a dictionary's word list, find all shortest transformation sequence\(s\) from _beginWord_ to _endWord_, such that:
+Given two words (_beginWord_ and _endWord_), and a dictionary's word list, find all shortest transformation sequence(s) from _beginWord_ to _endWord_, such that:
 
 1. Only one letter can be changed at a time
 2. Each transformed word must exist in the word list. Note that _beginWord_ is _not_ a transformed word.
@@ -1307,7 +1307,7 @@ Given two words \(_beginWord_ and _endWord_\), and a dictionary's word list, fin
 
 **Example 1:**
 
-```text
+```
 Input:
 beginWord = "hit",
 endWord = "cog",
@@ -1322,7 +1322,7 @@ Output:
 
 **Example 2:**
 
-```text
+```
 Input:
 beginWord = "hit"
 endWord = "cog"
@@ -1333,7 +1333,7 @@ Output: []
 Explanation: The endWord "cog" is not in wordList, therefore no possible transformation.
 ```
 
-```text
+```
 The basic idea is:
 
 1). Use BFS to find the shortest distance between start and end, tracing the distance of crossing nodes from start node to end node, and store node's next level neighbors to HashMap;
@@ -1427,11 +1427,11 @@ private void dfs(String cur, String end, Set<String> dict, HashMap<String, Array
 
 Given an unsorted array of integers, find the length of the longest consecutive elements sequence.
 
-Your algorithm should run in O\(_n_\) complexity.
+Your algorithm should run in O(_n_) complexity.
 
 **Example:**
 
-```text
+```
 Input: [100, 4, 200, 1, 3, 2]
 Output: 4
 Explanation: The longest consecutive elements sequence is [1, 2, 3, 4]. Therefore its length is 4.
@@ -1439,9 +1439,9 @@ Explanation: The longest consecutive elements sequence is [1, 2, 3, 4]. Therefor
 
 ### **题意和分析**
 
-没有排序的数组里面寻找最长的子序列，要求时间复杂度是O\(n\)，没有空间复杂度的要求，于是可以用一个HashSet，把数组里面所有的元素放入到set里面，然后遍历数组，对每个元素都进行移除操作，同时用两个指针prev和next求出当前元素的构成连续数列的前面和后面一个数，继续检查prev和next是否在set中存在，如果存在就继续移除，最后用next - prev - 1（因为两个指针指向的元素在set中不存在的时候才停止移除，所以有-1），对每个元素都进行这样的操作后求出连续序列最大的。
+没有排序的数组里面寻找最长的子序列，要求时间复杂度是O(n)，没有空间复杂度的要求，于是可以用一个HashSet，把数组里面所有的元素放入到set里面，然后遍历数组，对每个元素都进行移除操作，同时用两个指针prev和next求出当前元素的构成连续数列的前面和后面一个数，继续检查prev和next是否在set中存在，如果存在就继续移除，最后用next - prev - 1（因为两个指针指向的元素在set中不存在的时候才停止移除，所以有-1），对每个元素都进行这样的操作后求出连续序列最大的。
 
- 也可以采用HashMap来做，刚开始map为空，然后遍历所有数组中的元素，如果该数字不在map中，那么分别检查前后两个数字是否在map中，如果在，则返回其哈希表中映射值，若不在，则返回0，将prev+next+1作为当前数字的映射，并更新result结果，然后更新num-left和num-right的映射值。
+&#x20;也可以采用HashMap来做，刚开始map为空，然后遍历所有数组中的元素，如果该数字不在map中，那么分别检查前后两个数字是否在map中，如果在，则返回其哈希表中映射值，若不在，则返回0，将prev+next+1作为当前数字的映射，并更新result结果，然后更新num-left和num-right的映射值。
 
 ### **代码**
 
@@ -1502,13 +1502,13 @@ class Solution {
 }
 ```
 
-26.  3 Sum Closest
+26\.  3 Sum Closest
 
 Given an array `nums` of _n_ integers and an integer `target`, find three integers in `nums` such that the sum is closest to `target`. Return the sum of the three integers. You may assume that each input would have exactly one solution.
 
 **Example:**
 
-```text
+```
 Given array nums = [-1, 2, 1, -4], and target = 1.
 
 The sum that is closest to the target is 2. (-1 + 2 + 1 = 2).
@@ -1518,7 +1518,7 @@ The sum that is closest to the target is 2. (-1 + 2 + 1 = 2).
 
 找到数组中的一个triplet三个数的和距离target的差值相比其它triplets来说是最小的，并返回这个triplet的和，因为不是返回所有可能的triplets，所以不需要去重了。这是上一道题的延伸，思路类似，先排序，然后确定一个index，剩下的两个indices两头扫描。
 
- 同样，时间复杂度: O\(nlogn\) + O\(n^2\) = O\(n^2\)；空间复杂度O\(n\)。
+&#x20;同样，时间复杂度: O(nlogn) + O(n^2) = O(n^2)；空间复杂度O(n)。
 
 ### 代码
 
@@ -1557,23 +1557,23 @@ class Solution {
 }
 ```
 
-27. Construct Binary Tree from Preorder and Inorder Traversal
+27\. Construct Binary Tree from Preorder and Inorder Traversal
 
 Given preorder and inorder traversal of a tree, construct the binary tree.
 
-**Note:**  
+**Note:**\
 You may assume that duplicates do not exist in the tree.
 
 For example, given
 
-```text
+```
 preorder = [3,9,20,15,7]
 inorder = [9,3,15,20,7]
 ```
 
 Return the following binary tree:
 
-```text
+```
     3
    / \
   9  20
@@ -1622,7 +1622,7 @@ class Solution {
 }
 ```
 
-28. Jump Game
+28\. Jump Game
 
 Given an array of non-negative integers, you are initially positioned at the first index of the array.
 
@@ -1632,7 +1632,7 @@ Determine if you are able to reach the last index.
 
 **Example 1:**
 
-```text
+```
 Input: [2,3,1,1,4]
 Output: true
 Explanation: Jump 1 step from index 0 to 1, then 3 steps to the last index.
@@ -1640,7 +1640,7 @@ Explanation: Jump 1 step from index 0 to 1, then 3 steps to the last index.
 
 **Example 2:**
 
-```text
+```
 Input: [3,2,1,0,4]
 Output: false
 Explanation: You will always arrive at index 3 no matter what. Its maximum
@@ -1649,9 +1649,9 @@ Explanation: You will always arrive at index 3 no matter what. Its maximum
 
 ### **题意和分析**
 
-这道题首先可以用DP， 维护一个一位数组dp，其中dp\[i\]表示达到i位置时剩余的步数，到达当前位置跟上一个位置（不是前一个位置）的剩余步数和数字（能达到的最远位置）有关，下一个位置的剩余步数（dp值）就等于当前的这个较大值减去1，因为需要花一个跳力到达下一个位置，所以状态转移方程：dp\[i\] = max\(dp\[i - 1\], nums\[i - 1\]\) - 1，如果当某一个时刻dp数组的值为负了，说明无法抵达当前位置，则直接返回false，最后判断**数**组最后一位是否为非负数即可知道是否能抵达该位置。
+这道题首先可以用DP， 维护一个一位数组dp，其中dp\[i]表示达到i位置时剩余的步数，到达当前位置跟上一个位置（不是前一个位置）的剩余步数和数字（能达到的最远位置）有关，下一个位置的剩余步数（dp值）就等于当前的这个较大值减去1，因为需要花一个跳力到达下一个位置，所以状态转移方程：dp\[i] = max(dp\[i - 1], nums\[i - 1]) - 1，如果当某一个时刻dp数组的值为负了，说明无法抵达当前位置，则直接返回false，最后判断**数**组最后一位是否为非负数即可知道是否能抵达该位置。
 
-Greedy的做法会更优，因为其实没有必要用维护一维数组的方式来对每一步的剩余步数进行关注，只知道是否能到达末尾就行了，只需维护一个变量reach，来记录当前步最远能到达的位置坐标，初始为0，遍历整个数组，如果当前的坐标大于reach或者reach已经到达最后一个位置或超出，就跳出循环；否则就更更新reach为当前reach的值和i + nums\[i\]中的较大值。
+Greedy的做法会更优，因为其实没有必要用维护一维数组的方式来对每一步的剩余步数进行关注，只知道是否能到达末尾就行了，只需维护一个变量reach，来记录当前步最远能到达的位置坐标，初始为0，遍历整个数组，如果当前的坐标大于reach或者reach已经到达最后一个位置或超出，就跳出循环；否则就更更新reach为当前reach的值和i + nums\[i]中的较大值。
 
 ### **代码**
 
@@ -1693,15 +1693,15 @@ class Solution {
 }
 ```
 
-29. Sub set
+29\. Sub set
 
-Given a set of **distinct** integers, _nums_, return all possible subsets \(the power set\).
+Given a set of **distinct** integers, _nums_, return all possible subsets (the power set).
 
 **Note:** The solution set must not contain duplicate subsets.
 
 **Example:**
 
-```text
+```
 Input: nums = [1,2,3]
 Output:
 [
@@ -1717,7 +1717,7 @@ Output:
 
 ```
 
-```text
+```
 backtracking:
 class Solution {
     public List<List<Integer>> subsets(int[] nums) {
@@ -1749,7 +1749,7 @@ You may imagine that `nums[-1] = nums[n] = -∞`.
 
 **Example 1:**
 
-```text
+```
 Input: nums = [1,2,3,1]
 Output: 2
 Explanation: 3 is a peak element and your function should return the index number 2.
@@ -1757,7 +1757,7 @@ Explanation: 3 is a peak element and your function should return the index numbe
 
 **Example 2:**
 
-```text
+```
 Input: nums = [1,2,1,3,5,6,4]
 Output: 1 or 5 
 Explanation: Your function can return either index number 1 where the peak element is 2, 
@@ -1766,9 +1766,9 @@ Explanation: Your function can return either index number 1 where the peak eleme
 
 ### 题意和分析
 
-这道题是求数组的一个峰值，这个峰值可以是局部的最大值，这里用遍历整个数组找最大值肯定会出现Time Limit Exceeded，比O\(n\)更加优化的自然就是O\(logn\)了，所以考虑使用类似于二分查找法来缩短时间，由于只是需要找到任意一个峰值，那么在确定二分查找折半后中间那个元素后，和紧跟的那个元素（右边）比较下大小，如果大于右边的数，则说明峰值在左边，如果小于则在右边。这样就可以至少找到一个峰值了，Time：O\(logn\), Space：O\(1\)。。 
+这道题是求数组的一个峰值，这个峰值可以是局部的最大值，这里用遍历整个数组找最大值肯定会出现Time Limit Exceeded，比O(n)更加优化的自然就是O(logn)了，所以考虑使用类似于二分查找法来缩短时间，由于只是需要找到任意一个峰值，那么在确定二分查找折半后中间那个元素后，和紧跟的那个元素（右边）比较下大小，如果大于右边的数，则说明峰值在左边，如果小于则在右边。这样就可以至少找到一个峰值了，Time：O(logn), Space：O(1)。。&#x20;
 
-另外一种更简单的解法：由于题目中说明了局部峰值是存在的，那么实际上可以从第二个数字开始往后遍历，如果第二个数字比第一个数字小，说明此时第一个数字就是一个局部峰值；否则就往后继续遍历，现在是个递增趋势，如果此时某个数字小于前面那个数字，说明前面数字就是一个局部峰值，返回位置即可。如果循环结束了，说明原数组是个递增数组，返回最后一个位置即可，这是最坏结果，Time：O\(n\), Space：O\(1\)。
+另外一种更简单的解法：由于题目中说明了局部峰值是存在的，那么实际上可以从第二个数字开始往后遍历，如果第二个数字比第一个数字小，说明此时第一个数字就是一个局部峰值；否则就往后继续遍历，现在是个递增趋势，如果此时某个数字小于前面那个数字，说明前面数字就是一个局部峰值，返回位置即可。如果循环结束了，说明原数组是个递增数组，返回最后一个位置即可，这是最坏结果，Time：O(n), Space：O(1)。
 
 ### 代码
 
@@ -1811,4 +1811,3 @@ class Solution {
     }
 }
 ```
-

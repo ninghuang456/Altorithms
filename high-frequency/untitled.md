@@ -8,15 +8,15 @@ For example, in `alice@leetcode.com`, `alice` is the local name, and `leetcode.c
 
 Besides lowercase letters, these emails may contain `'.'`s or `'+'`s.
 
-If you add periods \(`'.'`\) between some characters in the **local name** part of an email address, mail sent there will be forwarded to the same address without dots in the local name.  For example, `"alice.z@leetcode.com"` and `"alicez@leetcode.com"` forward to the same email address.  \(Note that this rule does not apply for domain names.\)
+If you add periods (`'.'`) between some characters in the **local name** part of an email address, mail sent there will be forwarded to the same address without dots in the local name.  For example, `"alice.z@leetcode.com"` and `"alicez@leetcode.com"` forward to the same email address.  (Note that this rule does not apply for domain names.)
 
-If you add a plus \(`'+'`\) in the **local name**, everything after the first plus sign will be **ignored**. This allows certain emails to be filtered, for example `m.y+name@email.com` will be forwarded to `my@email.com`.  \(Again, this rule does not apply for domain names.\)
+If you add a plus (`'+'`) in the **local name**, everything after the first plus sign will be **ignored**. This allows certain emails to be filtered, for example `m.y+name@email.com` will be forwarded to `my@email.com`.  (Again, this rule does not apply for domain names.)
 
 It is possible to use both of these rules at the same time.
 
-Given a list of `emails`, we send one email to each address in the list.  How many different addresses actually receive mails? 
+Given a list of `emails`, we send one email to each address in the list.  How many different addresses actually receive mails?&#x20;
 
-```text
+```
 class Solution {
     public int numUniqueEmails(String[] emails) {
         if (emails == null || emails.length == 0) return 0;
@@ -33,13 +33,13 @@ class Solution {
 }
 ```
 
-2. Longest Palindromic Substring
+2\. Longest Palindromic Substring
 
 Given a string **s**, find the longest palindromic substring in **s**. You may assume that the maximum length of **s** is 1000.
 
 **Example 1:**
 
-```text
+```
 Input: "babad"
 Output: "bab"
 Note: "aba" is also a valid answer.
@@ -47,12 +47,12 @@ Note: "aba" is also a valid answer.
 
 **Example 2:**
 
-```text
+```
 Input: "cbbd"
 Output: "bb"
 ```
 
-```text
+```
 class Solution {
      private int lo, maxLen;
 
@@ -88,7 +88,7 @@ Given a string, find the length of the **longest substring** without repeating c
 
 **Example 1:**
 
-```text
+```
 Input: "abcabcbb"
 Output: 3 
 Explanation: The answer is "abc", with the length of 3. 
@@ -96,7 +96,7 @@ Explanation: The answer is "abc", with the length of 3.
 
 **Example 2:**
 
-```text
+```
 Input: "bbbbb"
 Output: 1
 Explanation: The answer is "b", with the length of 1.
@@ -104,14 +104,14 @@ Explanation: The answer is "b", with the length of 1.
 
 **Example 3:**
 
-```text
+```
 Input: "pwwkew"
 Output: 3
 Explanation: The answer is "wke", with the length of 3. 
              Note that the answer must be a substring, "pwke" is a subsequence and not a substring.
 ```
 
-```text
+```
 class Solution {
     public int lengthOfLongestSubstring(String s) {
           if (s.length() == 0) {
@@ -145,19 +145,19 @@ Note that an empty string is also considered valid.
 
 **Example 1:**
 
-```text
+```
 Input: "()"
 Output: true
 ```
 
 **Example 2:**
 
-```text
+```
 Input: "()[]{}"
 Output: true
 ```
 
-```text
+```
 class Solution {
     public boolean isValid(String s) {
         if (s.length() == 0) {
@@ -196,11 +196,11 @@ class Solution {
 
 6.Minimum Window Substring
 
-Given a string S and a string T, find the minimum window in S which will contain all the characters in T in complexity O\(n\).
+Given a string S and a string T, find the minimum window in S which will contain all the characters in T in complexity O(n).
 
 **Example:**
 
-```text
+```
 Input: S = "ADOBECODEBANC", T = "ABC"
 Output: "BANC"
 ```
@@ -210,9 +210,9 @@ Output: "BANC"
 * If there is no such window in S that covers all characters in T, return the empty string `""`.
 * If there is such window, you are guaranteed that there will always be only one unique minimum window in S.
 
-class Solution { public String minWindow\(String s, String t\) { if\(t.length\(\)&gt; s.length\(\)\) return ""; Map map = new HashMap&lt;&gt;\(\); for\(char c : t.toCharArray\(\)\){ map.put\(c, map.getOrDefault\(c,0\) + 1\); } int counter = map.size\(\);
+class Solution { public String minWindow(String s, String t) { if(t.length()> s.length()) return ""; Map map = new HashMap<>(); for(char c : t.toCharArray()){ map.put(c, map.getOrDefault(c,0) + 1); } int counter = map.size();
 
-```text
+```
 class Solution {
     public String minWindow(String s, String t) {
         if(t.length()> s.length()) return "";
@@ -255,8 +255,6 @@ class Solution {
     }
 }
 ```
-
-
 
 
 

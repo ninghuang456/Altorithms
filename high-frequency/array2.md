@@ -1,6 +1,6 @@
 # Array2
 
-31. Jump Game II
+31\. Jump Game II
 
 Given an array of non-negative integers, you are initially positioned at the first index of the array.
 
@@ -10,14 +10,14 @@ Your goal is to reach the last index in the minimum number of jumps.
 
 **Example:**
 
-```text
+```
 Input: [2,3,1,1,4]
 Output: 2
 Explanation: The minimum number of jumps to reach the last index is 2.
     Jump 1 step from index 0 to 1, then 3 steps to the last index.
 ```
 
-```text
+```
 class Solution {
     public int jump(int[] nums) {
         int step = 0;
@@ -43,12 +43,12 @@ The function twoSum should return indices of the two numbers such that they add 
 
 **Note:**
 
-* Your returned answers \(both index1 and index2\) are not zero-based.
+* Your returned answers (both index1 and index2) are not zero-based.
 * You may assume that each input would have _exactly_ one solution and you may not use the _same_ element twice.
 
 **Example:**
 
-```text
+```
 Input: numbers = [2,7,11,15], target = 9
 Output: [1,2]
 Explanation: The sum of 2 and 7 is 9. Therefore index1 = 1, index2 = 2.
@@ -58,11 +58,11 @@ Explanation: The sum of 2 and 7 is 9. Therefore index1 = 1, index2 = 2.
 
 是上一道题1-2Sum的变种，按照第二种办法先排序再两个指针找的情况，因为input是sorted的数组，所以连排序都不用了，而且也不用一个额外的数组来存排序之前的indices，相比之下是更简单了。
 
-Time：O\(n\)，Space：O\(1\)。
+Time：O(n)，Space：O(1)。
 
 的当然，跟上一道题一样，也可以用HashMap来解，无论输入的array是否sorted,
 
-Time: O\(n\),  Space: O\(n\)
+Time: O(n),  Space: O(n)
 
 ### 代码
 
@@ -101,7 +101,7 @@ The solution set must not contain duplicate quadruplets.
 
 **Example:**
 
-```text
+```
 Given array nums = [1, 0, -1, 0, -2, 2], and target = 0.
 
 A solution set is:
@@ -116,7 +116,7 @@ A solution set is:
 
 找到Quadruplets的四个数，加起来等于target的值，思路跟3Sum一样，再在外面套一层循环，最后的解决方案不能有重复，所以依然得去重。
 
-时间复杂度: O\(nlogn\) + O\(n^3\)  = O\(n^3\)；空间复杂度O\(n\)。
+时间复杂度: O(nlogn) + O(n^3)  = O(n^3)；空间复杂度O(n)。
 
 ### 代码
 
@@ -169,28 +169,28 @@ Given an array containing n distinct numbers taken from `0, 1, 2, ..., n`, find 
 
 **Example 1:**
 
-```text
+```
 Input: [3,0,1]
 Output: 2
 ```
 
 **Example 2:**
 
-```text
+```
 Input: [9,6,4,2,3,5,7,0,1]
 Output: 8
 ```
 
-**Note**:  
+**Note**:\
 Your algorithm should run in linear runtime complexity. Could you implement it using only constant extra space complexity?
 
 ### 题意和分析
 
-给一个未排序的数组，里面有n个数字，范围从0到n\(本来有n+1个数字\)，找到缺失的那个数，要求线型时间复杂度和常数空间。
+给一个未排序的数组，里面有n个数字，范围从0到n(本来有n+1个数字)，找到缺失的那个数，要求线型时间复杂度和常数空间。
 
-我们可以用等差数列的求和公司n \* \(n - 1\) / 2求得一个值Sum，然后遍历整个数组，将每个元素值从Sum里面减掉，最后剩下的数字就是缺失的数字。
+我们可以用等差数列的求和公司n \* (n - 1) / 2求得一个值Sum，然后遍历整个数组，将每个元素值从Sum里面减掉，最后剩下的数字就是缺失的数字。
 
-这里我们还是用位操作异或XOR来做，因为0到n之间少了一个数，因为 a^b^b =a，异或两次等于原来的数，将这个少了一个数的数组和0到n之间完整的数组异或XOR一下，那么相同的数字都变为0了，最后剩下的就是缺失了的那个数字了。比如5==101 ^ 6==110 == 011；数组\[0,1,3,4\]，result初始为4，循环的值分别为4^0^0=4，4^1^1=4，4^2^3=5，5^3^4=2，最后2作为缺失的数字返回。
+这里我们还是用位操作异或XOR来做，因为0到n之间少了一个数，因为 a^b^b =a，异或两次等于原来的数，将这个少了一个数的数组和0到n之间完整的数组异或XOR一下，那么相同的数字都变为0了，最后剩下的就是缺失了的那个数字了。比如5==101 ^ 6==110 == 011；数组\[0,1,3,4]，result初始为4，循环的值分别为4^0^0=4，4^1^1=4，4^2^3=5，5^3^4=2，最后2作为缺失的数字返回。
 
 ### 代码
 
@@ -206,7 +206,7 @@ class Solution {
 }
 ```
 
-面试中有可能给定的数组是排好序的，那么就用二分查找法来做，找出中间元素nums\[mid\]的下标mid，然后用元素值nums\[mid\]和下标值mid之间做对比，如果元素值大于下标值，则说明缺失的数字在左边，此时将right赋为mid，反之则将left赋为mid+1。
+面试中有可能给定的数组是排好序的，那么就用二分查找法来做，找出中间元素nums\[mid]的下标mid，然后用元素值nums\[mid]和下标值mid之间做对比，如果元素值大于下标值，则说明缺失的数字在左边，此时将right赋为mid，反之则将left赋为mid+1。
 
 35 Summary Ranges
 
@@ -214,7 +214,7 @@ Given a sorted integer array without duplicates, return the summary of its range
 
 **Example 1:**
 
-```text
+```
 Input:  [0,1,2,4,5,7]
 Output: ["0->2","4->5","7"]
 Explanation: 0,1,2 form a continuous range; 4,5 form a continuous range.
@@ -222,7 +222,7 @@ Explanation: 0,1,2 form a continuous range; 4,5 form a continuous range.
 
 **Example 2:**
 
-```text
+```
 Input:  [0,2,3,4,6,8,9]
 Output: ["0","2->4","6","8->9"]
 Explanation: 2,3,4 form a continuous range; 8,9 form a continuous range.
@@ -230,7 +230,7 @@ Explanation: 2,3,4 form a continuous range; 8,9 form a continuous range.
 
 ### **题意和分析**
 
-这道题的思路比较简单，从左边找到右边即可，注意判断一下如果是连续的元素就用"-&gt;"，否则就是元素自己，注意下边界就行。
+这道题的思路比较简单，从左边找到右边即可，注意判断一下如果是连续的元素就用"->"，否则就是元素自己，注意下边界就行。
 
 ### **代码**
 
@@ -259,12 +259,12 @@ class Solution {
 
 Given a non-empty array of non-negative integers `nums`, the **degree** of this array is defined as the maximum frequency of any one of its elements.
 
-Your task is to find the smallest possible length of a \(contiguous\) subarray of `nums`, that has the same degree as `nums`.
+Your task is to find the smallest possible length of a (contiguous) subarray of `nums`, that has the same degree as `nums`.
 
-**Example 1:**  
+**Example 1:**\
 
 
-```text
+```
 Input: [1, 2, 2, 3, 1]
 Output: 2
 Explanation: 
@@ -274,10 +274,10 @@ Of the subarrays that have the same degree:
 The shortest length is 2. So return 2.
 ```
 
-**Example 2:**  
+**Example 2:**\
 
 
-```text
+```
 Input: [1,2,2,3,1,4,2]
 Output: 6
 ```
@@ -325,36 +325,36 @@ class Solution {
 
 37.Find the Duplicate Number
 
-Given an array nums containing n + 1 integers where each integer is between 1 and n \(inclusive\), prove that at least one duplicate number must exist. Assume that there is only one duplicate number, find the duplicate one.
+Given an array nums containing n + 1 integers where each integer is between 1 and n (inclusive), prove that at least one duplicate number must exist. Assume that there is only one duplicate number, find the duplicate one.
 
 **Example 1:**
 
-```text
+```
 Input: [1,3,4,2,2]
 Output: 2
 ```
 
 **Example 2:**
 
-```text
+```
 Input: [3,1,3,4,2]
 Output: 3
 ```
 
 **Note:**
 
-1. You **must not** modify the array \(assume the array is read only\).
-2. You must use only constant, O\(1\) extra space.
-3. Your runtime complexity should be less than _O_\(_n_2\).
+1. You **must not** modify the array (assume the array is read only).
+2. You must use only constant, O(1) extra space.
+3. Your runtime complexity should be less than _O_(_n_2).
 4. There is only one duplicate number in the array, but it could be repeated more than once.
 
 ### **题意和分析**
 
 n+1长度的数组，找出唯一的那个有重复的数字，可能重复多次，不能修改数组并要求常量空间和小于平方级线型时间复杂度（不能用额外空间来统计出现的次数，不能排序，也不能套两个循环来暴力破解）。
 
-1）二分查找，利用数组的元素的值在区间\[1, n\]的特点进行搜索，首先求出中间的索引mid，然后遍历整个数组，统计所有小于等于索引mid的元素的个数，如果元素个数大于mid索引，则说明重复值在\[mid+1, n\]这些索引之间，因为“较小的数比较多”，反之，重复值应在\[1, mid-1\]之间（“较大的数比较多”），然后依次类推，直到搜索完成，此时的low就是我们要求的重复值；
+1）二分查找，利用数组的元素的值在区间\[1, n]的特点进行搜索，首先求出中间的索引mid，然后遍历整个数组，统计所有小于等于索引mid的元素的个数，如果元素个数大于mid索引，则说明重复值在\[mid+1, n]这些索引之间，因为“较小的数比较多”，反之，重复值应在\[1, mid-1]之间（“较大的数比较多”），然后依次类推，直到搜索完成，此时的low就是我们要求的重复值；
 
-2）双指针，数组元素的范围是\[1, n\]，利用数组元素和坐标的转换来形成一个闭环，利用快慢指针找到重复的值，参考[这里](http://bookshadow.com/weblog/2015/09/28/leetcode-find-duplicate-number/)[这里](https://leetcode.com/problems/find-the-duplicate-number/discuss/72845/Java-O%28n%29-time-and-O%281%29-space-solution.-Similar-to-find-loop-in-linkedlist.)。
+2）双指针，数组元素的范围是\[1, n]，利用数组元素和坐标的转换来形成一个闭环，利用快慢指针找到重复的值，参考[这里](http://bookshadow.com/weblog/2015/09/28/leetcode-find-duplicate-number/)[这里](https://leetcode.com/problems/find-the-duplicate-number/discuss/72845/Java-O\(n\)-time-and-O\(1\)-space-solution.-Similar-to-find-loop-in-linkedlist.)。
 
 ### **代码**
 
@@ -404,11 +404,11 @@ class Solution {
 
 38 Maximum Product Subarray
 
-Given an integer array `nums`, find the contiguous subarray within an array \(containing at least one number\) which has the largest product.
+Given an integer array `nums`, find the contiguous subarray within an array (containing at least one number) which has the largest product.
 
 **Example 1:**
 
-```text
+```
 Input: [2,3,-2,4]
 Output: 6
 Explanation: [2,3] has the largest product 6.
@@ -416,7 +416,7 @@ Explanation: [2,3] has the largest product 6.
 
 **Example 2:**
 
-```text
+```
 Input: [-2,0,-1]
 Output: 0
 Explanation: The result cannot be 2, because [-2,-1] is not a subarray.
@@ -473,7 +473,7 @@ Given a _m_ x _n_ grid filled with non-negative numbers, find a path from top le
 
 **Example:**
 
-```text
+```
 Input:
 [
   [1,3,1],
@@ -486,7 +486,7 @@ Explanation: Because the path 1→3→1→1→1 minimizes the sum.
 
 ### **题意和分析**
 
-给一个二维数组，从左上到右下找一条经过的元素加起来最小的path，返回所有元素加起来的和。全局最优，用DP， dp\[i\]\[j\] = grid\[i\]\[j\] + min\(dp\[i - 1\]\[j\]\)，所有路径经过的元素之和等于当前元素的值加上上一个可到达的元素的总和最小值。
+给一个二维数组，从左上到右下找一条经过的元素加起来最小的path，返回所有元素加起来的和。全局最优，用DP， dp\[i]\[j] = grid\[i]\[j] + min(dp\[i - 1]\[j])，所有路径经过的元素之和等于当前元素的值加上上一个可到达的元素的总和最小值。
 
 ### **代码**
 
@@ -518,4 +518,3 @@ class Solution {
     }
 }
 ```
-
