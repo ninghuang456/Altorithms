@@ -336,3 +336,50 @@ class Solution {
     }
 }
 ```
+
+## 297: Serialize and Deserialize Binary Tree
+
+```java
+public class Codec {
+    // Encodes a tree to a single string.
+    public String spliter = ",";
+    public String nulval = "null";
+    public String serialize(TreeNode root) {
+        StringBuilder sb = new StringBuilder();
+        if(root == null) return sb.append(nulval).toString();
+        serializeHelper(root,sb);
+        return sb.toString();
+    }
+    
+    public void serializeHelper(TreeNode node, StringBuilder sb) {
+        if(node == null) {
+            sb.append(nulval).append(spliter);
+            return;
+        }
+        sb.append(node.val).append(spliter);
+        serializeHelper(node.left, sb);
+        serializeHelper(node.right, sb);
+    }
+
+    // Decodes your encoded data to tree.
+    public TreeNode deserialize(String data) {
+        Queue<String> queue = new LinkedList<>();
+        queue.addAll(Arrays.asList(data.split(spliter)));
+        return deserializeHelper(queue);
+        
+    }
+    public TreeNode deserializeHelper(Queue<String> queue) {
+        String cur = queue.poll();
+        if (cur.equals(nulval)) {
+            return null;
+        } 
+        TreeNode node = new TreeNode(Integer.valueOf(cur));
+        node.left = deserializeHelper(queue);
+        node.right = deserializeHelper(queue);
+        return node; 
+    }
+}
+
+```
+
+}
