@@ -33,4 +33,4 @@
 * [Karat Design](karat-design.md)
 * [MicroSoft](microsoft.md)
 * [Linkedin 1 \~ 50](linkedin-1-50.md)
-* [Linkedin 50\~100](linkedin-50-100.md)
+* [Linkedin 100 \~ 70](linkedin-100-70.md)
