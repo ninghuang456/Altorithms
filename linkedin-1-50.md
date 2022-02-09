@@ -558,3 +558,132 @@ class Solution {
     }
 }
 ```
+
+## 671 Second Minimum Node In a Binary Tree
+
+Given a non-empty special binary tree consisting of nodes with the non-negative value, where each node in this tree has exactly `two` or `zero` sub-node. If the node has two sub-nodes, then this node's value is the smaller value among its two sub-nodes. More formally, the property `root.val = min(root.left.val, root.right.val)` always holds.
+
+Given such a binary tree, you need to output the **second minimum** value in the set made of all the nodes' value in the whole tree.
+
+If no such second minimum value exists, output -1 instead.
+
+&#x20;
+
+**Example 1:**
+
+![](https://assets.leetcode.com/uploads/2020/10/15/smbt1.jpg)
+
+```java
+class Solution {
+    // 定义：输入一棵二叉树，返回这棵二叉树中第二小的节点值
+    public int findSecondMinimumValue(TreeNode root) {
+        if (root.left == null && root.right == null) {
+            return -1;
+        }
+        // 左右子节点中不同于 root.val 的那个值可能是第二小的值
+        int left = root.left.val, right = root.right.val;
+        // 如果左右子节点都等于 root.val，则去左右子树递归寻找第二小的值
+        if (root.val == root.left.val) {
+            left = findSecondMinimumValue(root.left);
+        }
+        if (root.val == root.right.val) {
+            right = findSecondMinimumValue(root.right);
+        }
+        if (left == -1) {
+            return right;
+        }
+        if (right == -1) {
+            return left;
+        }
+        // 如果左右子树都找到一个第二小的值，更小的那个是整棵树的第二小元素
+        return Math.min(left, right);
+    }
+}
+```
+
+## 150 Evaluate Reverse Polish Notation
+
+
+
+Evaluate the value of an arithmetic expression in [Reverse Polish Notation](http://en.wikipedia.org/wiki/Reverse\_Polish\_notation).
+
+Valid operators are `+`, `-`, `*`, and `/`. Each operand may be an integer or another expression.
+
+**Note** that division between two integers should truncate toward zero.
+
+It is guaranteed that the given RPN expression is always valid. That means the expression would always evaluate to a result, and there will not be any division by zero operation.
+
+```java
+Input: tokens = ["2","1","+","3","*"]
+Output: 9
+Explanation: ((2 + 1) * 3) = 9
+ava
+class Solution {
+   public  int evalRPN(String[] tokens) {
+        Stack<Integer> st = new Stack<>();
+        for (int i = 0; i < tokens.length; i ++) {
+          //  if("+-*/".contains(tokens[i])){
+            if(tokens[i].equals("+")  || tokens[i].equals("-")  || tokens[i].equals("*" )  || tokens[i].equals("/")){
+                int num2 = st.pop();
+                int num1 = st.pop();
+                int cur = getNum(num1, num2, tokens[i]);
+                st.push(cur);
+            } else {
+                st.push(Integer.parseInt(tokens[i]));
+            }
+        }
+        return st.pop();
+    }
+
+    public  int getNum(int num1, int num2, String operator){
+        switch(operator){
+            case "+":
+                return num1 + num2;
+            case "-":
+                return num1 - num2;
+            case "*":
+                return num1 * num2;
+            case "/":
+                return num1 / num2;
+            default :
+                return 0;
+        }
+    }
+}
+
+```
+
+## 53 Maximum Subarray
+
+Given an integer array `nums`, find the contiguous subarray (containing at least one number) which has the largest sum and return _its sum_.
+
+A **subarray** is a **contiguous** part of an array.
+
+```java
+Input: nums = [-2,1,-3,4,-1,2,1,-5,4]
+Output: 6
+Explanation: [4,-1,2,1] has the largest sum = 6.
+
+class Solution {
+int maxSubArray(int[] nums) {
+    int n = nums.length;
+    if (n == 0) return 0;
+    int[] dp = new int[n];
+    // base case
+    // 第一个元素前面没有子数组
+    dp[0] = nums[0];
+    // 状态转移方程
+    for (int i = 1; i < n; i++) {
+        dp[i] = Math.max(nums[i], nums[i] + dp[i - 1]);
+    }
+    // 得到 nums 的最大子数组
+    int res = Integer.MIN_VALUE;
+    for (int i = 0; i < n; i++) {
+        res = Math.max(res, dp[i]);
+    }
+    return res;
+  }
+}
+
+```
+
