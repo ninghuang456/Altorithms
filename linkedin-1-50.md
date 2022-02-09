@@ -870,3 +870,409 @@ class Solution {
     }
 }
 ```
+
+## 277 Find the Celebrity
+
+Suppose you are at a party with `n` people labeled from `0` to `n - 1` and among them, there may exist one celebrity. The definition of a celebrity is that all the other `n - 1` people know the celebrity, but the celebrity does not know any of them.
+
+Now you want to find out who the celebrity is or verify that there is not one. The only thing you are allowed to do is ask questions like: "Hi, A. Do you know B?" to get information about whether A knows B. You need to find out the celebrity (or verify there is not one) by asking as few questions as possible (in the asymptotic sense).
+
+You are given a helper function `bool knows(a, b)` that tells you whether A knows B. Implement a function `int findCelebrity(n)`. There will be exactly one celebrity if they are at the party.
+
+Return _the celebrity's label if there is a celebrity at the party_. If there is no celebrity, return `-1`.
+
+![](https://assets.leetcode.com/uploads/2022/01/19/g1.jpg)
+
+```
+Input: graph = [[1,1,0],[0,1,0],[1,1,1]]
+Output: 1
+Explanation: There are three persons labeled with 0, 1 and 2. 
+graph[i][j] = 1 means person i knows person j,
+ otherwise graph[i][j] = 0 means person i does not know person j. 
+ The celebrity is the person labeled as 1 because both 0 and 2 know him 
+ but 1 does not know anybody.
+ 
+ 
+```
+
+```java
+public class Solution extends Relation {
+    public int findCelebrity(int n) {
+        if (n < 0) {
+            return -1;
+        } 
+        
+        // 找到出度为0的人，也就是不认识任何别人的人
+        int candidate = 0;
+        for (int i = 0; i < n; i++) {
+            if (knows(candidate, i)) {
+                candidate = i;
+            }
+        }
+        
+        // 看看是不是所有人都认识他 和 是否他不认识所有人
+        for (int i = 0; i < n; i++) {
+            if (i != candidate) { // 自己不和自己比较
+                if (!knows(i, candidate)) { // 有人不认识他
+                    return -1;
+                }
+                if (knows(candidate, i)) {// 他认识某人
+                    return -1;
+                }
+            }
+        }
+        return candidate;
+    }
+}
+```
+
+## 20 Valid Parentheses
+
+```
+Input: s = "()[]{}"
+Output: true
+
+class Solution {
+    public boolean isValid(String s) {
+        if (s == null || s.length() == 0) return true;
+        Stack<Character> stack = new Stack<>();
+        for (char c : s.toCharArray()){
+            if (c == '(' || c == '{' || c == '['){
+                stack.push(c);
+            }
+            if (stack.isEmpty()) return false;
+            if ((c == ')' && stack.pop() != '(') ||
+                (c == '}' && stack.pop() != '{') ||
+                (c == ']' && stack.pop() != '[') ) {
+                return false;
+            }
+        }
+        if (!stack.isEmpty()) return false;
+        return true;
+    }
+}
+```
+
+## 235 Lowest Common Ancestor of a Binary Search Tree
+
+```java
+
+class Solution {
+    public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
+        if(root.val > p.val && root.val > q.val){
+            return lowestCommonAncestor(root.left, p, q);
+        }else if(root.val < p.val && root.val < q.val){
+            return lowestCommonAncestor(root.right, p, q);
+        }else{
+            return root;
+        }
+        
+    }
+}
+```
+
+## 215 Kth Largest Element in an Array
+
+```
+class Solution {
+    public int findKthLargest(int[] nums, int k) {
+
+     PriorityQueue<Integer> pq = new PriorityQueue<>();
+    for(int val : nums) {
+        pq.offer(val);
+        if(pq.size() > k) {
+            pq.poll();
+        }
+    }
+    return pq.peek();
+}
+}
+```
+
+## 200 Number of islands
+
+```
+class Solution {
+    public int numIslands(char[][] grid) {
+        int[][] directions = {{-1, 0}, {0, -1}, {1, 0}, {0, 1}};
+        int r = grid.length;
+        int c = grid[0].length;
+        boolean[] marked = new boolean[r * c];
+        int count = 0;
+        for (int i = 0; i < r; i ++) {
+            for (int j = 0; j < c; j ++) {
+             if (!marked[i * c + j] && grid[i][j] == '1') {
+                 count++;
+                 int index = i * c + j;
+                 LinkedList<Integer> queue = new LinkedList<>();
+                 queue.offer(index);
+                 marked[i * c + j] = true;
+                 while (!queue.isEmpty()) {
+                     int cur = queue.poll();
+                     int curX = cur / c;
+                     int curY = cur % c;
+                     for (int k = 0; k < 4; k ++) {
+                        int nextX = curX + directions[k][0];
+                        int  nextY = curY + directions[k][1];
+                         if (inArea(r,c,nextX, nextY) && grid[nextX][nextY] == '1' && !marked[nextX * c + nextY]){
+                             queue.offer(nextX * c + nextY);
+                             marked[nextX * c + nextY] = true;
+                         }
+                     }
+                 }   
+             } 
+            }
+        }
+        
+        return count;
+        
+    }
+    
+    public boolean inArea(int r, int c, int i, int j) {
+        return i >= 0 && i < r && j >= 0 && j < c;
+    }
+}
+```
+
+```
+class Solution {
+    int[][] dis = new int[][]{{-1, 0}, {0, -1}, {0, 1}, {1, 0}};
+    public int numIslands(char[][] grid) {
+        if (grid == null || grid.length == 0) return 0;
+        int total = 0;
+        for (int r = 0; r < grid.length; r ++) {
+            for (int c = 0; c < grid[0].length; c++) {
+                if (grid[r][c] == '1') {
+                    searchArea(grid, r , c);
+                    total ++;
+                }
+            }
+        }
+        return total;
+    }
+    
+    private void searchArea(char[][] grid, int r, int c){
+        if(!inArea(grid,r,c)){
+            return;
+        }
+        if(grid[r][c] != '1'){
+            return;
+        }
+        grid[r][c] = '2';
+        for (int i = 0; i < 4; i ++){
+            int nextR = r + dis[i][0];
+            int nextC = c + dis[i][1];
+            searchArea(grid, nextR, nextC);
+        }
+            
+        
+    }
+    
+    private boolean inArea(char[][] grid, int r, int c){
+        return r >= 0 && r < grid.length && c >= 0 && c < grid[0].length;
+    }
+}
+```
+
+```
+public class Solution {
+       int[][] distance = {{1,0},{-1,0},{0,1},{0,-1}};
+    public int numIslands(char[][] grid) {  
+        if (grid == null || grid.length == 0 || grid[0].length == 0)  {
+            return 0;  
+        }
+        UnionFind uf = new UnionFind(grid);  
+        int rows = grid.length;  
+        int cols = grid[0].length;  
+        for (int i = 0; i < rows; i++) {  
+            for (int j = 0; j < cols; j++) {  
+                if (grid[i][j] == '1') {  
+                    for (int[] d : distance) {
+                        int x = i + d[0];
+                        int y = j + d[1];
+                        if (x >= 0 && x < rows && y >= 0 && y < cols && grid[x][y] == '1') {  
+                            int id1 = i*cols+j;
+                            int id2 = x*cols+y;
+                            uf.union(id1, id2);  
+                        }  
+                    }  
+                }  
+            }  
+        }  
+        return uf.count;  
+    }
+    
+    class UnionFind {
+        int[] father;  
+        int m, n;
+        int count = 0;
+        UnionFind(char[][] grid) {  
+            m = grid.length;  
+            n = grid[0].length;  
+            father = new int[m*n];  
+            for (int i = 0; i < m; i++) {  
+                for (int j = 0; j < n; j++) {  
+                    if (grid[i][j] == '1') {
+                        int id = i * n + j;
+                        father[id] = id;
+                        count++;
+                    }
+                }  
+            }  
+        }
+        public void union(int node1, int node2) {  
+            int find1 = find(node1);
+            int find2 = find(node2);
+            if(find1 != find2) {
+                father[find1] = find2;
+                count--;
+            }
+        }
+        public int find (int node) {  
+            if (father[node] == node) {  
+                return node;
+            }
+            father[node] = find(father[node]);  
+            return father[node];
+        }
+    }
+}
+
+```
+
+## 104 Maximum Depth of Binary Tree
+
+```
+class Solution {
+    public int maxDepth(TreeNode root) {   
+        return (root == null) ? 0 : 
+        (1 + Math.max(maxDepth(root.left), maxDepth(root.right)));  
+    }
+}
+```
+
+## 636 Exclusive Time of Functions
+
+```java
+// Some code
+class Solution {
+        public int[] exclusiveTime(int n, List<String> logs) {
+            Deque<Log> stack = new ArrayDeque<>();
+            int[] result = new int[n];
+            for (String content : logs) {
+                Log log = new Log(content);
+                if (log.isStart) {
+                    stack.push(log);
+                } else {
+                    Log top = stack.pop();
+                    result[top.id] += (log.time - top.time + 1 - top.subDuration);
+                    if (!stack.isEmpty()) {
+                        stack.peek().subDuration += (log.time - top.time + 1);
+                    }
+                }
+            }
+            return result;
+        }
+
+        public static class Log {
+            public int id;
+            public boolean isStart;
+            public int time;
+            public int subDuration;
+
+            public Log(String content) {
+                String[] strs = content.split(":");
+                id = Integer.valueOf(strs[0]);
+                isStart = strs[1].equals("start");
+                time = Integer.valueOf(strs[2]);
+                subDuration = 0;
+            }
+        }
+}
+```
+
+## 102 Binary Tree Level Order Traversal
+
+```java
+// Some code
+class Solution {
+    public List<List<Integer>> levelOrder(TreeNode root) {
+        List<List<Integer>> res = new ArrayList<>();
+        if(root == null) return res;
+        Queue<TreeNode> queue = new LinkedList<>();
+        queue.offer(root);
+        
+        while(!queue.isEmpty()) {
+            int size = queue.size();
+            List<Integer> curLevel = new ArrayList<>();
+            for(int i = 0; i < size; i ++){
+                TreeNode cur = queue.poll();
+                curLevel.add(cur.val);
+                if(cur.left != null) queue.offer(cur.left);
+                if(cur.right != null) queue.offer(cur.right);
+            }
+            res.add(curLevel);
+        }
+        
+        return res;
+        
+    }
+}
+```
+
+127 Word Ladder
+
+
+
+A **transformation sequence** from word `beginWord` to word `endWord` using a dictionary `wordList` is a sequence of words `beginWord -> s1 -> s2 -> ... -> sk` such that:
+
+* Every adjacent pair of words differs by a single letter.
+* Every `si` for `1 <= i <= k` is in `wordList`. Note that `beginWord` does not need to be in `wordList`.
+* `sk == endWord`
+
+Given two words, `beginWord` and `endWord`, and a dictionary `wordList`, return _the **number of words** in the **shortest transformation sequence** from_ `beginWord` _to_ `endWord`_, or_ `0` _if no such sequence exists._
+
+```java
+Input: beginWord = "hit", endWord = "cog",
+ wordList = ["hot","dot","dog","lot","log","cog"]
+Output: 5
+Explanation: One shortest transformation
+ sequence is "hit" -> "hot" -> "dot" -> "dog" -> cog", which is 5 words long.
+ 
+ class Solution {
+    public int ladderLength(String beginWord, String endWord, 
+                            List<String> wordList) {
+         HashSet<String> wordSet = new HashSet<>(wordList);
+         if(!wordSet.contains(endWord)) return 0;
+         Queue<String> queue = new LinkedList<>();
+         HashSet<String> visited = new HashSet<>();
+         queue.offer(beginWord);
+         visited.add(beginWord);
+         int steps = 0;
+         while (!queue.isEmpty()){
+             steps ++;
+             int size = queue.size();
+             for (int i = 0; i < size; i ++){
+                 String word = queue.poll();
+                if(word.equals(endWord)) return steps;
+                 for (int j = 0; j < word.length(); j ++){
+                     char[] letters = word.toCharArray();
+                     for (char l = 'a'; l <= 'z'; l ++){
+                         letters[j] = l;
+                         String nextWord = new String(letters);
+                  if(!visited.contains(nextWord) && wordSet.contains(nextWord)){
+                             queue.offer(nextWord);
+                             visited.add(nextWord);
+                         }
+                     }
+                 }
+             }
+         }
+         return 0;    
+         
+        
+    }
+}
+```
+
+##
