@@ -1,4 +1,4 @@
-# Linkedin 1 \~ 25
+# Linkedin 1 \~ 50
 
 ## 244 Shortest Word Distance II
 
@@ -1220,7 +1220,7 @@ class Solution {
 }
 ```
 
-## 127 Word Ladder
+127 Word Ladder
 
 
 
