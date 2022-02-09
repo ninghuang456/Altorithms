@@ -379,7 +379,182 @@ public class Codec {
         return node; 
     }
 }
+}
 
 ```
 
+## 366 Find Leaves of Binary Tree
+
+
+
+Given the `root` of a binary tree, collect a tree's nodes as if you were doing this:
+
+* Collect all the leaf nodes.
+* Remove all the leaf nodes.
+* Repeat until the tree is empty.
+
+**Example 1:**
+
+![](https://assets.leetcode.com/uploads/2021/03/16/remleaves-tree.jpg)
+
+```
+Input: root = [1,2,3,4,5]
+Output: [[4,5,3],[2],[1]]
+Explanation:
+[[3,5,4],[2],[1]] and [[3,4,5],[2],[1]] are also considered correct answers since per each level it does not matter the order on which elements are returned.
+```
+
+```
+class Solution {
+    
+    List<List<Integer>> res = new ArrayList<>();
+    HashMap<Integer, List<Integer>> map = new HashMap<>();
+    
+    public List<List<Integer>> findLeaves(TreeNode root) {
+        if(root == null) return res;
+        findMaxDistance(root);
+        for(int i = 0; i < map.size(); i ++){
+            res.add(map.get(i));
+        }
+        return res;
+    }
+    
+    public int findMaxDistance(TreeNode root){
+        if(root == null) return -1;
+        int left = findMaxDistance(root.left);
+        int right = findMaxDistance(root.right);
+        int cur = Math.max(left, right) + 1;
+        if(!map.containsKey(cur)){
+            List<Integer> curLevel = new ArrayList<>();
+            curLevel.add(root.val);
+            map.put(cur, curLevel);
+        } else {
+            map.get(cur).add(root.val);
+        }
+        
+        return cur;
+        
+    }
 }
+```
+
+## 380 Insert Delete GetRandom O(1)
+
+Implement the `RandomizedSet` class:
+
+* `RandomizedSet()` Initializes the `RandomizedSet` object.
+* `bool insert(int val)` Inserts an item `val` into the set if not present. Returns `true` if the item was not present, `false` otherwise.
+* `bool remove(int val)` Removes an item `val` from the set if present. Returns `true` if the item was present, `false` otherwise.
+* `int getRandom()` Returns a random element from the current set of elements (it's guaranteed that at least one element exists when this method is called). Each element must have the **same probability** of being returned.
+
+You must implement the functions of the class such that each function works in **average** `O(1)` time complexity.
+
+**Example 1:**
+
+```
+Input
+["RandomizedSet", "insert", "remove", "insert", "getRandom", "remove", "insert", "getRandom"]
+[[], [1], [2], [2], [], [1], [2], []]
+Output
+[null, true, false, true, 2, true, false, 2]
+```
+
+\
+
+
+```
+public class RandomizedSet {
+    ArrayList<Integer> nums;
+    HashMap<Integer, Integer> locs;
+    java.util.Random rand = new java.util.Random();
+    /** Initialize your data structure here. */
+    public RandomizedSet() {
+        nums = new ArrayList<Integer>();
+        locs = new HashMap<Integer, Integer>();
+    }
+    
+    /** Inserts a value to the set. Returns true if the set did not already contain the specified element. */
+    public boolean insert(int val) {
+        boolean contain = locs.containsKey(val);
+        if ( contain ) return false;
+        locs.put( val, nums.size());
+        nums.add(val);
+        return true;
+    }
+    
+    /** Removes a value from the set. Returns true if the set contained the specified element. */
+    public boolean remove(int val) {
+        boolean contain = locs.containsKey(val);
+        if ( ! contain ) return false;
+        int loc = locs.get(val);
+        if (loc < nums.size() - 1 ) { // not the last one than swap the last one with this val
+            int lastone = nums.get(nums.size() - 1 );
+            nums.set( loc , lastone );
+            locs.put(lastone, loc);
+        }
+        locs.remove(val);
+        nums.remove(nums.size() - 1);
+        return true;
+    }
+    
+    /** Get a random element from the set. */
+    public int getRandom() {
+        return nums.get( rand.nextInt(nums.size()) );
+    }
+}
+```
+
+## 2040 Kth Smallest Product of Two Sorted Arrays
+
+Given two **sorted 0-indexed** integer arrays `nums1` and `nums2` as well as an integer `k`, return _the_ `kth` _(**1-based**) smallest product of_ `nums1[i] * nums2[j]` _where_ `0 <= i < nums1.length` _and_ `0 <= j < nums2.length`.
+
+```
+Input: nums1 = [2,5], nums2 = [3,4], k = 2
+Output: 8
+Explanation: The 2 smallest products are:
+- nums1[0] * nums2[0] = 2 * 3 = 6
+- nums1[0] * nums2[1] = 2 * 4 = 8
+The 2nd smallest product is 8.
+```
+
+```java
+class Solution {
+    static long INF = (long) 1e10;
+    public long kthSmallestProduct(int[] nums1, int[] nums2, long k) {
+        int m = nums1.length, n = nums2.length;
+        long lo = -INF - 1, hi = INF + 1;
+        while (lo < hi) {            
+            long mid = lo + ((hi - lo) >> 1), cnt = 0;
+            for (int i : nums1) {
+                if (0 <= i) {
+                    int l = 0, r = n - 1, p = 0;
+                    while (l <= r) {
+                        int c = l + ((r - l) >> 1);
+                        long mul = i * (long) nums2[c];
+                        if (mul <= mid) {
+                            p = c + 1;
+                            l = c + 1;
+                        } else r = c - 1;
+                    }
+                    cnt += p;
+                } else {
+                    int l = 0, r = n - 1, p = 0;
+                    while (l <= r) {
+                        int c = l + ((r - l) >> 1);
+                        long mul = i * (long) nums2[c];
+                        if (mul <= mid) {
+                            p = n - c;
+                            r = c - 1;
+                        } else l = c + 1;
+                    }
+                    cnt += p;
+                }
+            }
+            if (cnt >= k) {
+                hi = mid;
+            } else lo = mid + 1L;
+        }
+        return lo;
+    }
+}
+```
