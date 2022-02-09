@@ -332,3 +332,199 @@ Output: "c"
     }
    }
 ```
+
+## 101 Symmetric Tree
+
+```java
+// Some code
+class Solution {
+ public boolean isSymmetric(TreeNode root) {
+    return root==null || isSymmetricHelp(root.left, root.right);
+}
+
+private boolean isSymmetricHelp(TreeNode left, TreeNode right){
+    if(left==null && right==null) return true;
+    if(left == null || right == null) return false;
+    if(left.val!=right.val) return false;
+    return isSymmetricHelp(left.left, right.right) 
+        && isSymmetricHelp(left.right, right.left);
+}
+}
+```
+
+## 151 Reverse Words in a String
+
+Given an input string `s`, reverse the order of the **words**.
+
+A **word** is defined as a sequence of non-space characters. The **words** in `s` will be separated by at least one space.
+
+Return _a string of the words in reverse order concatenated by a single space._
+
+**Note** that `s` may contain leading or trailing spaces or multiple spaces between two words. The returned string should only have a single space separating the words. Do not include any extra spaces.
+
+```java
+Input: s = "the sky is blue"
+Output: "blue is sky the"
+class Solution {
+    public String reverseWords(String s) {
+        if (s == null || s.length() == 0 || s.trim().isEmpty()) return "";
+        String[] strs = s.trim().split(" ");
+        int i = 0; int j = strs.length - 1;
+        while (i < j){
+            String temp = strs[i];
+            strs[i ++] = strs[j];
+            strs[j --] = temp;
+        }
+       StringBuilder sb = new StringBuilder();
+       for (String str: strs){
+           if(!str.trim().isEmpty()){
+               sb.append(str).append(" "); 
+           }
+       } 
+       return sb.toString().trim(); 
+    }
+}
+```
+
+## 61 Rotate List
+
+
+
+Given the `head` of a linked list, rotate the list to the right by `k` places.
+
+**Example 1:**
+
+![](https://assets.leetcode.com/uploads/2020/11/13/rotate1.jpg)
+
+```java
+Input: head = [1,2,3,4,5], k = 2
+Output: [4,5,1,2,3]
+class Solution {
+    public ListNode rotateRight(ListNode head, int k) {
+        if(head == null || head.next == null) return head;
+        ListNode fast = head; int len = 1;
+        while(fast.next!=null){
+            len++;
+            fast = fast.next;
+        }
+        int move = k % len;
+        if(move == 0) return head;
+        
+        ListNode slow = head;
+        for(int i = 0; i < len - move -1 ; i ++){
+          slow = slow.next;
+        }
+        
+        fast.next = head;
+        ListNode resNode = slow.next;
+        slow.next = null;
+        return resNode;    
+    }
+}
+```
+
+## 46 Permutations
+
+```java
+class Solution {
+    public List<List<Integer>> permute(int[] nums) {
+        List<List<Integer>> res = new LinkedList<>();
+        if (nums == null || nums.length == 0) return res;
+        Deque<Integer> temp = new LinkedList<>();
+        permuteHelper(res, temp, nums, 0);
+        return res;
+    }
+    
+    public void permuteHelper( List<List<Integer>> res, Deque<Integer> temp, int[] nums, int start){
+        if (temp.size() == nums.length){
+            res.add(new LinkedList(temp));
+            return;
+        }
+        
+        for (int i = 0; i < nums.length; i ++) {
+            if (temp.contains(nums[i])) continue;
+            temp.addLast(nums[i]);
+            permuteHelper(res, temp, nums, i);
+            temp.removeLast();
+        } 
+    }
+}
+```
+
+## 128 Longest Consecutive Sequence
+
+
+
+Given an unsorted array of integers `nums`, return _the length of the longest consecutive elements sequence._
+
+You must write an algorithm that runs in `O(n)` time.
+
+```java
+Input: nums = [100,4,200,1,3,2]
+Output: 4
+Explanation: The longest consecutive elements sequence is [1, 2, 3, 4]. 
+Therefore its length is 4.
+
+class Solution {
+    public int longestConsecutive(int[] nums) {
+        if (nums == null || nums.length == 0) {
+            return 0;
+        }
+        HashMap<Integer, Integer> map = new HashMap<>(); //k-v: 元素 - 元素位置
+        int[] parent = new int[nums.length];
+        
+        for (int i = 0; i < nums.length; i++) {
+            parent[i] = i;
+            if (map.containsKey(nums[i])) {// 先把所有元素设为自己的leader，顺便除重
+                continue;
+            }
+            map.put(nums[i], i);
+        }
+        
+        for (int i = 0; i < nums.length; i++) {
+            // 遇到相邻的元素，并且leader不一样，做union操作
+            if (map.containsKey(nums[i] - 1) && 
+            find(i, parent) != find(map.get(nums[i] - 1), parent)) {
+                union(i, map.get(nums[i] - 1), parent);
+            }
+            if (map.containsKey(nums[i] + 1) && 
+            find(i, parent) != find(map.get(nums[i] + 1), parent)) {
+                union(i, map.get(nums[i] + 1), parent);
+            }
+        }
+        
+        // 找到parent中value最多的元素，代表某老大出现的次数最多，因此该集团的成员最多
+        int maxLen = 0;
+        int[] count = new int[parent.length];
+        for (int val : map.values()) {
+            count[find(val, parent)]++;
+            maxLen = Math.max(maxLen, count[parent[val]]);
+        }
+        return maxLen;
+    }
+    
+    // 以下为Union Find代码，
+    private int find(int p, int[] parent) {
+        if (p == parent[p]) {
+            return parent[p];
+        }
+        parent[p] = find(parent[p], parent); // 路径压缩，到最终leader
+        /**路径压缩的迭代写法
+        while (p != parent[p]) {
+            parent[p] = parent[parent[p]];
+            p = parent[p];
+        }
+        */
+        return parent[p];
+    }
+    private void union(int p, int q, int[] parent) {
+        int f1 = find(p, parent);
+        int f2 = find(q, parent);
+        if (f1 != f2) {
+            parent[f1] = f2;
+        }
+    }
+}
+ 
+```
+
