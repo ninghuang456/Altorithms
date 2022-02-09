@@ -687,3 +687,186 @@ int maxSubArray(int[] nums) {
 
 ```
 
+## 65 Valid Number
+
+
+
+A **valid number** can be split up into these components (in order):
+
+1. A **decimal number** or an **integer**.
+2. (Optional) An `'e'` or `'E'`, followed by an **integer**.
+
+A **decimal number** can be split up into these components (in order):
+
+1. (Optional) A sign character (either `'+'` or `'-'`).
+2.  One of the following formats:
+
+    1. One or more digits, followed by a dot `'.'`.
+    2. One or more digits, followed by a dot `'.'`, followed by one or more digits.
+    3. A dot `'.'`, followed by one or more digits.
+
+    An **integer** can be split up into these components (in order):
+
+    1. (Optional) A sign character (either `'+'` or `'-'`).
+    2. One or more digits.
+
+```java
+将字符串以 e/E 进行分割后，其实规则十分简单：
+如果存在 e/E ：左侧可以「整数」或「浮点数」，右侧必须是「整数」
+如果不存在 e/E ：整段可以是「整数」或「浮点数」
+关键在于如何实现一个 check 函数用于判断「整数」或「浮点数」：
+
++/- 只能出现在头部
+. 最多出现一次
+至少存在一个数字
+
+
+class Solution {
+    public boolean isNumber(String s) {
+        int n = s.length();
+        char[] cs = s.toCharArray();
+        int idx = -1;
+        for (int i = 0; i < n; i++) {
+            if (cs[i] == 'e' || cs[i] == 'E') {
+                if (idx == -1) idx = i;
+                else return false;
+            }
+        }
+        boolean ans = true;
+        if (idx != -1) {
+            ans &= check(cs, 0, idx - 1, false);
+            ans &= check(cs, idx + 1, n - 1, true);
+        } else {
+            ans &= check(cs, 0, n - 1, false);
+        }
+        return ans;
+    }
+    boolean check(char[] cs, int start, int end, boolean mustInteger) {
+        if (start > end) return false;
+        if (cs[start] == '+' || cs[start] == '-') start++;
+        boolean hasDot = false, hasNum = false;
+        for (int i = start; i <= end; i++) {
+            if (cs[i] == '.') {
+                if (mustInteger || hasDot) return false;
+                hasDot = true;
+            } else if (cs[i] >= '0' && cs[i] <= '9') {
+                hasNum = true;
+            } else {
+                return false;
+            }
+        }
+        return hasNum;
+    }
+}
+
+
+```
+
+## 341 Flatten Nested List Iterator
+
+
+
+ou are given a nested list of integers `nestedList`. Each element is either an integer or a list whose elements may also be integers or other lists. Implement an iterator to flatten it.
+
+Implement the `NestedIterator` class:
+
+* `NestedIterator(List<NestedInteger> nestedList)` Initializes the iterator with the nested list `nestedList`.
+* `int next()` Returns the next integer in the nested list.
+* `boolean hasNext()` Returns `true` if there are still some integers in the nested list and `false` otherwise.
+
+Your code will be tested with the following pseudocode:
+
+```
+initialize iterator with nestedList
+res = []
+while iterator.hasNext()
+    append iterator.next() to the end of res
+return res
+```
+
+If `res` matches the expected flattened list, then your code will be judged as correct.
+
+```java
+Input: nestedList = [[1,1],2,[1,1]]
+Output: [1,1,2,1,1]
+Explanation: By calling next repeatedly until hasNext
+ returns false, the order of elements returned by next should be: [1,1,2,1,1].
+ 
+ public class NestedIterator implements Iterator<Integer> {
+    private List<Integer> listIterator;
+    private int index;
+
+    public NestedIterator(List<NestedInteger> nestedList) {
+        listIterator = getListIterator(nestedList);
+        index = 0;
+    }
+
+    @Override
+    public Integer next() {
+        if (hasNext()){
+            Integer val = listIterator.get(index ++);
+            return val;
+        }
+        return null;
+    }
+
+    @Override
+    public boolean hasNext() {
+        return index  < listIterator.size();
+        
+        
+    }
+    
+    public static List<Integer> getListIterator(List<NestedInteger> nestedList) {
+        ArrayList<Integer> res = new ArrayList<>();
+        for (NestedInteger val : nestedList) {
+            if (val.isInteger()) {
+                res.add(val.getInteger());
+            } else {
+                res.addAll(getListIterator(val.getList()));
+            }
+        }
+        return res;
+    }
+    
+}
+```
+
+## 33 Search in Rotated Sorted Array
+
+There is an integer array `nums` sorted in ascending order (with **distinct** values).
+
+Prior to being passed to your function, `nums` is **possibly rotated** at an unknown pivot index `k` (`1 <= k < nums.length`) such that the resulting array is `[nums[k], nums[k+1], ..., nums[n-1], nums[0], nums[1], ..., nums[k-1]]` (**0-indexed**). For example, `[0,1,2,4,5,6,7]` might be rotated at pivot index `3` and become `[4,5,6,7,0,1,2]`.
+
+Given the array `nums` **after** the possible rotation and an integer `target`, return _the index of_ `target` _if it is in_ `nums`_, or_ `-1` _if it is not in_ `nums`.
+
+You must write an algorithm with `O(log n)` runtime complexity.
+
+```java
+class Solution { 
+        public int search(int[] nums, int target) {
+        if (nums == null || nums.length == 0){return -1;}
+        int start = 0;
+        int end = nums.length - 1;
+        int mid;
+        while (start <= end) {
+             mid = start + (end - start) /2;
+            if (nums[mid] == target) {return mid;}
+            if (nums[start] <= nums[mid]){
+                if(target >= nums[start] && target < nums[mid]){
+                    end = mid - 1;
+                } else {
+                    start = mid + 1;
+                }
+            } else {
+                if(target <= nums[end] && nums[mid] < target ){
+                    start = mid + 1;
+                } else {
+                    end = mid - 1;
+                }
+            }
+        }
+        return -1;
+    }
+}
+```
