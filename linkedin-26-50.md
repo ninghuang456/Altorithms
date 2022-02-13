@@ -702,3 +702,53 @@ class Solution {
 }
 
 ```
+
+## 261 Graph Valid Tree
+
+You have a graph of `n` nodes labeled from `0` to `n - 1`. You are given an integer n and a list of `edges` where `edges[i] = [ai, bi]` indicates that there is an undirected edge between nodes `ai` and `bi` in the graph.
+
+Return `true` _if the edges of the given graph make up a valid tree, and_ `false` _otherwise_.
+
+**Example 1:**
+
+![](https://assets.leetcode.com/uploads/2021/03/12/tree1-graph.jpg)
+
+```java
+Input: n = 5, edges = [[0,1],[0,2],[0,3],[1,4]]
+Output: true
+
+class Solution {
+    
+    public List<List<String>> printTree(TreeNode root) {
+        int height = height(root,1);
+        int len = (int)Math.pow(2,height) - 1;
+        List<List<String>> list = new ArrayList<>();
+        for(int i = 0;i<height;i++){
+            List<String> tempList = new ArrayList<>();
+            for(int j = 0;j<len ;j++)
+                tempList.add("");
+            list.add(new ArrayList(tempList));
+        }
+        setTree(list,root,0,len - 1,height,0);
+        return list;
+    }
+    
+    private int height(TreeNode root,int level){
+        if(root == null) return level - 1;
+        return Math.max(height(root.left,level + 1),
+                        height(root.right, level + 1));
+    }
+    
+    private void setTree(List<List<String>> list, TreeNode root,
+    int left, int right, int height,int level){
+        if(height == level || root == null) return;
+        int mid = left + (right - left)/2; //    Here is the mid
+        list.get(level).set(mid,String.valueOf(root.val));
+        setTree(list,root.left,left,mid - 1,height,level+ 1);
+        setTree(list,root.right,mid + 1,right,height,level+1);
+    }
+}
+
+
+```
+
