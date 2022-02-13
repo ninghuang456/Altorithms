@@ -317,8 +317,52 @@ class Solution {
     }
 }
 
+```
 
+## 152 Maximum Product Subarray
 
+Given an integer array `nums`, find a contiguous non-empty subarray within the array that has the largest product, and return _the product_.
 
+The test cases are generated so that the answer will fit in a **32-bit** integer.
+
+A **subarray** is a contiguous subsequence of the array.
+
+```java
+Input: nums = [2,3,-2,4]
+Output: 6
+Explanation: [2,3] has the largest product 6.
+这题是求数组中子区间的最大乘积，对于乘法，我们需要注意，负数乘以负数，会变成正数，
+所以解这题的时候我们需要维护两个变量，当前的最大值，以及最小值，最小值可能为负数，
+但没准下一步乘以一个负数，当前的最大值就变成最小值，而最小值则变成最大值了。
+我们的动态方程可能这样：
+maxDP[i + 1] = max(maxDP[i] * A[i + 1], A[i + 1],minDP[i] * A[i + 1])
+minDP[i + 1] = min(minDP[i] * A[i + 1], A[i + 1],maxDP[i] * A[i + 1])
+dp[i + 1] = max(dp[i], maxDP[i + 1])
+
+这里，我们还需要注意元素为0的情况，如果A[i]为0，那么maxDP和minDP都为0，
+我们需要从A[i + 1]重新开始。
+
+class Solution {
+    public int maxProduct(int[] nums) {
+        if(nums.length == 0)
+            return 0;
+        int ans = nums[0];
+        //两个mDP分别定义为以i结尾的子数组的最大积与最小积；
+        int[] maxDP = new int[nums.length];
+        int[] minDP = new int[nums.length];
+        //初始化DP；
+        maxDP[0] = nums[0]; minDP[0] = nums[0];
+
+        for(int i = 1; i < nums.length; i++){
+            //最大积的可能情况有：元素i自己本身，上一个最大积与i元素累乘，上一个最小积与i元素累乘；
+            //与i元素自己进行比较是为了处理i元素之前全都是0的情况；
+            maxDP[i] = Math.max(nums[i], Math.max(maxDP[i-1]*nums[i], minDP[i-1]*nums[i]));
+            minDP[i] = Math.min(nums[i], Math.min(maxDP[i-1]*nums[i], minDP[i-1]*nums[i]));
+            //记录ans；
+            ans = Math.max(ans, maxDP[i]);
+        }
+        return ans;
+    }
+}
 
 ```
