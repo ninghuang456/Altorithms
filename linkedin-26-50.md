@@ -366,3 +366,58 @@ class Solution {
 }
 
 ```
+
+## 256 Factor Combinations
+
+Numbers can be regarded as the product of their factors.
+
+* For example, `8 = 2 x 2 x 2 = 2 x 4`.
+
+Given an integer `n`, return _all possible combinations of its factors_. You may return the answer in **any order**.
+
+**Note** that the factors should be in the range `[2, n - 1]`.
+
+```java
+Input: n = 12
+Output: [[2,6],[3,4],[2,2,3]]
+dfs(num)
+
+遍历数字1~num，找到能被自己整除的因子mulNum，那么[mulNum, num/mulNum]就是一种结果，
+ 并往下继续dfs(num/mulNum)得到num/mulNum的可能情况并添加到返回结果。
+剪枝点：
+为了避免重复，没必要从1开始遍历，而是从上一次的mulNum开始遍历，
+这样保证mulNum后续dfs的过程是递增的，所以不会出现重复。
+遍历终点没必要为num， 而是num的开根号， 
+因此最大情况2^32的开根号结果为2^16次方=65536，是可接受范围。
+
+class Solution {
+    public List<List<Integer>> getFactors(int n) {
+        return dfs(2,n);
+    }
+
+    List<List<Integer>> dfs(int start, int num) {
+        if (num == 1) {
+            return new ArrayList<>();
+        }
+
+        int qNum = (int)Math.sqrt(num); // 算了 2，6 没必要算 6 2 了
+        List<List<Integer>> result = new ArrayList<>();
+        for (int mulNum = start; mulNum <= qNum;mulNum++) {
+            if (num % mulNum == 0) { //这里还是用 num去除
+                List<Integer> simpleList = new ArrayList<>();
+                simpleList.add(mulNum);
+                simpleList.add(num/mulNum);
+                result.add(simpleList);
+                // 检查mulNum能怎么拆
+                List<List<Integer>> nextLists = dfs(mulNum, num/mulNum);
+                for (List<Integer> list : nextLists) {
+                    list.add(mulNum);
+                    result.add(list);
+                }          
+            }
+        }
+        return result;
+    }
+
+}j​
+```
