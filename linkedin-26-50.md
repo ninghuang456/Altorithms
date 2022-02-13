@@ -419,5 +419,82 @@ class Solution {
         return result;
     }
 
-}j​
+}
+
+class Solution {
+    public List<List<Integer>> getFactors(int n) {
+    List<List<Integer>> result = new ArrayList<List<Integer>>();
+    helper(result, new ArrayList<Integer>(), n, 2);
+    return result;
+}
+
+public void helper(List<List<Integer>> result, List<Integer> item, int n, 
+                                     int start){
+    if (n <= 1) {
+        if (item.size() > 1) {
+            result.add(new ArrayList<Integer>(item));
+        }
+        return;
+    }
+    
+    for (int i = start; i <= n; ++i) {
+        if (n % i == 0) {
+            item.add(i);
+            helper(result, item, n/i, i);
+            item.remove(item.size()-1);
+        }
+    }
+}
+}
 ```
+
+## 373 Find K Pairs with Smallest Sums
+
+You are given two integer arrays `nums1` and `nums2` sorted in **ascending order** and an integer `k`.
+
+Define a pair `(u, v)` which consists of one element from the first array and one element from the second array.
+
+Return _the_ `k` _pairs_ `(u1, v1), (u2, v2), ..., (uk, vk)` _with the smallest sums_.
+
+
+
+Basic idea: Use min\_heap to keep track on next minimum pair sum, and we only need to maintain K possible candidates in the data structure.
+
+Some observations: For every numbers in nums1, its best partner(yields min sum) always strats from nums2\[0] since arrays are all sorted; And for a specific number in nums1, its next candidate sould be **\[this specific number]** + **nums2\[current\_associated\_index + 1]**, unless out of boundary;)
+
+Here is a simple example demonstrate how this algorithm works.
+
+![image](https://cloud.githubusercontent.com/assets/8743900/17332795/0bb46cfe-589e-11e6-90b5-5d3c9696c4f0.png)
+
+```
+Input: nums1 = [1,7,11], nums2 = [2,4,6], k = 3
+Output: [[1,2],[1,4],[1,6]]
+Explanation: The first 3 pairs are returned from the sequence: 
+[1,2],[1,4],[1,6],[7,2],[7,4],[11,2],[7,6],[11,4],[11,6]
+多路归并
+
+class Solution {
+    boolean flag = true;
+    public List<List<Integer>> kSmallestPairs(int[] nums1, int[] nums2, int k) {
+        int n = nums1.length, m = nums2.length;
+        if (n > m && !(flag = false)) return kSmallestPairs(nums2, nums1, k);
+        List<List<Integer>> ans = new ArrayList<>();
+        PriorityQueue<int[]> q = new PriorityQueue<>((a,b)->
+                          (nums1[a[0]]+nums2[a[1]])-(nums1[b[0]]+nums2[b[1]]));
+        for (int i = 0; i < Math.min(n, k); i++) 
+               q.add(new int[]{i, 0});
+        while (ans.size() < k && !q.isEmpty()) {
+            int[] poll = q.poll();
+            int a = poll[0], b = poll[1];
+            ans.add(new ArrayList<>(){{
+                add(flag ? nums1[a] : nums2[b]);
+                add(flag ? nums2[b] : nums1[a]);
+            }});
+            if (b + 1 < m) q.add(new int[]{a, b + 1});
+        }
+        return ans;
+    }
+}
+
+```
+
