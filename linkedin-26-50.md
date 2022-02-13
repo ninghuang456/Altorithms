@@ -638,3 +638,33 @@ class Solution {
 
 ```
 
+## 605 Can Place Flowers
+
+You have a long flowerbed in which some of the plots are planted, and some are not. However, flowers cannot be planted in **adjacent** plots.
+
+Given an integer array `flowerbed` containing `0`'s and `1`'s, where `0` means empty and `1` means not empty, and an integer `n`, return _if_ `n` new flowers can be planted in the `flowerbed` without violating the no-adjacent-flowers rule.
+
+```
+从左向右遍历花坛，在可以种花的地方就种一朵，能种就种（因为在任一种花时候，不种都不会得到更优解）
+，就是一种贪心的思想
+这里可以种花的条件是：
+自己为空
+左边为空 或者 自己是最左
+右边为空 或者 自己是最右
+最后判断n朵花是否有剩余，为了效率起见，可以在种花的过程中做判断，一旦花被种完就返回true
+
+class Solution {
+    public boolean canPlaceFlowers(int[] flowerbed, int n) {
+        for(int i=0; i<flowerbed.length; i++) {
+            if(flowerbed[i] == 0 && (i == 0 || flowerbed[i-1] == 0) 
+                  && (i == flowerbed.length-1 || flowerbed[i+1] == 0)) {
+                n--;
+                if(n <= 0) return true;
+                flowerbed[i] = 1;
+            }
+        }
+        return n <= 0;
+    }
+}
+
+```
