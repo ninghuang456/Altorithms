@@ -498,3 +498,143 @@ class Solution {
 
 ```
 
+## 149 Max Points on a Line
+
+Given an array of `points` where `points[i] = [xi, yi]` represents a point on the **X-Y** plane, return _the maximum number of points that lie on the same straight line_.
+
+```java
+Input: points = [[1,1],[3,2],[5,3],[4,1],[2,3],[1,4]]
+Output: 4
+我们知道，两个点可以确定一条线。
+因此一个朴素的做法是先枚举两条点（确定一条线），然后检查其余点是否落在该线中。
+为了避免除法精度问题，当我们枚举两个点 i 和 j 时，不直接计算其对应直线的 斜率和 截距，
+而是通过判断 i 和 j 与第三个点 kk 形成的两条直线斜率是否相等（斜率相等的两条直线要么平行，
+要么重合，平行需要 4 个点来唯一确定，我们只有 3 个点，所以可以直接判定两直线重合）。
+
+
+class Solution {
+    public int maxPoints(int[][] ps) {
+        int n = ps.length;
+        int ans = 1;
+        for (int i = 0; i < n; i++) {
+            int[] x = ps[i];
+            for (int j = i + 1; j < n; j++) {
+                int[] y = ps[j];
+                int cnt = 2;
+                for (int k = j + 1; k < n; k++) {
+                    int[] p = ps[k];
+                    int s1 = (y[1] - x[1]) * (p[0] - y[0]);
+                    int s2 = (p[1] - y[1]) * (y[0] - x[0]);
+                    if (s1 == s2) cnt++;
+                }
+                ans = Math.max(ans, cnt);
+            }
+        }
+        return ans;
+    }
+}
+
+根据「朴素解法」的思路，枚举所有直线的过程不可避免，但统计点数的过程可以优化。
+具体的，我们可以先枚举所有可能出现的 直线斜率（根据两点确定一条直线，即枚举所有的「点对」）
+使用「哈希表」统计所有 斜率 对应的点的数量，在所有值中取个 maxmax 即是答案。
+一些细节：在使用「哈希表」进行保存时，为了避免精度问题，我们直接使用字符串进行保存，
+同时需要将 斜率 约干净。
+
+class Solution {
+    public int maxPoints(int[][] ps) {
+        int n = ps.length;
+        int ans = 1;
+        for (int i = 0; i < n; i++) {
+            Map<String, Integer> map = new HashMap<>();
+            // 由当前点 i 发出的直线所经过的最多点数量
+            int max = 0;
+            for (int j = i + 1; j < n; j++) {
+                int x1 = ps[i][0], y1 = ps[i][1], x2 = ps[j][0], y2 = ps[j][1];
+                int a = x1 - x2, b = y1 - y2;
+                int k = gcd(a, b);
+                String key = (a / k) + "_" + (b / k);
+                map.put(key, map.getOrDefault(key, 0) + 1);
+                max = Math.max(max, map.get(key));
+            }
+            ans = Math.max(ans, max + 1);
+        }
+        return ans;
+    }
+    int gcd(int a, int b) {
+        return b == 0 ? a : gcd(b, a % b);
+    }
+}
+
+
+
+
+```
+
+## 678 Valid Parenthesis String
+
+Given a string `s` containing only three types of characters: `'('`, `')'` and `'*'`, return `true` _if_ `s` _is **valid**_.
+
+The following rules define a **valid** string:
+
+* Any left parenthesis `'('` must have a corresponding right parenthesis `')'`.
+* Any right parenthesis `')'` must have a corresponding left parenthesis `'('`.
+* Left parenthesis `'('` must go before the corresponding right parenthesis `')'`.
+* `'*'` could be treated as a single right parenthesis `')'` or a single left parenthesis `'('` or an empty string `""`.
+
+```java
+这道题和20.有效的括号其实很像，但里面多了一个星号，让这个题目不再这么直观。
+我们很自然的会仍然用两个栈记录目前为止不能匹配的字符，也就是*和(，
+每次出现右括号我们就应该去两个栈匹配可以匹配的左括号。
+
+而*可以作为任何括号，也可以作为空字符串，所以我们应该优先用左括号匹配，所以我们出栈的策略如下：
+
+遇到左括号，直接进栈，记录括号的位置。
+遇到星号，直接进栈，记录星号的位置。
+遇到右括号：
+a: 左括号栈里有元素，直接出栈。
+b: 左括号栈里无元素，*栈里有元素，直接出栈。无元素的话就已经匹配失败了。
+如果遍历完数组的话，我们可能会发现左括号栈里还有结余元素。如果是20题的情况，已经失败了。
+但现在我们可能还有一些星号可以作为右括号用，所以我们进行下面的匹配操作：
+对左括号栈逐一出栈，然后去看此时星号栈的栈顶，如果栈顶元素的位置大于左括号栈顶元素的位置，
+说明星号在括号的右侧，可以匹配。否则不可。
+
+class Solution {
+    public boolean checkValidString(String s) {
+    //使用两个栈保存（和*
+    Stack<Integer> stack1 = new Stack<>();
+    Stack<Integer> stack2 = new Stack<>();
+    for(int i=0;i<s.length();i++){
+        char c = s.charAt(i);
+        //入栈操作
+        if(c=='(') stack1.push(i);
+        else if(c=='*') stack2.push(i);
+        // 出栈：优先出stack1
+        else{
+            if(!stack1.isEmpty()){
+                stack1.pop();
+            }
+            else if(!stack2.isEmpty())
+            {
+                stack2.pop();
+            }
+            else{
+                return false;
+            }
+        }
+    }
+    // 当右括号栈存在元素时，对左括号栈逐一出栈，然后去看此时星号栈的栈顶，
+    // 如果栈顶元素的位置大于左括号栈顶元素的位置，说明星号在括号的右侧，可以匹配。否则不可。
+    while(!stack1.isEmpty()){
+        if(stack2.isEmpty()) return false;
+        int posStack1 = stack1.pop();
+        int posStack2 = stack2.pop();
+        if(posStack1>posStack2){
+            return false;
+        }
+    }
+    return true;    
+  }          
+}
+
+```
+
