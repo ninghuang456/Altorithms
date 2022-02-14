@@ -1,4 +1,4 @@
-# linkedin 25\~ 70
+# linkedin 50\~ 70
 
 ## 611 Valid Triangle Number
 
@@ -752,7 +752,7 @@ class Solution {
 }
 ```
 
-953 Verifying an Alien Dictionary
+## 953 Verifying an Alien Dictionary
 
 In an alien language, surprisingly, they also use English lowercase letters, but possibly in a different `order`. The `order` of the alphabet is some permutation of lowercase letters.
 
