@@ -104,6 +104,26 @@ void inorder(TreeNode root, double target, boolean reverse,
 }
 }
 
+class Solution {
+    int res = 0;
+    public int closestValue(TreeNode root, double target) {
+        res = root.val;
+        traverse(root, target);
+        return res;
+    }
+    
+    public void traverse(TreeNode root, double target){
+        if(root == null) return;
+        if(Math.abs(root.val - target) < Math.abs(res - target)){
+            res = root.val;
+        }
+        if(root.val < target){
+            traverse(root.right, target);
+        } else {
+            traverse(root.left, target);
+        }
+    }
+}
 
 ```
 
