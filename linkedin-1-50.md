@@ -2,7 +2,7 @@
 
 ## 244 Shortest Word Distance II
 
-```
+```java
 Input
 ["WordDistance", "shortest", "shortest"]
 [[["practice", "makes", "perfect", "coding", "makes"]], ["coding", "practice"], ["makes", "coding"]]
@@ -39,7 +39,7 @@ class WordDistance {
         List<Integer> list2 = map.get(word2);
         int distance = Integer.MAX_VALUE;
         // list 1 and list 2 already sorted!
-        for(int i = 0, j = 0; i < list1.size() && j < list2.size(); ) {
+        for(int i = 0, j = 0; i < list1.size() && j < list2.size(); ) {// 分号
             int index1 = list1.get(i), index2 = list2.get(j);
             //distance = Math.min(distance, Math.abs(index1 - index2));
             if(index1 < index2) {
