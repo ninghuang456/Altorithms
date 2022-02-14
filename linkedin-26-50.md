@@ -752,3 +752,95 @@ class Solution {
 
 ```
 
+## 655 Print Binary Tree
+
+Given the `root` of a binary tree, construct a **0-indexed** `m x n` string matrix `res` that represents a **formatted layout** of the tree. The formatted layout matrix should be constructed using the following rules:
+
+* The **height** of the tree is `height` and the number of rows `m` should be equal to `height + 1`.
+* The number of columns `n` should be equal to `2height+1 - 1`.
+* Place the **root node** in the **middle** of the **top row** (more formally, at location `res[0][(n-1)/2]`).
+* For each node that has been placed in the matrix at position `res[r][c]`, place its **left child** at `res[r+1][c-2height-r-1]` and its **right child** at `res[r+1][c+2height-r-1]`.
+* Continue this process until all the nodes in the tree have been placed.
+* Any empty cells should contain the empty string `""`.
+
+Return _the constructed matrix_ `res`.
+
+```java
+Input: root = [1,2,3,null,4]
+Output: 
+[["","","","1","","",""],
+ ["","2","","","","3",""],
+ ["","","4","","","",""]]
+
+class Solution {
+    
+    public List<List<String>> printTree(TreeNode root) {
+        int height = height(root,1);
+        int len = (int)Math.pow(2,height) - 1;
+        List<List<String>> list = new ArrayList<>();
+        for(int i = 0;i<height;i++){
+            List<String> tempList = new ArrayList<>();
+            for(int j = 0;j<len ;j++)
+                tempList.add("");
+            list.add(new ArrayList(tempList));
+        }
+        setTree(list,root,0,len - 1,height,0);
+        return list;
+    }
+    
+    private int height(TreeNode root,int level){
+        if(root == null) return level - 1;
+        return Math.max(height(root.left,level + 1),height(root.right, level + 1));
+    }
+    
+    private void setTree(List<List<String>> list, TreeNode root,
+    int left, int right, int height,int level){
+        if(height == level || root == null) return;
+        int mid = left + (right - left)/2; //    Here is the mid
+        list.get(level).set(mid,String.valueOf(root.val));
+        setTree(list,root.left,left,mid - 1,height,level+ 1);
+        setTree(list,root.right,mid + 1,right,height,level+1);
+    }
+}
+```
+
+## 713 Subarray Product Less Than K
+
+Given an array of integers `nums` and an integer `k`, return _the number of contiguous subarrays where the product of all the elements in the subarray is strictly less than_ `k`.
+
+**Example 1:**
+
+```java
+Input: nums = [10,5,2,6], k = 100
+Output: 8
+Explanation: The 8 subarrays that have product less than 100 are:
+[10], [5], [2], [6], [10, 5], [5, 2], [2, 6], [5, 2, 6]
+Note that [10, 5, 2] is not included as the product of 100 is not 
+strictly less than k.
+
+The idea is always keep an max-product-window less than K;
+Every time shift window by adding a new number on the right(j), 
+if the product is greater than k, then try to reduce numbers on the left(i), 
+until the subarray product fit less than k again, (subarray could be empty);
+Each step introduces x new subarrays, where x is the size of the current window
+ (j + 1 - i);
+example:
+for window (5, 2), when 6 is introduced, it add 3 new subarray: (5, (2, (6)))
+
+class Solution {
+    public int numSubarrayProductLessThanK(int[] nums, int k) {
+        if (k == 0) return 0;
+        int cnt = 0;
+        int pro = 1;
+        for (int i = 0, j = 0; j < nums.length; j++) {
+            pro *= nums[j];
+            while (i <= j && pro >= k) {
+                pro /= nums[i++];
+            }
+            cnt += j - i + 1;
+        }
+        return cnt;        
+    }
+}
+
+```
