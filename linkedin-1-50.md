@@ -387,7 +387,7 @@ public class Codec {
     
     public void serializeHelper(TreeNode node, StringBuilder sb) {
         if(node == null) {
-            sb.append(nulval).append(spliter);
+            sb.append(nulval).append(spliter);// don't forget.append(spliter)
             return;
         }
         sb.append(node.val).append(spliter);
@@ -403,7 +403,7 @@ public class Codec {
         
     }
     public TreeNode deserializeHelper(Queue<String> queue) {
-        String cur = queue.poll();
+        String cur = queue.poll();// get value first then check.
         if (cur.equals(nulval)) {
             return null;
         } 
