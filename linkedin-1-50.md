@@ -103,7 +103,7 @@ void inorder(TreeNode root, double target, boolean reverse,
   inorder(reverse ? root.left : root.right, target, reverse, stack);
 }
 }
-
+//Closest Binary Search Tree Value 1(only return cloest)
 class Solution {
     int res = 0;
     public int closestValue(TreeNode root, double target) {
@@ -123,6 +123,20 @@ class Solution {
             traverse(root.left, target);
         }
     }
+}
+// Successor
+class Solution {
+    public TreeNode inorderSuccessor(TreeNode root, TreeNode p) {
+    TreeNode res = null;
+    while(root!=null) {
+        if(root.val > p.val) {
+        	res = root;
+        	root = root.left;
+        }
+        else root = root.right;
+    }
+    return res;
+}
 }
 
 ```
