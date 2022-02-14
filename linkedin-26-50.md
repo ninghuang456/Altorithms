@@ -844,3 +844,55 @@ class Solution {
 }
 
 ```
+
+## 170 Two Sum III - Data structure design
+
+Design a data structure that accepts a stream of integers and checks if it has a pair of integers that sum up to a particular value.
+
+Implement the `TwoSum` class:
+
+* `TwoSum()` Initializes the `TwoSum` object, with an empty array initially.
+* `void add(int number)` Adds `number` to the data structure.
+* `boolean find(int value)` Returns `true` if there exists any pair of numbers whose sum is equal to `value`, otherwise, it returns `false`.
+
+```
+class TwoSum {
+    Map<Integer, Integer> freq = new HashMap<>();
+
+    public void add(int number) {
+        // 记录 number 出现的次数
+        freq.put(number, freq.getOrDefault(number, 0) + 1);
+    }
+    
+    public boolean find(int value) { // find O(n)
+        for (Integer key : freq.keySet()) {
+            int other = value - key;
+            // 情况一
+            if (other == key && freq.get(key) > 1)
+                return true;
+            // 情况二
+            if (other != key && freq.containsKey(other))
+                return true;
+        }
+        return false;
+    }
+}
+
+class TwoSum {
+    Set<Integer> sum = new HashSet<>();
+    List<Integer> nums = new ArrayList<>();
+
+    public void add(int number) {
+        // 记录所有可能组成的和
+        for (int n : nums)
+            sum.add(n + number);
+        nums.add(number);
+    }
+    
+    public boolean find(int value) {// find O(1);
+        return sum.contains(value);
+    }
+}
+
+
+```
