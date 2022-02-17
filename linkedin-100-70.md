@@ -1,4 +1,4 @@
-# Linkedin 50\~100
+# Linkedin 100 \~ 70
 
 ## **5 : Longest Palindromic Substring**
 
@@ -125,44 +125,90 @@ class Solution {
 
 ```java
 class LRUCache {
-    int cap;
-    LinkedHashMap<Integer, Integer> cache = new LinkedHashMap<>();
-    public LRUCache(int capacity) { 
-        this.cap = capacity;
+    
+    class Node{
+        int key;
+        int value;
+        Node next;
+        Node pre;
+        Node(int key, int value){
+            this.key = key;
+            this.value = value;
+        }
+    }
+    
+    class DoubleList{
+        Node head;
+        Node tail;
+        int size;
+        DoubleList(){
+            head = new Node(-1, -1);
+            tail = new Node(-1,-1);
+            head.next = tail;
+            tail.pre = head;
+            size = 0; 
+        }
+        
+       public void addLast(Node node){
+           tail.pre.next = node;
+           node.pre = tail.pre;
+           node.next = tail;
+           tail.pre = node;
+           size ++;
+        }
+        
+        public void remove(Node node){
+           node.pre.next = node.next;
+            node.next.pre = node.pre;
+            node.pre = null;
+            node.next = null;
+            size --;
+        }
+        
+        public Node removeFirst(){
+            if(head.next == tail) return null;
+            Node first = head.next;
+            remove(first);
+            return first;
+        }
+        
+        public int size(){
+            return size;
+        }
+        
+    }
+    
+        HashMap<Integer, Node> map = new HashMap<>();
+        DoubleList cache = new DoubleList();
+        int capacity;
+    
+    public LRUCache(int capacity) {
+        this.capacity = capacity;
     }
     
     public int get(int key) {
-        if (!cache.containsKey(key)) {
-            return -1;
-        }
-        // 将 key 变为最近使用
-        makeRecently(key);
-        return cache.get(key);
+        if(!map.containsKey(key)) return -1;
+         int val = map.get(key).value;
+         put(key, val);
+        return val;
     }
     
-    public void put(int key, int val) {
-        if (cache.containsKey(key)) {
-            // 修改 key 的值
-            cache.put(key, val);
-            // 将 key 变为最近使用
-            makeRecently(key);
+    public void put(int key, int value) {
+        if(map.containsKey(key)){
+            Node cur = map.get(key);
+            cache.remove(cur);
+            cur.value = value;
+            cache.addLast(cur);
             return;
         }
-        
-        if (cache.size() >= this.cap) {
-            // 链表头部就是最久未使用的 key
-            int oldestKey = cache.keySet().iterator().next();
-            cache.remove(oldestKey);
+        if(capacity == cache.size()){
+            Node first = cache.removeFirst();
+            map.remove(first.key);
         }
-        // 将新的 key 添加链表尾部
-        cache.put(key, val);
-    }
-    
-    private void makeRecently(int key) {
-        int val = cache.get(key);
-        // 删除 key，重新插入到队尾
-        cache.remove(key);
-        cache.put(key, val);
+        Node node = new Node(key, value);
+        map.put(key, node);
+        cache.addLast(node);
+        
     }
 }
 ```
