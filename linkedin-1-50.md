@@ -1216,6 +1216,15 @@ class Solution {
 所以函数 0 总共执行 2 + 1 = 3 个单位时间，函数 1 总共执行 4 个单位时间。 
 
 // Some code
+用一个栈模拟函数的执行过程，每个函数用一个二元数组表示[id, startTime]；
+当遇见一个标志为id : start : time的函数记录时，如果栈顶仍有其他正在执行的函数，
+那么根据单线程的原理，栈顶函数要停下来，相当于它在time-1时刻停止执行了，
+我们将这个执行时间记录到它的结果中，同时将新函数压入栈；
+当遇见一个标志为id : end : time的函数记录时，此时栈顶一定是当前函数，那么弹出栈顶元素，
+记录执行时长。同时，恢复原函数的执行，它的起始执行时间是time+1时刻，
+此时我们直接更改栈顶元素的startTime = time + 1即可。
+
+
 class Solution {
         public int[] exclusiveTime(int n, List<String> logs) {
             Deque<Log> stack = new ArrayDeque<>();
@@ -1249,6 +1258,32 @@ class Solution {
                 subDuration = 0;
             }
         }
+}
+
+public int[] exclusiveTime(int n, List<String> logs) {
+    // separate time to several intervals, add interval to their function
+    int[] result = new int[n];
+    Stack<Integer> st = new Stack<>();
+    int pre = 0;
+    // pre means the start of the interval
+    for(String log: logs) {
+        String[] arr = log.split(":");
+        if(arr[1].equals("start")) {
+            if(!st.isEmpty())  
+            result[st.peek()] += Integer.parseInt(arr[2]) - pre;
+            // arr[2] is the start of next interval, doesn't belong to current 
+            //interval.
+            st.push(Integer.parseInt(arr[0]));
+            pre = Integer.parseInt(arr[2]);
+        } else {
+            result[st.pop()] += Integer.parseInt(arr[2]) - pre + 1;
+            // arr[2] is end of current interval, belong to current interval.
+             That's why we have +1 here
+            pre = Integer.parseInt(arr[2]) + 1;
+            // pre means the start of next interval, so we need to +1
+        }
+    }
+    return result;
 }
 ```
 
