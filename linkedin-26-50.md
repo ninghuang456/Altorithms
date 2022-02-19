@@ -1025,3 +1025,42 @@ class Node {
 }
 
 ```
+
+## 526 Beautiful Arrangement
+
+Suppose you have `n` integers labeled `1` through `n`. A permutation of those `n` integers `perm` (**1-indexed**) is considered a **beautiful arrangement** if for every `i` (`1 <= i <= n`), **either** of the following is true:
+
+* `perm[i]` is divisible by `i`.
+* `i` is divisible by `perm[i]`.
+
+```
+假设有从 1 到 n 的 n 个整数。用这些整数构造一个数组 perm（下标从 1 开始），
+只要满足下述条件 之一 ，该数组就是一个 优美的排列 ：
+perm[i] 能够被 i 整除
+i 能够被 perm[i] 整除
+给你一个整数 n ，返回可以构造的 优美排列 的 数量 。
+
+class Solution {
+    int count = 0;
+    public int countArrangement(int n) {
+         dfs(n, 1, new boolean[n + 1]);
+        return count;
+    }
+
+    private void dfs(int n, int i, boolean[] visited) {
+        if (i > n) {
+            count ++;
+            return;
+        }
+        for (int num = 1; num <= n; num++) {
+            if (!visited[num] && (num % i == 0 || i % num == 0)) { // either condition is true;
+                visited[num] = true;
+                dfs(n, i + 1, visited);
+                visited[num] = false;
+            }
+        }
+    }
+}
+
+
+```
