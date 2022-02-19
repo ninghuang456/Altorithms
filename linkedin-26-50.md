@@ -1268,3 +1268,69 @@ Releases a permit, returning it to the semaphore.
 release(int permits)
 Releases the given number of permits, returning them to the semaphore.
 ```
+
+## 1188 Design Bounded Blocking Queue
+
+Implement a thread-safe bounded blocking queue that has the following methods:
+
+* `BoundedBlockingQueue(int capacity)` The constructor initializes the queue with a maximum `capacity`.
+* `void enqueue(int element)` Adds an `element` to the front of the queue. If the queue is full, the calling thread is blocked until the queue is no longer full.
+* `int dequeue()` Returns the element at the rear of the queue and removes it. If the queue is empty, the calling thread is blocked until the queue is no longer empty.
+* `int size()` Returns the number of elements currently in the queue.
+
+Your implementation will be tested using multiple threads at the same time. Each thread will either be a producer thread that only makes calls to the `enqueue` method or a consumer thread that only makes calls to the `dequeue` method. The `size` method will be called after every test case.
+
+Please do not use built-in implementations of bounded blocking queue as this will not be accepted in an interview.
+
+```
+出队列为空的时候要等待，用一个信号量就可以了。
+入队列满了要等待，用一个信号量就可以了。
+然后还要实现的是入队的顺序要保证，在信号量acquire的时候可能会使后面的先于前面的。
+使用一个公平锁即可解决。
+
+      class BoundedBlockingQueue {
+        Queue<Integer> queue = new LinkedList<>();
+        Semaphore full;
+        Semaphore empty;
+        ReentrantLock lock = new ReentrantLock(true);
+
+        public BoundedBlockingQueue(int capacity) {
+            full = new Semaphore(capacity);
+            empty = new Semaphore(0);
+        }
+
+        public void enqueue(int element) throws InterruptedException {
+            try {
+                lock.lock();
+                full.acquire();
+                synchronized (queue) {
+                    queue.add(element);
+                }
+                empty.release();
+            } finally {
+                lock.unlock();
+            }
+
+        }
+
+        public int dequeue() throws InterruptedException {
+            empty.acquire();
+            int x;
+            synchronized (queue) {
+                x = queue.poll();
+            }
+            full.release();
+            return x;
+        }
+
+        public int size() {
+            try {
+                lock.lock();
+                return queue.size();
+            } finally {
+                lock.unlock();
+            }
+        }
+    }
+
+```
