@@ -193,6 +193,41 @@ class Solution {
     }
 }
 
+class Solution {
+    int max = 1;
+    int sum = 0;
+    public int depthSumInverse(List<NestedInteger> nestedList) {
+        getMax(nestedList, 1);
+        depthSumInverseHelper(nestedList, 1);
+        return sum;
+    }
+
+    public void getMax(List<NestedInteger> nestedList, int level){
+        if(nestedList == null || nestedList.isEmpty()) return;
+        for(int i = 0; i < nestedList.size(); i ++ ){
+            NestedInteger cur = nestedList.get(i);
+            if(cur.isInteger()){
+                max = Math.max(max, level);
+            } else {
+                getMax(cur.getList(), level + 1);
+            }
+        }
+    }
+
+        public void depthSumInverseHelper(List<NestedInteger> nestedList, int level){
+        if(nestedList == null || nestedList.isEmpty()) return;
+        for(int i = 0; i < nestedList.size(); i ++ ){
+            NestedInteger cur = nestedList.get(i);
+            if(cur.isInteger()){
+                int weight = max - level + 1;
+                sum += cur.getInteger() * weight;
+            } else {
+                depthSumInverseHelper(cur.getList(), level + 1);
+            }
+        }
+    }
+}
+
 ```
 
 ## 339 Nested List Weight Sum
