@@ -163,35 +163,44 @@ Output: 8
 Explanation: Four 1's with a weight of 1, one 2 with a weight of 2.
 1*1 + 1*1 + 2*2 + 1*1 + 1*1 = 8
 
+1、BFS搜索过程中求出每一层的和
+2、按层压栈
+3、出栈时把每层和乘以权重求总和
 class Solution {
-   public int depthSumInverse(List<NestedInteger> nestedList) {
-        if (nestedList == null) return 0;
-        Queue<NestedInteger> queue = new LinkedList<NestedInteger>();
-        int prev = 0;
-        int total = 0;
-        for (NestedInteger next: nestedList) {
-            queue.offer(next);
+    public int depthSumInverse(List<NestedInteger> nestedList) {
+        int result = 0;
+        if(nestedList == null || nestedList.size() == 0){
+            return result;
         }
-        
-        while (!queue.isEmpty()) {
+        Queue<NestedInteger> queue = new LinkedList<NestedInteger>();
+        Stack<Integer> levelSum = new Stack<Integer>();
+        for(int i = 0; i < nestedList.size(); i++){
+            queue.offer(nestedList.get(i));
+        }
+        while(!queue.isEmpty()){
             int size = queue.size();
-            int levelSum = 0;
-            for (int i = 0; i < size; i++) {
-                NestedInteger current = queue.poll();
-                if (current.isInteger()) levelSum += current.getInteger();
-                List<NestedInteger> nextList = current.getList();
-                if (nextList != null) {
-                    for (NestedInteger next: nextList) {
-                        queue.offer(next);
+            int eachLevel = 0;
+            for(int i = 0; i < size; i++){
+                NestedInteger temp = queue.poll();
+                if(temp.isInteger()){
+                    eachLevel += temp.getInteger();
+                }else{
+                    for(NestedInteger one : temp.getList()){
+                        queue.offer(one);
                     }
                 }
             }
-            prev += levelSum;
-            total += prev;
+            levelSum.push(eachLevel);
         }
-        return total;
+        int n = 1;
+        while(!levelSum.isEmpty()){
+            result += n * levelSum.pop();
+            n++;
+        }
+        return result;
     }
 }
+
 
 class Solution {
     int max = 1;
