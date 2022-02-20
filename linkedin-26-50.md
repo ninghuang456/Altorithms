@@ -66,7 +66,8 @@ public class AllOne {
         keys = new HashMap<>();
     }
     
-    /** Inserts a new key <Key> with value 1. Or increments an existing key by 1. */
+    /** Inserts a new key <Key> with value 1. Or increments an
+     existing key by 1. */
     public void inc(String key) {
         ValueNode node = keys.getOrDefault(key, valueHead);
         ValueNode vn = node.next;
@@ -79,7 +80,8 @@ public class AllOne {
         if (node != valueHead) node.remove(key);
     }
     
-    /** Decrements an existing key by 1. If Key's value is 1, remove it from the data structure. */
+    /** Decrements an existing key by 1. If Key's value is 1,
+     remove it from the data structure. */
     public void dec(String key) {
         ValueNode node = keys.get(key);
         if (node == null) return;
@@ -139,7 +141,8 @@ For the last line of text, it should be left-justified and no extra space is ins
 * The input array `words` contains at least one word.
 
 ```
-Input: words = ["This", "is", "an", "example", "of", "text", "justification."], maxWidth = 16
+Input: words = ["This", "is", "an", "example", "of", "text", "justification."],
+ maxWidth = 16
 Output:
 [
    "This    is    an",
@@ -257,10 +260,13 @@ class Solution {
         maxDP[0] = nums[0]; minDP[0] = nums[0];
 
         for(int i = 1; i < nums.length; i++){
-            //最大积的可能情况有：元素i自己本身，上一个最大积与i元素累乘，上一个最小积与i元素累乘；
+            //最大积的可能情况有：元素i自己本身，上一个最大积与i元素累乘，
+            //上一个最小积与i元素累乘；
             //与i元素自己进行比较是为了处理i元素之前全都是0的情况；
-            maxDP[i] = Math.max(nums[i], Math.max(maxDP[i-1]*nums[i], minDP[i-1]*nums[i]));
-            minDP[i] = Math.min(nums[i], Math.min(maxDP[i-1]*nums[i], minDP[i-1]*nums[i]));
+            maxDP[i] = Math.max(nums[i], Math.max(maxDP[i-1]*nums[i], 
+                                  minDP[i-1]*nums[i]));
+            minDP[i] = Math.min(nums[i], Math.min(maxDP[i-1]*nums[i], 
+                                  minDP[i-1]*nums[i]));
             //记录ans；
             ans = Math.max(ans, maxDP[i]);
         }
@@ -693,7 +699,7 @@ class Solution {
     
     private int height(TreeNode root,int level){
         if(root == null) return level - 1;
-        return Math.max(height(root.left,level + 1),height(root.right, level + 1));
+    return Math.max(height(root.left,level + 1),height(root.right, level + 1));
     }
     
     private void setTree(List<List<String>> list, TreeNode root,
@@ -839,7 +845,7 @@ class Solution {
 class Solution {
     public int minCost(int[][] costs) {
         int[][] dp = new int[costs.length][3];
-        int redCost = costs[0][0], blueCost = costs[0][1], greenCost = costs[0][2];
+     int redCost = costs[0][0], blueCost = costs[0][1], greenCost = costs[0][2];
         for (int i = 1; i < costs.length; i++) {
             int newRedCost = Math.min(blueCost, greenCost) + costs[i][0];
             int newBlueCost = Math.min(redCost, greenCost) + costs[i][1];
@@ -907,7 +913,7 @@ class Solution {
                 } else {
                     // 当前颜色j不是前一轮的最小颜色，就让前一个房间取最小颜色
                     // 否则，让前一个房间粉刷为次最小颜色
-                    f[i][j] = costs[i][j] + (j!=preColorMin?f[i-1][preColorMin]:f[i-1][preColorMin2]);
+f[i][j] = costs[i][j] + (j!=preColorMin?f[i-1][preColorMin]:f[i-1][preColorMin2]);
                 }
 
                 if(f[i][j] < costMin) {
@@ -1149,7 +1155,8 @@ class Solution {
             return;
         }
         for (int num = 1; num <= n; num++) {
-            if (!visited[num] && (num % i == 0 || i % num == 0)) { // either condition is true;
+            if (!visited[num] && (num % i == 0 || i % num == 0)) { 
+             // either condition is true;
                 visited[num] = true;
                 dfs(n, i + 1, visited);
                 visited[num] = false;
