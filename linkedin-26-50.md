@@ -821,19 +821,115 @@ Minimum cost: 2 + 5 + 3 = 10.
 
 class Solution {
     public int minCost(int[][] costs) {
-         if(costs==null||costs.length==0){
-        return 0;
-    }
-    for(int i=1; i<costs.length; i++){
-        costs[i][0] += Math.min(costs[i-1][1],costs[i-1][2]);
-        costs[i][1] += Math.min(costs[i-1][0],costs[i-1][2]);
-        costs[i][2] += Math.min(costs[i-1][1],costs[i-1][0]);
-    }
-    int n = costs.length-1;
-    return Math.min(Math.min(costs[n][0], costs[n][1]), costs[n][2]);
-        
+        int n = costs.length;
+        int[][] dp = new int[n + 1][3];
+        dp[0][0] = 0; dp[0][1] = 0; dp[0][2] = 0;
+        for(int i = 0; i < n; i ++){
+           dp[i + 1][0] = costs[i][0] + Math.min(dp[i][1], dp[i][2]);
+           dp[i + 1][1] = costs[i][1] + Math.min(dp[i][0], dp[i][2]);
+           dp[i + 1][2] = costs[i][2] + Math.min(dp[i][0], dp[i][1]);
+        }
+        return  Math.min(dp[n][2], Math.min(dp[n][0], dp[n][1]));
     }
 }
+
+上面的一维动态规划解法使用了一个 dp 数组，我们仔细观察可以发现，
+计算 dp[i]的状态只取决于 dp[i-1]的状态，
+所以我们可以用三个临时变量 red/blue/green 来代替dp[i-1][0]/dp[i-1][1]/dp[i-1][2]中的值。
+class Solution {
+    public int minCost(int[][] costs) {
+        int[][] dp = new int[costs.length][3];
+        int redCost = costs[0][0], blueCost = costs[0][1], greenCost = costs[0][2];
+        for (int i = 1; i < costs.length; i++) {
+            int newRedCost = Math.min(blueCost, greenCost) + costs[i][0];
+            int newBlueCost = Math.min(redCost, greenCost) + costs[i][1];
+            int newGreenCost = Math.min(redCost, blueCost) + costs[i][2];
+            redCost = newRedCost;
+            blueCost = newBlueCost;
+            greenCost = newGreenCost;
+        }
+        return Math.min(redCost, Math.min(blueCost, greenCost));
+    }
+}
+
+```
+
+## 265 Paint House II
+
+```
+本题是256.粉刷房子的增强版，之前是给定3种颜色，现在是一般化为k种颜色。
+依然是动态规划：
+// f[i][j]表示将房子[0..i]刷完，并且i号房子是颜色j的最小花费
+int[][] f = new int[n][k];
+加速点在于：
+因为只需满足相邻2个房子颜色不同，因此粉刷完[0..i]之后，
+只需要记录下让f[i][j]取最小值和次最小值的两个j值（颜色编号）：
+colorMin和colorMin2
+在粉刷第i+1个房子时，只要所用的颜色j!=colorMin，那么就让前一个房子i取colorMin颜色，
+这样能得到最小的f[i+1][j]。
+如果粉刷第i+1个房子时所用的颜色j=colorMin，
+那么只有让前一个房子取colorMin2颜色。
+
+class Solution {
+    public int minCostII(int[][] costs) {
+        // n个房子
+        int n = costs.length;
+        if(n==0)return 0;
+        // k种颜色的油漆
+        int k = costs[0].length;
+        if(k==0)return 0;
+        // 至少1种颜色，1间房子
+        if(k==1) {
+            if(n==1) {
+                return costs[0][0];
+            } else {
+                // 不可能完成任务
+                return 0;
+            }
+        }
+
+        // 至此，至少有2种颜色
+        // 相邻两个房子的颜色不同，求最小花费
+        // f[i][j]表示将房子[0..i]刷完，并且i号房子是颜色j的最小花费
+        int[][] f = new int[n][k];
+
+        int preColorMin = 0;
+        int preColorMin2 = 0;
+        for (int i = 0; i < n; i++) {
+            int costMin = Integer.MAX_VALUE;//记录当前轮，粉刷完[0..i]的最小花费
+            int colorMin = k-1;//记录最小花费下，i号房的颜色
+            int costMin2 = Integer.MAX_VALUE;//记录当前轮，粉刷完[0..i-1]的次最小花费
+            int colorMin2 = k-1;//记录次最小花费下，i号房的颜色
+
+            for (int j = 0; j < k; j++) {
+                if(i==0) {
+                    f[i][j] = costs[i][j];
+                } else {
+                    // 当前颜色j不是前一轮的最小颜色，就让前一个房间取最小颜色
+                    // 否则，让前一个房间粉刷为次最小颜色
+                    f[i][j] = costs[i][j] + (j!=preColorMin?f[i-1][preColorMin]:f[i-1][preColorMin2]);
+                }
+
+                if(f[i][j] < costMin) {
+                    // 最小变次最小
+                    colorMin2 = colorMin;
+                    costMin2 = costMin;
+                    // 更新最小
+                    colorMin = j;
+                    costMin = f[i][j];
+                } else if(f[i][j] < costMin2) {
+                    // 更新次最小
+                    colorMin2 = j;
+                    costMin2 = f[i][j];
+                }
+            }
+            preColorMin = colorMin;
+            preColorMin2 = colorMin2;
+        }
+        return f[n-1][preColorMin];
+    }
+}
+
 ```
 
 ## 516 Longest Palindromic Subsequence
