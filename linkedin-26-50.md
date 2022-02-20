@@ -1334,3 +1334,37 @@ Please do not use built-in implementations of bounded blocking queue as this wil
     }
 
 ```
+
+## 187 Repeated DNA Sequences
+
+The **DNA sequence** is composed of a series of nucleotides abbreviated as `'A'`, `'C'`, `'G'`, and `'T'`.
+
+* For example, `"ACGAATTCCG"` is a **DNA sequence**.
+
+When studying **DNA**, it is useful to identify repeated sequences within the DNA.
+
+Given a string `s` that represents a **DNA sequence**, return all the **`10`-letter-long** sequences (substrings) that occur more than once in a DNA molecule. You may return the answer in **any order**.
+
+```
+滑动窗口 + 哈希表
+数据范围只有 10^5
+ ，一个朴素的想法是：从左到右处理字符串 s，使用滑动窗口得到每个以 s[i]
+ 为结尾且长度为 10 的子串，同时使用哈希表记录每个子串的出现次数，如果该子串出现次数超过一次，
+ 则加入答案。为了防止相同的子串被重复添加到答案，而又不使用常数较大的 Set 结构。
+ 我们可以规定：当且仅当该子串在之前出现过一次（加上本次，当前出现次数为两次）时，将子串加入答案。
+ class Solution {
+    public List<String> findRepeatedDnaSequences(String s) {
+        List<String> ans = new ArrayList<>();
+        int n = s.length();
+        Map<String, Integer> map = new HashMap<>();
+        for (int i = 0; i + 10 <= n; i++) {
+            String cur = s.substring(i, i + 10);
+            int cnt = map.getOrDefault(cur, 0);
+            if (cnt == 1) ans.add(cur);
+            map.put(cur, cnt + 1);
+        }
+        return ans;
+    }
+}
+
+```
