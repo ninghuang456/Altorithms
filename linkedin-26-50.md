@@ -1340,36 +1340,46 @@ import java.util.concurrent.*;
 class H2O {
     Semaphore h, o;
       public H2O() {
-        h = new Semaphore(2, true);
-        o = new Semaphore(0, true);
+        h = new Semaphore(2);
+        o = new Semaphore(0);
     }
 
     public void hydrogen(Runnable releaseHydrogen) throws InterruptedException {
-		h.acquire();
+	 h.acquire();
         // releaseHydrogen.run() outputs "H". Do not change or remove this line.
         releaseHydrogen.run();
         o.release();
     }
 
     public void oxygen(Runnable releaseOxygen) throws InterruptedException {
-        o.acquire(2);
+        o.acquire(2);//要上面方法执行两次后O信号量才可以达到这个条件
         // releaseOxygen.run() outputs "O". Do not change or remove this line.
 		releaseOxygen.run();
-        h.release(2);
+        h.release(2);//执行之前氢信号量是零 执行之后回到原来的2
     }
 }
 
 acquire()
 Acquires a permit from this semaphore, blocking until one is available, 
 or the thread is interrupted.
+Acquires a permit, if one is available and returns immediately, 
+reducing the number of available permits by one.
+
 acquire(int permits)
 Acquires the given number of permits from this semaphore, 
 blocking until all are available, or the thread is interrupted.
+Acquires the given number of permits, if they are available, 
+and returns immediately, reducing the number of available permits 
+by the given amount.
 
 release()
 Releases a permit, returning it to the semaphore.
+Releases a permit, increasing the number of available permits by one
+
 release(int permits)
 Releases the given number of permits, returning them to the semaphore.
+Releases the given number of permits, increasing the number of available 
+permits by that amount. 
 ```
 
 ## 1188 Design Bounded Blocking Queue

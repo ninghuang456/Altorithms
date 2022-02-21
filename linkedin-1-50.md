@@ -541,6 +541,11 @@ Output
 
 
 ```
+如果想高效地，等概率地随机获取元素，就要使用数组作为底层容器。
+2、如果要保持数组元素的紧凑性，可以把待删除元素换到最后，
+然后 pop 掉末尾的元素，这样时间复杂度就是 O(1) 了。
+当然，我们需要额外的哈希表记录值到索引的映射。
+
 public class RandomizedSet {
     ArrayList<Integer> nums;
     HashMap<Integer, Integer> locs;
@@ -551,21 +556,24 @@ public class RandomizedSet {
         locs = new HashMap<Integer, Integer>();
     }
     
-    /** Inserts a value to the set. Returns true if the set did not already contain the specified element. */
+    /** Inserts a value to the set. Returns true if the set did not already 
+    contain the specified element. */
+    
     public boolean insert(int val) {
-        boolean contain = locs.containsKey(val);
-        if ( contain ) return false;
+        if ( locs.containsKey(val) ) return false;
         locs.put( val, nums.size());
         nums.add(val);
         return true;
     }
     
-    /** Removes a value from the set. Returns true if the set contained the specified element. */
+    /** Removes a value from the set. Returns true if the set contained the 
+    specified element. */
+    
     public boolean remove(int val) {
-        boolean contain = locs.containsKey(val);
-        if ( ! contain ) return false;
+        if ( ! locs.containsKey(val) ) return false;
         int loc = locs.get(val);
-        if (loc < nums.size() - 1 ) { // not the last one than swap the last one with this val
+        if (loc < nums.size() - 1 ) { 
+          // not the last one than swap the last one with this val
             int lastone = nums.get(nums.size() - 1 );
             nums.set( loc , lastone );
             locs.put(lastone, loc);
