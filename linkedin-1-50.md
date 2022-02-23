@@ -709,7 +709,8 @@ class Solution {
         Stack<Integer> st = new Stack<>();
         for (int i = 0; i < tokens.length; i ++) {
           //  if("+-*/".contains(tokens[i])){
-            if(tokens[i].equals("+")  || tokens[i].equals("-")  || tokens[i].equals("*" )  || tokens[i].equals("/")){
+            if(tokens[i].equals("+")  || tokens[i].equals("-")  || 
+               tokens[i].equals("*" )  || tokens[i].equals("/")){
                 int num2 = st.pop();
                 int num1 = st.pop();
                 int cur = getNum(num1, num2, tokens[i]);
@@ -758,9 +759,13 @@ int maxSubArray(int[] nums) {
     // base case
     // 第一个元素前面没有子数组
     dp[0] = nums[0];
-    // 状态转移方程
+    // 状态转移方程 以 nums[i] 为结尾的「最大子数组和」为 dp[i]。
+    // 最大子数组和」就和「最长递增子序列」非常类似，dp 数组的定义是「以 nums[i] 
+    //为结尾的最大子数组和/最长递增子序列为 dp[i]」。
+    //因为只有这样定义才能将 dp[i+1] 和 dp[i] 建立起联系，利用数学归纳法写出状态转移方程。
     for (int i = 1; i < n; i++) {
         dp[i] = Math.max(nums[i], nums[i] + dp[i - 1]);
+        
     }
     // 得到 nums 的最大子数组
     int res = Integer.MIN_VALUE;

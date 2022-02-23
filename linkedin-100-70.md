@@ -114,6 +114,8 @@ class Solution {
         }
         for (int i = index; i < candidates.length; i ++) {
             temp.add(candidates[i]);
+            //同一个元素可以多次用 所以继续用i, 如果不能多次用就是 i + 1;
+            // permutaion no i.
         combinationSumHelper(temp, res, candidates, target - candidates[i],  i);
             temp.remove(temp.size() - 1);
         }
