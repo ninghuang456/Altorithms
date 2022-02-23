@@ -636,6 +636,10 @@ Output: [[1,6],[8,10],[15,18]]
 Explanation: Since intervals [1,3] and [2,6] overlaps, merge them into [1,6].
 ```
 
+排序之后，两个相邻区间可能有如下三种相对位置：
+
+![Image](https://mmbiz.qpic.cn/sz\_mmbiz\_jpg/gibkIz0MVqdHvEm6Hfybxj5tHaDLbHmMwZvyib1gGbacibosib4gCpv1P6VbvBHL4sOxAcJjPiaaPbM2GbzxZYO3A1Q/640?wx\_fmt=jpeg\&wxfrom=5\&wx\_lazy=1\&wx\_co=1)
+
 ```
 // Some code
 class Solution {
