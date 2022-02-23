@@ -452,8 +452,7 @@ class Solution {
 class Solution {
     public int maxPoints(int[][] ps) {
         int n = ps.length;
-        int ans = 1;
-        for (int i = 0; i < n; i++) {
+        int ans     for (int i = 0; i < n; i++) {
             Map<String, Integer> map = new HashMap<>();
             // 由当前点 i 发出的直线所经过的最多点数量
             int max = 0;
@@ -627,34 +626,47 @@ Input: n = 5, edges = [[0,1],[0,2],[0,3],[1,4]]
 Output: true
 
 class Solution {
-    
-    public List<List<String>> printTree(TreeNode root) {
-        int height = height(root,1);
-        int len = (int)Math.pow(2,height) - 1;
-        List<List<String>> list = new ArrayList<>();
-        for(int i = 0;i<height;i++){
-            List<String> tempList = new ArrayList<>();
-            for(int j = 0;j<len ;j++)
-                tempList.add("");
-            list.add(new ArrayList(tempList));
+    public boolean validTree(int n, int[][] edges) {
+          UnionFind uf = new UnionFind(n);
+          for(int[] edge: edges){
+              int p = edge[0];
+              int f = edge[1];
+              if(uf.isConnected(p,f)) return false;
+              uf.union(p,f);
+             
+          }  
+          return uf.count == 1;   
+    }
+
+        public class UnionFind{
+        int[] parent;
+        int count;
+        public UnionFind(int n){
+            parent = new int[n];
+            count = n;
+            for (int i = 0; i < n; i ++) {
+                parent[i] = i;
+            }
         }
-        setTree(list,root,0,len - 1,height,0);
-        return list;
-    }
-    
-    private int height(TreeNode root,int level){
-        if(root == null) return level - 1;
-        return Math.max(height(root.left,level + 1),
-                        height(root.right, level + 1));
-    }
-    
-    private void setTree(List<List<String>> list, TreeNode root,
-    int left, int right, int height,int level){
-        if(height == level || root == null) return;
-        int mid = left + (right - left)/2; //    Here is the mid
-        list.get(level).set(mid,String.valueOf(root.val));
-        setTree(list,root.left,left,mid - 1,height,level+ 1);
-        setTree(list,root.right,mid + 1,right,height,level+1);
+        
+        public int find(int p, int[] parent) {
+            if (p == parent[p]) return p;
+            parent[p] = find(parent[p], parent);
+            return parent[p];
+        }
+
+        public boolean isConnected(int p, int f){
+             int p1 = find(p, parent); int f1 = find(f, parent);
+             return p1 == f1;
+        }
+        
+        public void union(int p, int f) {
+            int p1 = find(p, parent); int f1 = find(f, parent);
+            if (p1 != f1) {
+                parent[p1] = f1;
+                count --;
+            }
+        }
     }
 }
 
