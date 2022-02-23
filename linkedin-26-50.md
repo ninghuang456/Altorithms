@@ -431,12 +431,11 @@ class Solution {
         int max = Integer.MIN_VALUE;
         for (int[] point1 : points) {
             for (int[] point2 : points) {
-  double k = (double) (point2[1] - point1[1]) / (double) (point2[0] - point1[0]);
+double k = (double) (point2[1] - point1[1]) / (double) (point2[0] - point1[0]);
                 map.put(k, map.getOrDefault(k, 0) + 1);
+                max = Math.max(max, map.get(k));
             }
-            for (Map.Entry<Double, Integer> entry : map.entrySet()) {
-                max = Math.max(max, entry.getValue());
-            }
+           
             map.clear();
         }
         return max + 1;
