@@ -470,288 +470,271 @@ public static int basicCalculator2(String expression) {
 ## Word wrap & word processor
 
 ```python
-function wordWrap(words, maxLen) {
-  if (!words || words.length === 0) {
-    return [];
-  }
-  const result = [];
-  let i = 0;
-  while (i < words.length) {
-    let remain = maxLen;
-    let count = 0;
-    while (i < words.length) {
-      if (remain - words[i].length < 0) {
-        break;
-      }
-      count++;
-      remain -= words[i++].length + 1;
+public static List<String> wrapLines1(String[] words, int maxLength){
+    List<String> ans = new ArrayList<>();
+    StringBuilder sb = new StringBuilder();
+    int p = 0;
+    while(p < words.length){
+        if(sb.length() == 0)
+            // assume all words length no exceed to maxLength
+            sb.append(words[p++]);
+
+        else if(sb.length() + 1 + words[p].length() <= maxLength){
+            sb.append('-');
+            sb.append(words[p++]);
+        }
+        else{
+            ans.add(sb.toString());
+            sb.setLength(0);
+        }
     }
-    result.push(words.slice(i - count, i).join('-'));
-  }
-  return result;
+    if(sb.length() != 0) ans.add(sb.toString());
+    return ans;
 }
 
-function reflowAndJustify(lines, maxLen) {
-  if (!lines || lines.length === 0) {
-    return [];
-  }
-  const words = lines.join(' ').split(' ');
-  const result = [];
-  let i = 0;
-  while (i < words.length) {
-    // split words into lines first
-    let remain = maxLen;
-    let count = 0;
-    while (i < words.length) {
-      if (remain - words[i].length < 0) {
-        break;
-      }
-      count++;
-      remain -= words[i++].length + 1;
-    }
-    const line = words.slice(i - count, i);
 
-    // after splitting into lines, calculate the required dashes 
-    between each word
-    const n = line.reduce((n, word) => n + word.length, 0);
-    let reflowed = ''; // line result with padded dashes
-    const baseDash = '-'.repeat(parseInt((maxLen - n) / (line.length - 1)));
-    let extra = (maxLen - n) % (line.length - 1); //
-    // some dashes at the beginning has one extra dash
-    for (let j = 0; j < line.length; j++) {
-      if (j === line.length - 1) {
-        reflowed += line[j];
-      } else {
-        reflowed +=
-          extra-- <= 0 ? line[j] + baseDash : line[j] + baseDash + '-';
-      }
+public static List<String> wrapLines2(String[] lines, int maxLength){
+    List<String> unbalanced = new ArrayList<>();
+    List<String> words = new ArrayList<>();
+    for(String line : lines){
+        String[] word_collection = line.split(" ", -1);
+        Collections.addAll(words, word_collection);
     }
-    result.push(reflowed);
-  }
-  return result;
+    StringBuilder sb = new StringBuilder();
+    int p = 0;
+    while(p < words.size()){
+        if(sb.length() == 0)
+            // assume all words length no exceed to maxLength
+            sb.append(words.get(p++));
+
+        else if(sb.length() + 1 + words.get(p).length() <= maxLength){
+            sb.append('-');
+            sb.append(words.get(p++));
+        }
+        else{
+            unbalanced.add(sb.toString());
+            sb.setLength(0);
+        }
+    }
+    if(sb.length() != 0) unbalanced.add(sb.toString());
+    //now we have un-balanced result, then balance it
+    List<String> balanced = new ArrayList<>();
+    for(String line : unbalanced){
+        StringBuilder cur_line = new StringBuilder(line);
+        int num_needed = maxLength - cur_line.length();
+        if(!cur_line.toString().contains("-")){
+            balanced.add(cur_line.toString());
+            continue;
+        };
+        while(num_needed > 0){
+            int i = 0;
+            while(i < cur_line.length() - 1){
+                if(cur_line.charAt(i) == '-' && cur_line.charAt(i + 1) != '-'){
+                    cur_line.insert(i + 1, '-');
+                    num_needed--;
+                    i++;
+                    if(num_needed == 0) break;
+                }
+                i++;
+            }
+        }
+        balanced.add(cur_line.toString());
+    }
+    return balanced;
 }
+
 ```
 
 ## Is valid matrix
 
 ```python
-function isValidMatrix(matrix) {
-  if (!matrix || matrix.length === 0 || matrix[0].length === 0) {
-    return false;
-  }
-  const n = matrix.length;
-  for (let i = 0; i < n; i++) {
-    const rowSet = new Set();
-    const colSet = new Set();
-    let rowMin = Number.POSITIVE_INFINITY, rowMax = Number.NEGATIVE_INFINITY;
-    let colMin = rowMin, colMax = rowMax;
-    for (let j = 0; j < n; j++) {
-      if (!rowSet.has(matrix[i][j])) {
-        rowSet.add(matrix[i][j]);
-        rowMin = Math.min(rowMin, matrix[i][j]);
-        rowMax = Math.max(rowMax, matrix[i][j]);
-      } else {
-        return false;
-      }
-      if (!colSet.has(matrix[j][i])) {
-        colSet.add(matrix[j][i]);
-        colMin = Math.min(colMin, matrix[j][i]);
-        colMax = Math.max(colMax, matrix[j][i]);
-      } else {
-        return false;
-      }
-    }
-    if (rowMin !== 1 || colMin !== 1 || rowMax !== n || colMax !== n) {
-      return false;
-    }
-  }
-  return true;
-}
-
-function isValidNonogram(matrix, rows, cols) {
-  if (!matrix || !rows || !cols) {
-    return false;
-  }
-  const n = matrix.length;
-  const m = matrix[0].length;
-  if (n === 0 || n !== rows.length || m !== cols.length) {
-    return false;
-  }
-  return (
-    isNonogramRowsValid(matrix, rows, n, m) &&
-    isNonogramColsValid(matrix, cols, n, m)
-  );
-}
-
-function isNonogramRowsValid(matrix, rows, n, m) {
-  for (let i = 0; i < n; i++) {
-    let rowIndex = 0;
-    for (let j = 0; j < m; j++) {
-      if (matrix[i][j] === 0) {
-        if (rows[i].length === 0) {
-          return false;
+ public static boolean validMatrix1(int[][] matrix) {
+        int N = matrix.length;
+        for (int i = 0; i < N; i++) {
+            HashSet<Integer> rowSet = new HashSet<>();
+            HashSet<Integer> colSet = new HashSet<>();
+            for (int j = 0; j < N; j++) {
+                int curRow = matrix[i][j];
+                if (curRow < 1 || curRow > N || !rowSet.add(curRow)) {
+                    return false;
+                }
+                int curCol = matrix[j][i];
+                if (curCol < 1 || curCol > N || !colSet.add(curCol)) {
+                    return false;
+                }
+            }
         }
-        for (let k = 0; k < rows[rowIndex]; k++) {
-          if (j + k >= m || matrix[i][j + k] !== 0) {
+        return true;
+    }
+
+ public static boolean checkNonogram(int[][] matrix, int[][] rows, int[][] cols) {
+        return checkRows(matrix, rows) && checkCols(matrix, cols);
+    }
+
+    private static boolean checkRows(int[][] matrix, int[][] rows) {
+        if (matrix.length != rows.length)
             return false;
-          }
-        }
-        j += rows[i][rowIndex++];
-      }
-    }
-    if (rowIndex !== rows[i].length) {
-      return false;
-    }
-  }
-  return true;
-}
+        for (int i = 0; i < matrix.length; i++) {
+            List<Integer> pattern = new ArrayList<>();
+            int num = 0;
+            for (int j = 0; j < matrix[i].length; j++) {
+                if (matrix[i][j] == 1 && num != 0) {
+                    pattern.add(num);
+                    num = 0;
+                }
+                if (matrix[i][j] == 0) {
+                    num += 1;
+                }
+            }
+            if (num != 0) {
+                pattern.add(num);
+            }
 
-function isNonogramColsValid(matrix, cols, n, m) {
-  for (let i = 0; i < m; i++) {
-    let colIndex = 0;
-    for (let j = 0; j < n; j++) {
-      if (matrix[j][i] === 0) {
-        if (cols[i].length === 0) {
-          return false;
+            if (pattern.size() == 0 && rows[i].length == 0) {
+                continue;
+            }
+
+            if (pattern.size() != rows[i].length) {
+                return false;
+            }
+
+            for (int k = 0; k < pattern.size(); k++) {
+                if (pattern.get(k) != rows[i][k])
+                    return false;
+            }
         }
-        for (let k = 0; k < cols[colIndex]; k++) {
-          if (j + k >= n || matrix[j + k][i] !== 0) {
+        return true;
+    }
+
+    private static boolean checkCols(int[][] matrix, int[][] cols) {
+        if (matrix[0].length != cols.length)
             return false;
-          }
+        for (int i = 0; i < matrix[0].length; i++) {
+            List<Integer> pattern = new ArrayList<>();
+            int num = 0;
+            for (int j = 0; j < matrix.length; j++) {
+                if (matrix[j][i] == 1 && num != 0) {
+                    pattern.add(num);
+                    num = 0;
+                }
+                if (matrix[j][i] == 0) {
+                    num += 1;
+                }
+            }
+            if (num != 0) {
+                pattern.add(num);
+            }
+
+            if (pattern.size() == 0 && cols[i].length == 0) {
+                continue;
+            }
+
+            if (pattern.size() != cols[i].length) {
+                return false;
+            }
+            for (int k = 0; k < pattern.size(); k++) {
+                if (pattern.get(k) != cols[i][k])
+                    return false;
+            }
+
         }
-        j += cols[i][colIndex++];
-      }
+        return true;
     }
-    if (colIndex !== cols[i].length) {
-      return false;
-    }
-  }
-  return true;
-}
 ```
 
 ## Node ancestor
 
 ```python
-function findNodesWithZeroOrOneParent(edges) {
-  if (!edges || edges.length === 0) {
-    return [];
-  }
-  const result = [];
-  const map = new Map();
-  for (const [parent, child] of edges) {
-    if (map.has(child)) {
-      map.get(child).add(parent);
-    } else {
-      map.set(child, new Set([parent]));
-    }
-  }
-  for (const [child, parentSet] of map) {
-    if (parentSet.length === 0 || parentSet.length === 1) {
-      result.push(child);
-    }
-  }
-  return result;
-}
+ public static List<Integer> zeroOrOneAncestor(int[][] edges) {
+        List<Integer> result = new ArrayList<>();
+        if (edges == null || edges.length == 0)
+            return result;
 
-function hasCommonAncestor(edges, x, y) {
-  if (!edges || edges.length === 0) {
-    return false;
-  }
-  const directParents = new Map();
-  for (const [parent, child] of edges) {
-    if (directParents.has(child)) {
-      directParents.get(child).add(parent);
-    } else {
-      directParents.set(child, new Set([parent]));
-    }
-  }
-  const findAllParents = (e) => {
-    const result = new Set();
-    const stack = [];
-    stack.push(e);
-    while (stack.length !== 0) {
-      const curr = stack.pop();
-      const parents = directParents.get(curr);
-      if (!parents) {
-        continue;
-      }
-      for (const parent of parents) {
-        if (result.has(parent)) {
-          continue;
+        // Build a graph using a map
+        Map<Integer, HashSet<Integer>> graph = new HashMap<>();
+        for (int[] edge : edges) {
+            graph.putIfAbsent(edge[1], new HashSet<>());
+            graph.putIfAbsent(edge[0], new HashSet<>());
+            graph.get(edge[1]).add(edge[0]);
         }
-        result.add(parent);
-        stack.push(parent);
-      }
+        // loop the keySet of the map, to find the nodes 
+        //who has less or equal to 1
+        // parent.
+        for (int key : graph.keySet()) {
+            if (graph.get(key).size() <= 1) {
+                result.add(key);
+            }
+        }
+        return result;
     }
-    return result;
-  };
-  const parentsOfX = findAllParents(x);
-  const parentsOfY = findAllParents(y);
-  for (const parentOfX of parentsOfX) {
-    if (parentsOfY.has(parentOfX)) {
-      return true;
-    }
-  }
-  return false;
-}
 
-// earliestAncestor
-function Queue() {
-  this.firstStack = [];
-  this.secondStack = []; 
-  this.length = 0;
-}
-
-Queue.prototype.push = function(x) {
-  this.firstStack.push(x);
-  this.length++;
-};
-
-Queue.prototype.pop = function() {
-  if (this.secondStack.length === 0) {
-    while (this.firstStack.length !== 0) {
-      this.secondStack.push(this.firstStack.pop());
+ public static boolean hasCommonAncestor(int[][] edges, int x, int y) {
+        if (edges == null || edges.length == 1)
+            return false;
+        Map<Integer, HashSet<Integer>> graph = new HashMap<>();
+        for (int[] edge : edges) {
+            graph.putIfAbsent(edge[1], new HashSet<>());
+            graph.putIfAbsent(edge[0], new HashSet<>());
+            graph.get(edge[1]).add(edge[0]);
+        }
+        HashSet<Integer> parent1 = new HashSet<>();
+        HashSet<Integer> parent2 = new HashSet<>();
+        // find all of the parents of given two nodes
+        // loop one of the set to find whether there is an overlap
+        findParents(x, parent1, graph);
+        findParents(y, parent2, graph);
+        for (int parent : parent1) {
+            if (parent2.contains(parent))
+                return true;
+        }
+        return false;
     }
-  }
-  this.length--;
-  return this.secondStack.pop();
-};
 
-function earliestAncestor(parentChildPairs, x) {
-  const directParents = new Map();
-  for (const [parent, child] of parentChildPairs) {
-    if (directParents.has(child)) {
-      directParents.get(child).add(parent);
-    } else {
-      directParents.set(child, new Set([parent]));
+    // Add the parents of a given node into a set
+    public static void findParents(int cur, HashSet<Integer> parents, 
+         Map<Integer, HashSet<Integer>> graph) {
+        for (int parent : graph.get(cur)) {
+            if (parents.add(parent)) {
+                findParents(parent, parents, graph);
+            }
+        }
     }
-  }
-  let currlayer = new Queue();
-  let prevlayer;
-  const visited = new Set();
-  currlayer.push(x);
-  while (currlayer.length !== 0) {
-    prevlayer = new Queue();
-    let size = currlayer.length;
-    while (size--) {
-      const curr = currlayer.pop();
-      prevlayer.push(curr);
-      const parents = directParents.get(curr);
-      if (!parents) {
-        continue;
-      }
-      for (const parent of parents) {
-        if (visited.has(parent)) {
-          continue;
-        }    
-        currlayer.push(parent);
-        visited.add(parent);
-      }
+    
+       public static int findFarAncestor(int[][] edges, int x) {
+        if (edges == null || edges.length == 0)
+            return 0;
+        Map<Integer, HashSet<Integer>> graph = new HashMap<>();
+        for (int[] edge : edges) {
+            if (!graph.containsKey(edge[1])) {
+                graph.put(edge[1], new HashSet<>());
+            }
+            if (!graph.containsKey(edge[0])) {
+                graph.put(edge[0], new HashSet<>());
+            }
+            graph.get(edge[1]).add(edge[0]);
+        }
+        // max[0] is used to keep the maximum level so far;
+        int[] max = new int[] { Integer.MIN_VALUE };
+        // result[0] is used to keep the farest parent
+        int[] result = new int[] { 0 };
+        dfs(x, 0, max, result, graph);
+        return result[0];
     }
-  }
-  return prevlayer.pop();
-}
+
+    // dfs to find a parent with max levels
+    private static void dfs(int cur, int level, int[] max, int[] result,
+                   Map<Integer, HashSet<Integer>> graph) {
+        if (graph.get(cur).size() == 0) {
+            if (level > max[0]) {
+                max[0] = level;
+                result[0] = cur;
+            }
+        } else {
+            for (int parent : graph.get(cur)) {
+                dfs(parent, level + 1, max, result, graph);
+            }
+        }
+    }
 
 ```
 
@@ -842,49 +825,48 @@ function timeDifference(a, b) {
 ## meeting room sparse time
 
 ```python
-function canSchedule(meetings, start, end) {
-  for (const meeting of meetings) {
-    if (
-      (start >= meeting[0] && start < meeting[1]) ||
-      (end > meeting[0] && end <= meeting[1]) ||
-      (start < meeting[0] && end > meeting[1])
-    ) {
-      return false;
+    public static boolean canSchedule(int[][] meetings, int start, int end) {
+        for (int[] meeting : meetings) {
+            if (start < meeting[1] && end > meeting[0]) {
+                return false;
+            }
+        }
+        return true;
     }
-  }
-  return true;
-}
-
-
-function spareTime(meetings) {
-  if (!meetings || meetings.length === 0) {
-    return [];
-  }
-  meetings = mergeMeetings(meetings);
-  const result = [];
-  let start = 0;
-  for (let i = 0; i < meetings.length; i++) {
-    result.push([start, meetings[i][0]]);
-    start = meetings[i][1];
-  }
-  return result;
-}
-
-function mergeMeetings(meetings) {
-  const result = [];
-  meetings.sort((a, b) => a[0] - b[0]);
-  let [start, end] = meetings[0];
-  for (const meeting of meetings) {
-    if (start < meeting[1]) {
-      end = Math.max(end, meeting[1]);
-    } else {
-      result.push(start, end);
-      start = meeting[0];
-      end = meeting[0];
+    
+    public static List<int[]> spareTime(int[][] meetings) {
+        Arrays.sort(meetings, ((a, b) -> a[0] - b[0]));
+        List<int[]> result = mergeMeeting(meetings);
+        List<int[]> output = new ArrayList<>();
+        int start = 0;
+        for (int i = 0; i < result.size(); i++) {
+            if (result.get(i)[0] > start) {
+                output.add(new int[] { start, result.get(i)[0] });
+            }
+            start = result.get(i)[1];
+        }
+        if (start < 2400) {
+            output.add(new int[] { start, 2400 });
+        }
+        return output;
     }
-  }
-  return result;
-}
+
+    private static List<int[]> mergeMeeting(int[][] meetings) {
+
+        List<int[]> result = new ArrayList<>();
+        int[] curMeeting = meetings[0];
+        for (int[] meeting : meetings) {
+            if (curMeeting[1] >= meeting[0]) {
+                curMeeting[1] = Math.max(curMeeting[1], meeting[1]);
+            } else {
+                result.add(curMeeting);
+                curMeeting = meeting;
+            }
+        }
+        result.add(curMeeting);
+        return result;
+    }
+    
 ```
 
 ## Sparse vector
@@ -1039,125 +1021,104 @@ class SparseVector {
 ## Find treasure
 
 ```python
-class Solution {
-    int[][] dis = new int[][]{{-1, 0}, {0, -1}, {0, 1}, {1, 0}};
-    public int numIslands(char[][] grid) {
-        if (grid == null || grid.length == 0) return 0;
-        int total = 0;
-        for (int r = 0; r < grid.length; r ++) {
-            for (int c = 0; c < grid[0].length; c++) {
-                if (grid[r][c] == '1') {
-                    searchArea(grid, r , c);
-                    total ++;
-                }
+    public static List<int[]> findLegalMoves(int i, int j, int[][] grid) {
+        if (grid == null || grid.length == 0 || grid[0].length == 0) {
+            return new ArrayList<>();
+        }
+        List<int[]> result = new ArrayList<>();
+    int[][] directions = new int[][] { { -1, 0 }, { 1, 0 }, { 0, -1 }, { 0, 1 } };
+        for (int[] direction : directions) {
+            int x = i + direction[0];
+            int y = i + direction[1];
+            if (x >= 0 && x < grid.length && y >= 0 &&
+             y < grid[0].length && grid[x][y] == 0) {
+                result.add(new int[] { x, y });
             }
         }
-        return total;
+        return result;
     }
-    
-    private void searchArea(char[][] grid, int r, int c){
-        if(!inArea(grid,r,c)){
+//P2
+  public static boolean FindLegalMoves(int[][] grid, int row, int col) {
+        boolean[][] visited = new boolean[grid.length][grid[0].length];
+        dfs(grid, row, col, visited);
+        for (int i = 0; i < grid.length; i++) {
+            for (int j = 0; j < grid[i].length; j++) {
+                if (grid[i][j] == 0 && visited[i][j] == false)
+                    return false;
+            }
+        }
+        return true;
+    }
+
+    public static void dfs(int[][] grid, int i, int j, boolean[][] visited) {
+        if (i < 0 || i >= grid.length || j < 0 || j >= grid.length || 
+              grid[i][j] == -1 || visited[i][j] == true)
+            return;
+        visited[i][j] = true;
+        dfs(grid, i - 1, j, visited);
+        dfs(grid, i + 1, j, visited);
+        dfs(grid, i, j - 1, visited);
+        dfs(grid, i, j + 1, visited);
+    }
+    //P3
+    public static List<List<int[]>> findShortestPaths(int[][] grid, 
+                        int[] start, int[] end) {
+        if (grid == null || grid.length == 0 || grid[0].length == 0)
+            return new ArrayList<>();
+        List<List<int[]>> temp = new ArrayList<>();
+    int[][] directions = new int[][] { { -1, 0 }, { 1, 0 }, { 0, -1 }, { 0, 1 } };
+        int treasure = 0;
+        for (int i = 0; i < grid.length; i++) {
+            for (int j = 0; j < grid[0].length; j++) {
+                if (grid[i][j] == 1)
+                    treasure += 1;
+            }
+        }
+        backtrack(grid, start[0], start[1], end, treasure, new LinkedList<>(), 
+                            directions, temp);
+        List<List<int[]>> result = new ArrayList<>();
+        int min = Integer.MAX_VALUE;
+        for (List<int[]> path : temp) {
+            if (path.size() < min) {
+                result = new ArrayList<>();
+                result.add(path);
+                min = path.size();
+            } else if (path.size() == min) {
+                result.add(path);
+            }
+        }
+        return result;
+    }
+
+    private static void backtrack(int[][] grid, int row, int col, 
+                 int[] end, int treasure, LinkedList<int[]> path,
+            int[][] directions, List<List<int[]>> result) {
+        if (row < 0 || row >= grid.length || col < 0 || col >= grid[0].length 
+            || grid[row][col] == -1
+                || grid[row][col] == 2) {
             return;
         }
-        if(grid[r][c] != '1'){
-            return;
-        }
-        grid[r][c] = '2';
-        for (int i = 0; i < 4; i ++){
-            int nextR = r + dis[i][0];
-            int nextC = c + dis[i][1];
-            searchArea(grid, nextR, nextC);
-        }
-            
-        
-    }
-    
-    private boolean inArea(char[][] grid, int r, int c){
-        return r >= 0 && r < grid.length && c >= 0 && c < grid[0].length;
-    }
-}
 
-function findLegalMoves(matrix, i, j) {
-  if (!matrix || matrix.length === 0) {
-    return false;
-  }
-  const visited = Array.from({ length: matrix.length }, () =>
-    Array.from({ length: matrix[0].length }, () => false)
-  );
-  const floodFillDFS = (x, y) => {
-    if (x < 0 || x >= matrix.length || y < 0 || y >= matrix[0].length || matrix[x][y] === -1 || visited[x][y]) {
-      return;
-    } 
-    visited[x][y] = true;
-    floodFillDFS(x - 1, y);
-    floodFillDFS(x + 1, y);
-    floodFillDFS(x, y - 1);
-    floodFillDFS(x, y + 1);
-  };
-  floodFillDFS(i, j);
-  for (let i = 0; i < matrix.length; i++) {
-    for (let j = 0; j < matrix[0].length; j++) {
-      if (!visited[i][j] && matrix[i][j] === 0) {
-        return false;
-      }
-    }
-  }
-  return true;
-}
+        int temp = grid[row][col];
+        grid[row][col] = 2;
+        if (temp == 1)
+            treasure--;
+        path.offer(new int[] { row, col });
+        if (row == end[0] && col == end[1] && treasure == 0) {
+            result.add(new ArrayList<>(path));
+            grid[row][col] = temp;
+            path.removeLast();
+        } else {
+            for (int[] direction : directions) {
+                int x = row + direction[0];
+                int y = col + direction[1];
+                backtrack(grid, x, y, end, treasure, path, directions, result);
+            }
+            grid[row][col] = temp;
+            path.removeLast();
 
-function findAllTreasures(board, start, end) {
-  if (!board) {
-    return [];
-  }
-  let numTreasures = 0;
-  for (let i = 0; i < board.length; i++) {
-    for (let j = 0; j < board[0].length; j++) {
-      if (board[i][j] === 1) {
-        numTreasures++;
-      }
+        }
     }
-  }
-  const paths = [];
-  const dfs = (x, y, path, remainTreasure) => {
-    if (
-      x < 0 ||
-      x >= board.length ||
-      y < 0 ||
-      y >= board[0].length ||
-      board[x][y] === -1 ||
-      board[x][y] === 2
-    ) {
-      return;
-    }
-    path.push([x, y]);
-    const temp = board[x][y];
-    if (temp === 1) {
-      remainTreasure--;
-    }
-    if (x === end[0] && y === end[1] && remainTreasure === 0) {
-      paths.push([...path]);
-      path.pop();
-      board[x][y] = temp;
-      return;
-    }
-    board[x][y] = 2;
-    dfs(x + 1, y, path, remainTreasure);
-    dfs(x - 1, y, path, remainTreasure);
-    dfs(x, y + 1, path, remainTreasure);
-    dfs(x, y - 1, path, remainTreasure);
-    board[x][y] = temp;
-    path.pop();
-  };
-  dfs(start[0], start[1], [], numTreasures);
-  if (paths.length === 0) {
-    return [];
-  }
-  let minPaths = paths[0].length;
-  for (let i = 0; i < paths.length; i++) {
-    minPaths = Math.min(minPaths, paths[i].length);
-  }
-  return paths.filter((path) => path.length === minPaths);
-}
 ```
 
 ##
