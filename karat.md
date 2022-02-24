@@ -65,30 +65,41 @@ public static List<String> longestCommonContinuousHistory(String[] history1,
 ## Ads Conversion Rate
 
 ```python
-function adsConversionRate(completedPurchaseUserIds, adClicks, allUserIps) {
-  const userIds = new Set(completedPurchaseUserIds);
-  const conversion = new Map();
-  const ipToUserId = new Map();
-  for (const userIp of allUserIps) {
-    const [userId, ip] = userIp.split(',');
-    ipToUserId.set(ip, userId);
-  }
-  for (const click of adClicks) {
-    const [ip,, adText] = click.split(',');
-    if (conversion.has(adText)) {
-      conversion.get(adText)[1]++;
-      if (userIds.has(ipToUserId.get(ip))) {
-        conversion.get(adText)[0]++;
-      }
-    } else {
-      const bought = userIds.has(ipToUserId.get(ip)) ? 1 : 0;
-      conversion.set(adText, [bought, 1]);
+    public static String[] AdsConversion(String[] completedUserId,
+              String[] adClicks, String[] allUserIp) {
+        HashSet<String> userIdSet = new HashSet<>();
+        for (String user : completedUserId) {
+            userIdSet.add(user);
+        }
+        Map<String, List<String>> adTextMap = new HashMap<>();
+        Map<String, String> ipUserMap = new HashMap<>();
+        for (String adClick : adClicks) {
+            String[] parsed = adClick.split(",");
+            String text = parsed[2];
+            String ip = parsed[0];
+            adTextMap.putIfAbsent(text, new ArrayList<>());
+            adTextMap.get(text).add(ip);
+        }
+
+        for (String userIp : allUserIp) {
+            String[] userAndIp = userIp.split(",");
+            ipUserMap.putIfAbsent(userAndIp[1], userAndIp[0]);
+        }
+
+        String[] result = new String[adTextMap.keySet().size()];
+        int i = 0;
+        for (String text : adTextMap.keySet()) {
+            List<String> clicks = adTextMap.get(text);
+            int buyer = 0;
+            for (String user : clicks) {
+                if (userIdSet.contains(ipUserMap.get(user))) {
+                    buyer++;
+                }
+            }
+            result[i++] = buyer + " of " + clicks.size() + " " + text;
+        }
+        return result;
     }
-  }
-  for (const [adText, ratio] of conversion) {
-    console.log(`${ratio[0]} of ${ratio[1]}  ${adText}`);
-  }
-}
 ```
 
 ## Student course overlap
@@ -197,225 +208,143 @@ const allCourses = [
   ['Intro to Computer Science', 'Graphics'],
 ];
 
-function findAllMidway(prereqs) {
-  const graph = formGraph(prereqs);
-  const paths = [];
-  const backtracking = (path, curr) => {
-    if (graph.get(curr).length === 0) {
-      paths.push([...path]);
-      return;
-    }
-    for (const next of graph.get(curr)) {
-      backtracking(path, next);
-    }
-    path.pop(curr);
-  };
-  const firstCourses = findAllFirstCourses(prereqs);
-  for (const course of firstCourses) {
-    backtracking([], course);
-  }
-  const result = new Set();
-  for (const path of paths) {
-    if (path.length % 2 === 0) {
-      result.add(path[path.length / 2 - 1]);
-    } else {
-      result.add(path[Math.floor(path.length / 2)]);
-    }
-  }
-  return result;
-}
-
-function findAllFirstCourses(prereqs) {
-  const result = [];
-  const courses = new Set();
-  const coursesHavePrereq = new Set();
-  for (const prereq of prereqs) {
-    courses.add(prereq[0]);
-    courses.add(prereq[1]);
-    coursesHavePrereq.add(prereq[1]);
-  }
-  for (const course of courses) {
-    if (!coursesHavePrereq.has(course)) {
-      result.push(course);
-    }
-  }
-  return result;
-}
-
-function formGraph(prereqs) {
-  const result = new Map();
-  for (const prereq of prereqs) {
-    if (result.has(prereq[0])) {
-      result.get(prereq[0]).add(prereq[1]);
-    } else {
-      result.set(prereq[0], new Set([prereq[1]]));
-    }
-  }
-  for (const prereq of prereqs) {
-    if (!result.has(prereq[1])) {
-      result.set(prereq[1], new Set());
-    }
-  }
-  return result;
-}
-
-console.log(findAllMidway(allCourses));
-
-function findMidway(prereqs) {
-  const result = [];
-  const coursesHavePrereq = new Set();
-  for (const prereq of prereqs) {
-    coursesHavePrereq.add(prereq[1]);
-  }
-  let curr;
-  for (const prereq of prereqs) {
-    if (!coursesHavePrereq.has(prereq[0])) {
-      curr = prereq[0];
-      break;
-    }
-  }
-  const courses = [...coursesHavePrereq, curr];
-  while (result.length !== courses.length) {
-    result.push(curr);
-    for (const prereq of prereqs) {
-      if (curr === prereq[0]) {
-        curr = prereq[1];
-        break;
-      }
-    }
-  }
-  if (result.length % 2 === 0) {
-    return result[result.length / 2 - 1];
-  }
-  return result[Math.floor(result.length / 2)];
-}
-
-const studentCoursePairs1 = [
-  ['58', 'Linear Algebra'],
-  ['94', 'Art History'],
-  ['94', 'Operating Systems'],
-  ['17', 'Software Design'],
-  ['58', 'Mechanics'],
-  ['58', 'Economics'],
-  ['17', 'Linear Algebra'],
-  ['17', 'Political Science'],
-  ['94', 'Economics'],
-  ['25', 'Economics'],
-  ['58', 'Software Design'],
-];
-
-const studentCoursePairs2 = [
-  ['42', 'Software Design'],
-  ['0', 'Advanced Mechanics'],
-  ['9', 'Art History'],
-];
-
-function findAllOverlaps(studentCoursePairs) {
-  const map = new Map();
-  for (const [studentId, course] of studentCoursePairs) {
-    if (map.has(studentId)) {
-      map.get(studentId).push(course);
-    } else {
-      map.set(studentId, [course]);
-    }
-  }
-  const studentIds = [...map.keys()];
-  const result = new Map();
-  for (let i = 0; i < studentIds.length; i++) {
-    for (let j = i + 1; j < studentIds.length; j++) {
-      const key = `${studentIds[i]},${studentIds[j]}`;
-      const overlaps = [];
-      for (const course1 of map.get(studentIds[i])) {
-        for (const course2 of map.get(studentIds[j])) {
-          if (course1 === course2) {
-            overlaps.push(course1);
-          }
-        }
-      }
-      result.set(key, overlaps);
-    }
-  }
-  return result;
-}
-
-// console.log(findAllOverlaps(studentCoursePairs1));
-// console.log(findAllOverlaps(studentCoursePairs2));
-```
-
-```python
-I used BFS to find ancestor of each node and compare if there's any common ones.
-   I just modified the code in 2 to return the last number in the queue from BFS as 
-  the earliest ancestor.
-  
-class Solution {
-    public int[] findOrder(int numCourses, int[][] prerequisites) {
-        int[] indegrees = new int[numCourses];
-        List<ArrayList<Integer>> adjTable = new ArrayList<>();
-        ArrayList<Integer> res = new ArrayList<>();
-        for (int i = 0; i < numCourses; i ++) {
-            adjTable.add(new ArrayList<Integer>());
-        }
-        for (int[] pre : prerequisites){
-            indegrees[pre[0]] ++;
-            adjTable.get(pre[1]).add(pre[0]);
-        }
-        Queue<Integer> queue = new LinkedList<>();
-        for (int i = 0; i < indegrees.length; i ++) {
-            if(indegrees[i] == 0){
-                queue.offer(i);
+public static Map<String[], String[]> findPairs(String[][] coursePairs) {
+        Map<String, HashSet<String>> map = new HashMap<>();
+        Map<String[], String[]> result = new HashMap<>();
+        for (String[] coursesPair : coursePairs) {
+            if (!map.containsKey(coursesPair[0])) {
+                map.put(coursesPair[0], new HashSet<>());
             }
+            map.get(coursesPair[0]).add(coursesPair[1]);
         }
-        while (!queue.isEmpty()) {
-            int cur = queue.poll();
-            numCourses --;
-            res.add(cur);
-            List<Integer> adj = adjTable.get(cur);
-            for (int next : adj) {
-                indegrees[next] --;
-                if (indegrees[next] == 0) {
-                    queue.offer(next);
+
+        List<String> students = new ArrayList<>(map.keySet());
+        for (int i = 0; i < students.size(); i++) {
+            for (int j = i + 1; j < students.size(); j++) {
+                String[] key = new String[] { students.get(i), students.get(j) };
+                List<String> courses = new ArrayList<>();
+                for (String c1 : map.get(key[0])) {
+                    if (map.get(key[1]).contains(c1)) {
+                        courses.add(c1);
+                    }
                 }
+                String[] value = new String[courses.size()];
+                for (int k = 0; k < value.length; k++) {
+                    value[k] = courses.get(k);
+                }
+                result.put(key, value);
             }
         }
-        if (numCourses != 0) return new int[0];
-        int[] finalRes = new int[res.size()];
-        for (int i = 0; i < res.size(); i ++){
-            finalRes[i] = res.get(i);
-        }
-        return finalRes;
+        return result;
     }
-}
+    
+     public static char findMediumCourse(char[][] courses) {
+        int[] count = new int[26];
+        Map<Character, Character> map = new HashMap<>();
+        for (char[] course : courses) {
+            count[course[0] - 'A']++;
+            count[course[1] - 'A']++;
+            map.put(course[0], course[1]);
+        }
+        char start = 'A';
+        for (int i = 0; i < 26; i++) {
+            if (count[i] == 1) {
+                start = (char) ('A' + i);
+                break;
+            }
+        }
+        int middleCourse = map.keySet().size() / 2;
+        while (middleCourse-- > 0) {
+            start = map.get(start);
+        }
+        return start;
+    }
+    
+     public static Set<String> halfWayLessons(String[][] courses) {
+        Set<String> result = new HashSet<>();
+        Map<String, Integer> inorder = new HashMap<>();
+        Map<String, List<String>> graph = new HashMap<>();
+        Map<String, Boolean> visited = new HashMap<>();
+
+        for (String[] course : courses) {
+            String source = course[0];
+            String des = course[1];
+            visited.put(source, false);
+            visited.put(des, false);
+            if (!graph.containsKey(source)) {
+                graph.put(source, new ArrayList<>());
+            }
+            if (!graph.containsKey(des)) {
+                graph.put(des, new ArrayList<>());
+            }
+            graph.get(source).add(des);
+            if (!inorder.containsKey(source)) {
+                inorder.put(source, 0);
+            }
+            inorder.put(des, inorder.getOrDefault(des, 0) + 1);
+        }
+
+        for (String key : inorder.keySet()) {
+            if (inorder.get(key).equals(0)) {
+                LinkedList<String> temp = new LinkedList<>();
+                temp.add(key);
+                backtrack(key, graph, temp, result);
+            }
+        }
+
+        return result;
+    }
+
+    public static void backtrack(String start, Map<String, List<String>> graph, List<String> temp, Set<String> result) {
+        int size = graph.get(start).size();
+        if (size == 0) {
+            result.add(temp.get((temp.size() + 1) / 2 - 1));
+            return;
+        }
+        for (int i = 0; i < size; i++) {
+            String next = graph.get(start).get(i);
+            temp.add(next);
+            backtrack(next, graph, temp, result);
+            temp.remove(temp.size() - 1);
+        }
+
+    }
 ```
 
 ## Find rectangle
 
 ```python
-function findOneRectangle(board) {
-  if (!board || board.length === 0 || board[0].length === 0) {
-    return [];
-  }
-  const result = [];
-  for (let i = 0; i < board.length; i++) {
-    for (let j = 0; j < board[0].length; j++) {
-      if (board[i][j] === 0) {
-        result.push([i, j]);
-        let height = 1, width = 1;
-        while (i + height < board.length && board[i + height][j] === 0) {
-          height++;
+    int[][] findOneRectangle(int[][] board) {
+        int[][] result = new int[2][2];
+        if ( board.length == 0 || board[0].length == 0) {
+            return result;
         }
-        while (j + width < board[0].length && board[i][j + width] === 0) {
-          width++;
+
+        for (int i = 0; i < board.length; i++) {
+            for (int j = 0; j < board[0].length; j++) {
+                if (board[i][j] == 0) {
+                    result[0][0] = i;
+                    result[0][1] = j;
+                    int height = 1, width = 1;
+                    while (i + height < board.length && board[i + height][j] == 0) {
+                        height++;
+                    }
+                    while (j + width < board[0].length && board[i][j + width] == 0) {
+                        width++;
+                    }
+                    result[1][0] = i + height - 1; 
+                    result[1][1] = j + width - 1;
+                  
+                    break;
+                }
+                if (result.length != 0) {
+                    break;
+                }
+            }
         }
-        result.push([i + height - 1, j + width - 1]);
-        break;
-      }
-      if (result.length !== 0) {
-        break;
-      }
+        return result;
     }
-  }
-  return result;
-}
+    
 
 function findMultipleRectangle(board) {
   if (!board || board.length === 0 || board[0].length === 0) {
@@ -480,67 +409,62 @@ function findMultipleShapes(board) {
 ## calculator
 
 ```python
-function basicCalculator(expression) {
-  if (!expression || expression.length === 0) {
-    return 0;
-  }
-  let result = 0;
-  let sign = 1;
-  for (let i = 0; i < expression.length; i++) {
-    if (isNumeric(expression[i])) {
-      let num = expression[i];
-      while (i + 1 < expression.length && isNumeric(expression[i + 1])) {
-        num += expression[++i];
-      }
-      num = parseInt(num);
-      result += num * sign;
-    } else if (expression[i] === '+') {
-      sign = 1;
-    } else if (expression[i] === '-') {
-      sign = -1;
+  public static int basicCalculator(String expression) {
+        if (expression == null || expression.length() == 0)
+            return 0;
+        char[] expressionChar = expression.toCharArray();
+        int num = 0;
+        int sign = 1;
+        for (int i = 0; i < expressionChar.length; i++) {
+            if (expressionChar[i] == '+')
+                sign = 1;
+            else if (expressionChar[i] == '-')
+                sign = -1;
+            else if (expressionChar[i] >= '0' && expressionChar[i] <= '9') {
+                int temp = expressionChar[i] - '0';
+                while (i + 1 < expressionChar.length
+                        && (expressionChar[i + 1] >= '0' && expressionChar[i + 1] <= '9')) {
+                    temp *= 10;
+                    temp += expressionChar[++i] - '0';
+                }
+                num += temp * sign;
+            }
+        }
+        return num;
     }
-  }
-  return result;
-}
 
-function isNumeric(c) {
-  return c >= '0' && c <= '9';
-}
-
-function basicCalculator(expression) {
-  if (!expression || expression.length === 0) {
-    return 0;
-  }
-  let result = 0;
-  let sign = 1;
-  let stack = [];
-  for (let i = 0; i < expression.length; i++) {
-    if (isNumeric(expression[i])) {
-      let num = expression[i];
-      while (i + 1 < expression.length && isNumeric(expression[i + 1])) {
-        num += expression[++i];
-      }
-      num = parseInt(num);
-      result += num * sign;
-    } else if (expression[i] === '+') {
-      sign = 1;
-    } else if (expression[i] === '-') {
-      sign = -1;
-    } else if (expression[i] === '(') {
-      stack.push(result);
-      stack.push(sign);
-      result = 0;
-      sign = 1;
-    } else if (expression[i] === ')') {
-      result = result * stack.pop() + stack.pop();
+public static int basicCalculator2(String expression) {
+        if (expression == null || expression.length() == 0)
+            return 0;
+        char[] expressionChar = expression.toCharArray();
+        Stack<Integer> stack = new Stack<>();
+        int num = 0;
+        int sign = 1;
+        for (int i = 0; i < expressionChar.length; i++) {
+            if (expressionChar[i] == '+')
+                sign = 1;
+            else if (expressionChar[i] == '-')
+                sign = -1;
+            else if (expressionChar[i] >= '0' && expressionChar[i] <= '9') {
+                int temp = expressionChar[i] - '0';
+                while (i + 1 < expressionChar.length
+                        && (expressionChar[i + 1] >= '0' && expressionChar[i + 1] <= '9')) {
+                    temp *= 10;
+                    temp += expressionChar[++i] - '0';
+                }
+                num += temp * sign;
+            } else if (expressionChar[i] == '(') {
+                stack.push(num);
+                stack.push(sign);
+                num = 0;
+                sign = 1;
+            } else if (expressionChar[i] == ')') {
+                num = num * stack.pop() + stack.pop();
+            }
+        }
+        return num;
     }
-  }
-  return result;
-}
-
-function isNumeric(c) {
-  return c >= '0' && c <= '9';
-}
+    
 ```
 
 ## Word wrap & word processor
@@ -1236,7 +1160,6 @@ function findAllTreasures(board, start, end) {
 }
 ```
 
-## 
+##
 
-## 
-
+##
