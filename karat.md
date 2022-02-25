@@ -643,6 +643,7 @@ public static List<String> wrapLines2(String[] lines, int maxLength){
 ## Node ancestor
 
 ```python
+         Q1
  public static List<Integer> zeroOrOneAncestor(int[][] edges) {
         List<Integer> result = new ArrayList<>();
         if (edges == null || edges.length == 0)
@@ -665,39 +666,47 @@ public static List<String> wrapLines2(String[] lines, int maxLength){
         }
         return result;
     }
-
- public static boolean hasCommonAncestor(int[][] edges, int x, int y) {
-        if (edges == null || edges.length == 1)
-            return false;
-        Map<Integer, HashSet<Integer>> graph = new HashMap<>();
-        for (int[] edge : edges) {
-            graph.putIfAbsent(edge[1], new HashSet<>());
-            graph.putIfAbsent(edge[0], new HashSet<>());
-            graph.get(edge[1]).add(edge[0]);
-        }
-        HashSet<Integer> parent1 = new HashSet<>();
-        HashSet<Integer> parent2 = new HashSet<>();
-        // find all of the parents of given two nodes
-        // loop one of the set to find whether there is an overlap
-        findParents(x, parent1, graph);
-        findParents(y, parent2, graph);
-        for (int parent : parent1) {
-            if (parent2.contains(parent))
-                return true;
-        }
-        return false;
-    }
-
-    // Add the parents of a given node into a set
-    public static void findParents(int cur, HashSet<Integer> parents, 
-         Map<Integer, HashSet<Integer>> graph) {
-        for (int parent : graph.get(cur)) {
-            if (parents.add(parent)) {
-                findParents(parent, parents, graph);
-            }
-        }
-    }
     
+    Q1
+    public static List<List<Integer>> commonAncestor1(int[][] pairs){
+    // assume non-empty input 2-d array, and each pair contains 
+    //2 elements with parent-child order
+List<Integer> zero_ancestor = new ArrayList<>(), one_ancestor = new ArrayList<>();
+    Map<Integer,Integer> numOfAncestors = new HashMap<>();
+    for(int[] pair : pairs){
+        numOfAncestors.put(pair[1], numOfAncestors.getOrDefault(pair[1], 0) + 1);
+        numOfAncestors.put(pair[0], numOfAncestors.getOrDefault(pair[0], 0));
+    }
+    for(int node : numOfAncestors.keySet()){
+        if(numOfAncestors.get(node) == 0) zero_ancestor.add(node);
+        if(numOfAncestors.get(node) == 1) one_ancestor.add(node);
+    }
+    List<List<Integer>> ans = new ArrayList<>();
+    ans.add(zero_ancestor);
+    ans.add(one_ancestor);
+    return ans;
+}
+
+q2
+public static boolean commonAncestor2(int[][] pairs, int node1, int node2){
+    Set<Integer> p1 = new HashSet<>(), p2 = new HashSet<>();
+    help_commonAncestor2(p1, node1, pairs);
+    help_commonAncestor2(p2, node2, pairs);
+    for(int parent : p1){
+        if(p2.contains(parent)) return true;
+    }
+    return false;
+}
+public static void help_commonAncestor2(Set<Integer> parents, int node, int[][] pairs){
+    for(int[] pair : pairs){
+        if(pair[1] == node){
+            parents.add(pair[0]);
+            help_commonAncestor2(parents, pair[0], pairs);
+        }
+    }
+}
+
+    q3
        public static int findFarAncestor(int[][] edges, int x) {
         if (edges == null || edges.length == 0)
             return 0;
