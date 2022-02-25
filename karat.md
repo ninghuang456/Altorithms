@@ -3,30 +3,25 @@
 ## Sub Domain visits
 
 ```java
-class Solution {
-    public List<String> subdomainVisits(String[] cpdomains) {
-        HashMap<String, Integer> map = new HashMap<>();
-        for(int i = 0; i < cpdomains.length; i ++) {
-            String cur =  cpdomains[i];
-            String[] doms = cur.split("\\s+");
-            int value  = Integer.valueOf(doms[0]);
-            String[] subs = doms[1].split("\\.");
-            String pre = "";
-            for(int j = subs.length - 1; j >= 0; j --) {
-               String combine = subs[j] + pre;
-               map.put(combine, map.getOrDefault(combine, 0) + value);
-               pre = "." + combine;
+    public static String[] countDomain(String[] domains) {
+        Map<String, Integer> frequency = new HashMap<>();
+        for (String domain : domains) {
+            String[] temp = domain.split(" ");
+            int fre = Integer.parseInt(temp[0]);
+            String[] subdomains = temp[1].split("\\.");
+            String cur = "";
+            for (int i = subdomains.length - 1; i >= 0; i--) {
+                cur = subdomains[i] + (cur.length() == 0 ? "" : ".") + cur;
+                frequency.put(cur, frequency.getOrDefault(cur, 0) + fre);
             }
         }
-        ArrayList<String> res = new ArrayList<>();
-        for(String key : map.keySet()){
-            StringBuilder sb = new StringBuilder();
-            sb.append(map.get(key)).append(" ").append(key);
-            res.add(sb.toString());
+        String[] result = new String[frequency.keySet().size()];
+        int i = 0;
+        for (String domain : frequency.keySet()) {
+            result[i++] = frequency.get(domain) + " " + domain;
         }
-        return res;
+        return result;
     }
-}
 
 ```
 
