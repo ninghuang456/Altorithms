@@ -208,6 +208,7 @@ const allCourses = [
   ['Intro to Computer Science', 'Graphics'],
 ];
 
+q1
 public static Map<String[], String[]> findPairs(String[][] coursePairs) {
         Map<String, HashSet<String>> map = new HashMap<>();
         Map<String[], String[]> result = new HashMap<>();
@@ -238,6 +239,7 @@ public static Map<String[], String[]> findPairs(String[][] coursePairs) {
         return result;
     }
     
+    q2
      public static char findMediumCourse(char[][] courses) {
         int[] count = new int[26];
         Map<Character, Character> map = new HashMap<>();
@@ -260,6 +262,7 @@ public static Map<String[], String[]> findPairs(String[][] coursePairs) {
         return start;
     }
     
+    q3
      public static Set<String> halfWayLessons(String[][] courses) {
         Set<String> result = new HashSet<>();
         Map<String, Integer> inorder = new HashMap<>();
