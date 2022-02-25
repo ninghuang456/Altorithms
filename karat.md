@@ -748,43 +748,44 @@ public static void help_commonAncestor2(Set<Integer> parents, int node, int[][] 
 ## Entering gate without badge
 
 ```python
-function invalidBadgeRecords(records) {
-  if (!records || records.length === 0) {
-    return [];
-  }
-  const result = [[], []];
-  // 0 for exited, 1 for entered
-  const state = new Map();
-  const invalidEnter = new Set();
-  const invalidExit = new Set();
-  for (const [name, action] of records) {
-    !state.has(name) && state.set(name, 0);
-    if (action === 'enter') {
-      if (state.get(name) === 0) {
-        state.set(name, 1);
-      } else {
-        invalidEnter.add(name);
-      }
-    } else {
-      if (state.get(name) === 1) {
-        state.set(name, 0);
-      } else {
-        invalidExit.add(name);
-      }
+    int[][] invalidBadgeRecords(String[][] records) {
+        int[][] result = new int[1][2];
+        if (records.length == 0) {
+            return result;
+        }
+  
+        // 0 for exited, 1 for entered
+  Map<String, Integer> state = new HashMap<>();
+  Set<String> invalidEnter = new HashSet<>();
+  Set<String> invalidExit = new HashSet<>();
+        for (String[] record : records) {
+            String name = record[0];
+            String action = record[1];
+            if(state.containsKey(name)){
+                state.put(name, 0);
+            }
+            if (action.equals("enter") ) {
+                if (state.get(name) == 0) {
+                    state.put(name, 1);
+                } else {
+                    invalidEnter.add(name);
+                }
+            } else {
+                if (state.get(name) == 1) {
+                    state.put(name, 0);
+                } else {
+                    invalidExit.add(name);
+                }
+            }
+        }
+        for (Map.Entry<String, Integer> entry: state.entrySet()) {
+            if (entry.getValue() == 1) {
+                invalidEnter.add(entry.getKey());
+            }
+        }
+        // result .add invalidEnter, result.add invalidExit
+        return result;
     }
-  }
-  for (const [name, s] of state) {
-    if (s === 1) {
-      invalidEnter.add(name);
-    }
-  }
-  for (const name of invalidEnter) {
-    result[0].push(name);
-  }
-  for (const name of invalidExit) {
-    result[1].push(name);
-  }
-  return result;
 }
 
 //question 2
