@@ -761,7 +761,7 @@ public static void help_commonAncestor2(Set<Integer> parents, int node, int[][] 
         for (String[] record : records) {
             String name = record[0];
             String action = record[1];
-            if(state.containsKey(name)){
+            if(!state.containsKey(name)){
                 state.put(name, 0);
             }
             if (action.equals("enter") ) {
