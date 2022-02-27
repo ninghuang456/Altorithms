@@ -1,4 +1,4 @@
-# Amazon Frequency 1~ 30
+# Amazon Frequency 1\~ 30
 
 ## 1: Two Sum
 
@@ -362,7 +362,8 @@ class Solution {
     }
     public void extendedPalindrome(String s, int l, int r){
       //  int l = left; int r = right; //作用域
-        while (l >= 0 && l < s.length() && r >= 0 && r < s.length() && s.charAt(l) == s.charAt(r)){
+        while (l >= 0 && l < s.length() && r >= 0 
+        && r < s.length() && s.charAt(l) == s.charAt(r)){
             l --;
             r ++;
         }
@@ -622,7 +623,7 @@ class Solution {
 
 ## 221-Maximal Square
 
-![](../.gitbook/assets/image_1573111823.png)
+![](../.gitbook/assets/image\_1573111823.png)
 
 ```java
 Given a 2D binary matrix filled with 0's and 1's, find
@@ -1151,7 +1152,6 @@ class Solution {
 }
 ```
 
-## 
+##
 
-## 
-
+##
